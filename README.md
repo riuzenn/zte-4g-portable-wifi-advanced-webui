@@ -37,18 +37,11 @@ adb shell ls -l /etc/rc
 我编译了一个可执行文件，可以调用这个工具在命令行执行at命令。工具参考了官方zte_mifi和atweb的反编译代码，在这里向包括mWIFI_icu在内的前辈表示感谢。冲着这个工具可以给我一个star吗😍。  
 <div align="center"><img src="./images/at工具示例.jpg"></div>  
 
-➤下载:  
-在上面的基础上额外下载  
+➤安装:  
 [at](/sbin/at)  
-[device_info.html](/etc_ro/web/tmpl/status/device_info.html)  
-[bandlock.html](/etc_ro/web/tmpl/bandlock.html)  
 adb shell mount -o remount,rw /  
-adb push at文件在你电脑上的路径 /sbin/at  
+adb push at文件在你电脑上的路径  /sbin/at  
 adb shell chmod 755 /sbin/at  
-adb push device_info.html文件在你电脑上的路径 /etc_ro/web/tmpl/status/device_info.html  
-adb shell chmod 755 /etc_ro/web/tmpl/status/device_info.html  
-adb push bandlock.html文件在你电脑上的路径 /etc_ro/web/tmpl/bandlock.html  
-adb shell chmod 755 /etc_ro/web/tmpl/bandlock.html  
 ➤原理：  
 官方封装了一套和at串口通信的方法：zte_mifi把守大门，goahead接受前端url，向底层提交申请然后排队执行。我写的这个c程序就是调用官方的get_modem_info()函数，发送at命令，接收返回值。和已有的atweb在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能没有编译后的c程序好。它就是个at端口信息的搬运工，和后台web的通信还是依赖默认的80端口，不需要后台。  
 ➤为什么要重复造轮子？  
