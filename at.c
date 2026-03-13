@@ -8,7 +8,7 @@ int get_mac_config_ssid_key_nv(void) {return 0;}
 extern int get_modem_info(const char *at, const char *fmt, ...);
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        fputs("用法：at \'AT命令\'。AT命令不区分大小写，可以没有引号，不要有空格。\nby孙石讷@酷安\n", stderr);
+        fputs("用法：at \'AT命令\'。AT命令不区分大小写，可以没有引号，不要有空格。\nby孙石讷@酷安、riuzenn@GitHub\n", stderr);
         return 1;
     }
     else if (strncasecmp(argv[1], "AT", 2) != 0 ) {
