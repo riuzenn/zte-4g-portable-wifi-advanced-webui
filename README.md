@@ -31,7 +31,7 @@ adb shell ls -l /etc/rc
 ➤备注：  
 ◉受限于实现原理，每次fork出的shell进程执行过一次命令就会销毁，想一次执行多个命令建议用“;”分割,，比如说ls /;ls /etc  
 ◉我在/etc/rc里加了开机关闭led灯的命令和往防火墙里添加规则，不需要可以删除  
-◉customfuncs.js封装了getAD()、evalcmd()等js函数。getAD()用于post某些goahead原生命令需要AD参数的情况；evalcmd()工作原理就是上面提到的，可以用于自定义链接，如`<a href="javascript:void(0);" onclick="confirm('即将执行XX命令'); evalcmd('这里写shell命令如reboot');">我是重启</a>`。  
+◉customfuncs.js封装了getAD()、evalcmd()等js函数。getAD()用于post某些goahead原生命令需要AD参数的情况；evalcmd()工作原理就是上面提到的，可以用于自定义链接，如<a href="javascript:void(0);" onclick="confirm('即将执行XX命令'); evalcmd('这里写shell命令如reboot');">我是重启</a>。  
 ◉index.html下面这一栏“开/关”是开/关adb，会重启；“退出”是退出登录；"重启"字面意思（值得一提的是goahead原生提供了REBOOT_DEVICE接口，但是需要处于登录状态，所以重启我调用的是evalcmd('reboot');。  
 ## 中兴随身wifi全功能后台的最后一块拼图--at工具
 我编译了一个可执行文件，可以调用这个工具在命令行执行at命令。工具参考了官方zte_mifi和atweb的反编译代码，在这里向包括mWIFI_icu在内的前辈表示感谢。冲着这个工具可以给我一个star吗😍。  
@@ -60,7 +60,7 @@ adb shell chmod 755 /etc_ro/web/tmpl/bandlock.html
 ➤小设计：  
 成功输出_at串口返回值_  
 失败输出_ERROR_  
-用正则表达式/^_(我是要匹配的内容)_$/m能轻松匹配。  
+用正则表达式`/^_(我是要匹配的内容)_$/m`能轻松匹配。  
 ➤基于at工具实现的功能:  
 ◉首先需要下载推送以下文件，如有定制化需求自行适配。  
 /f30a pro/etc_ro/cgi-bin/shell：通过post请求执行shell命令，一切的基础  
@@ -107,7 +107,7 @@ echo 0 > /sys/class/leds/modem_w_led/brightness
 ◉修改nv默认设置  
 [default_parameter_sys](/etc_ro/default/default_parameter_sys)文件中  
 cdrom_state=0和usb_devices_debug=diag,adb,serial（删掉mass_storage），adb开启状态不会加载CDROM设备（设备管理器和我的电脑不会显示cd设备）
-[default_parameter_user](/etc_ro/default/default_parameter_user)文件中
+[default_parameter_user](/etc_ro/default/default_parameter_user)文件中  
 need_support_sms=yes，f30a pro开启短信功能  
 admin_Password=，设置默认密码，sha256加密  
 privacy_read_flag=1，关闭重置后的隐私协议弹窗  
