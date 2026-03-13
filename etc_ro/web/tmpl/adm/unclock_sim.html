@@ -41,31 +41,25 @@
 	}
 	const imeiInput = document.getElementById('zte-imei');
 	const resultDiv = document.getElementById('zte-result');
+	const targetInput = document.getElementById('unclock_sim');
 	function zteCalcPassword() {
 		let imei = imeiInput.value.trim();
-		resultDiv.replaceChildren();
+		resultDiv.textContent = '';
 		if (imei.length !== 6 || !/^\d{6}$/.test(imei)) {
 			resultDiv.textContent = '请输入有效的 6 位数字！';
 			imeiInput.focus();return;
 		}
 		let ztepassword = zteUnlockPassword(imei);
 		resultDiv.textContent = `解锁密码：${ztepassword}`;
-		$("#unclock_sim").val(ztepassword).change();
+		targetInput.value = ztepassword;
+		targetInput.dispatchEvent(new Event('change'));
   }
-	function FetchAndFillimei() {
-		$.ajax({
-			url: '/goform/goform_get_cmd_process',
-			type: 'GET',
-			data: {
-				isTest: 'false',
-				cmd: 'imei',
-				multi_data: 1, 
-			},
-			dataType: 'json',
-			cache: false,
-			success: (res) => {
-				if (res && res.imei && res.imei.length >= 6) {imeiInput.value = res.imei.slice(-6);zteCalcPassword();}}
-		});
-	}
-	FetchAndFillimei();
+	const fetchAndFillImei = async () => {
+		const data = await safeFetch('/goform/goform_get_cmd_process?isTest=false&cmd=imei&multi_data=1',{},'获取IMEI','json');
+    if (data && data.imei && data.imei.length >= 6) {
+        imeiInput.value = data.imei.slice(-6);
+        zteCalcPassword();
+    }
+	};
+	fetchAndFillImei();
 </script>
