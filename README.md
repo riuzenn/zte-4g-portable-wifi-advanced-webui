@@ -22,16 +22,16 @@ adb shell chmod 755 /etc/rc
 确认结果为-rwxr-xr-x开头，不要是-rw-rw-rw-开头  
 adb shell ls -l /etc/rc  
 ➤原理：  
-◉反编译/bin/goahead可知f30a pro是支持cgi-bin的，硬编码了路径为/etc_ro/cgi-bin，只识别`http://192.168.0.1/cgi-bin/upload/`的命令请求。  
+◉反编译/bin/goahead可知f30a pro是支持cgi-bin的，硬编码了路径为/etc_ro/cgi-bin，只识别来自`http://192.168.0.1/cgi-bin/upload/`的命令请求。  
 ◉浏览器post了一个请求后，goahead将body的内容复制到/var/cgi*（*表示随机的一串字符），并将这个文件的路径赋值给$UPLOAD_FILENAME。我们要做的就是从$UPLOAD_FILENAME读取命令然后执行（eval）。  
 ◉/var路径挂载到硬盘不是内存，所以/var/cgi*重启还在，好在goahead会自动删除。少数情况如执行reboot后，goahead来不及删除，需要我们在/etc/rc开机脚本里添加rm -f /var/cgi*。  
 ➤已知bug:  
 ◉ls /var会比正常结果多一个cgi*，这是正常的，因为咱们靠cgi*文件工作，该文件在命令执行后就会删除。  
-◉千万不要cat /var/cgi*，某个cgi*会发疯似的扩容到占满硬盘，具体原理不清楚。  
+◉千万不要`cat /var/cgi*`，某个cgi*会发疯似的扩容到占满硬盘，具体原理不清楚。  
 ➤备注：  
-◉受限于实现原理，每次fork出的shell进程执行过一次命令就会销毁，想一次执行多个命令建议用“;”分割,，比如说ls /;ls /etc  
+◉受限于实现原理，每次fork出的shell进程执行过一次命令就会销毁，想一次执行多个命令建议用“;”分割,，比如说`ls /;ls /etc`  
 ◉我在/etc/rc里加了开机关闭led灯的命令和往防火墙里添加规则，不需要可以删除  
-◉customfuncs.js封装了getAD()、evalcmd()等js函数。getAD()用于post某些goahead原生命令需要AD参数的情况；evalcmd()工作原理就是上面提到的，可以用于自定义链接，如<a href="javascript:void(0);" onclick="confirm('即将执行XX命令'); evalcmd('这里写shell命令如reboot');">我是重启</a>。  
+◉customfuncs.js封装了getAD();、evalcmd();等js函数。getAD();用于post某些goahead原生命令需要AD参数的情况；evalcmd();工作原理就是上面提到的，可以用于自定义链接，如<a href="javascript:void(0);" onclick="confirm('即将执行XX命令'); evalcmd('这里写shell命令如reboot');">我是重启</a>。  
 ◉index.html下面这一栏“开/关”是开/关adb，会重启；“退出”是退出登录；"重启"字面意思（值得一提的是goahead原生提供了REBOOT_DEVICE接口，但是需要处于登录状态，所以重启我调用的是evalcmd('reboot');。  
 ## 中兴随身wifi全功能后台的最后一块拼图--at工具
 我编译了一个可执行文件，可以调用这个工具在命令行执行at命令。工具参考了官方zte_mifi和atweb的反编译代码，在这里向包括mWIFI_icu在内的前辈表示感谢。冲着这个工具可以给我一个star吗😍。  
