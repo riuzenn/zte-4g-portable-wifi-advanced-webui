@@ -43,7 +43,7 @@ adb shell mount -o remount,rw /
 adb push at文件在你电脑上的路径  /sbin/at  
 adb shell chmod 755 /sbin/at  
 ➤原理：  
-官方封装了一套和at串口通信的方法：zte_mifi把守大门，goahead接受前端url，向底层提交申请然后排队执行。我写的这个c程序就是调用官方的get_modem_info()函数，发送at命令，接收返回值。和已有的atweb在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能没有编译后的c程序好。它就是个at端口信息的搬运工，和后台web的通信还是依赖默认的80端口，不需要后台。  
+官方封装了一套和at串口通信的方法：zte_mifi把守大门，goahead接受前端url，向底层提交申请然后排队执行。我写的这个c程序就是调用官方的get_modem_info()函数，发送at命令，接收返回值。和已有的atwed的区别在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能没有编译后的c程序好。它就是个at端口信息的搬运工，和后台web的通信还是依赖默认的80端口，不需要后台。  
 ➤为什么要重复造轮子？  
 用十六进制查看atweb就能发现它里面封装了收集包括imei、iccid等在内的信息然后和一串加密字符串拼接成url检测是否付费的函数，再加上atweb有很高权限，所以我才花时间把这个小东西写出来，并且附上源码[at.c](/at.c)，感兴趣可以自己编译。一切代码都是明文，我可以保证我提交的代码没有后台。不过值得注意的安全隐患是我没加校验，网络攻击者可以很轻易地执行shell命令，建议apn里不要启用ipv4v6。  
 ➤已知bug：  
@@ -56,13 +56,13 @@ adb shell chmod 755 /sbin/at
 用正则表达式`/^_(我是要匹配的内容)_$/m`能轻松匹配。  
 ➤基于at工具实现的功能:  
 ◉首先需要下载推送以下文件，如有定制化需求自行适配。  
-/f30a pro/etc_ro/cgi-bin/shell：通过post请求执行shell命令，一切的基础  
-/f30a pro/etc/rc：一定确保push完后它有执行权限！！！开机脚本，可选。没有它运行久了/var路径可能会有垃圾  
-/f30a pro/sbin/at：今天的主角，命令行执行at命令用  
-/f30a pro/etc_ro/web/index.html：后台主界面，我在上面加了很多蓝色功能键  
-/f30a pro/etc_ro/web/js/customfuncs.js：我写的大部分js函数都在里面  
-/f30a pro/etc_ro/web/tmpl/bandlock.html：插入主界面的锁频面板  
-/f30a pro/etc_ro/web/tmpl/status/device_info.html：设备信息页面添加当前频段和签约速率，我没有加定时刷新的代码，频段变化后要手动刷新页面  
+/etc_ro/cgi-bin/shell：通过post请求执行shell命令，一切的基础  
+/etc/rc：一定确保push完后它有执行权限！！！开机脚本，可选。没有它运行久了/var路径可能会有垃圾  
+/sbin/at：今天的主角，命令行执行at命令用  
+/etc_ro/web/index.html：后台主界面，我在上面加了很多蓝色功能键  
+/etc_ro/web/js/customfuncs.js：我写的大部分js函数都在里面  
+/etc_ro/web/tmpl/bandlock.html：插入主界面的锁频面板  
+/etc_ro/web/tmpl/status/device_info.html：设备信息页面添加当前频段和签约速率，我没有加定时刷新的代码，频段变化后要手动刷新页面  
 ◉锁频面板：at+zlteband=逗号分割的9组数字实现  
 <div align="center"><img src="./images/锁频关.jpg"></div>  
 <div align="center"><img src="./images/锁频开.jpg"></div>  
@@ -99,7 +99,7 @@ echo 0 > /sys/class/leds/modem_w_led/brightness
 ) &  
 ◉修改nv默认设置  
 [default_parameter_sys](/etc_ro/default/default_parameter_sys)文件中  
-cdrom_state=0和usb_devices_debug=diag,adb,serial（删掉mass_storage），adb开启状态不会加载CDROM设备（设备管理器和我的电脑不会显示cd设备）
+cdrom_state=0和usb_devices_debug=diag,adb,serial（删掉mass_storage），adb开启状态不会加载CDROM设备（设备管理器和我的电脑不会显示cd设备）  
 [default_parameter_user](/etc_ro/default/default_parameter_user)文件中  
 need_support_sms=yes，f30a pro开启短信功能  
 admin_Password=，设置默认密码，sha256加密  
