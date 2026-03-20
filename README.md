@@ -47,9 +47,9 @@ adb shell ls -l /etc/rc
 ➤Target options  
 ◉Target Architecture: ARM (little endian)  
 ◉Target Architecture Variant: cortex-A35  
-◉Target ABI: EABI  (没有hf后缀，只使用硬件浮点的可执行文件会导致设备重启)  
+◉Target ABI: EABI (没有hf后缀，只使用硬件浮点的可执行文件会导致设备重启)  
 ◉Floating point strategy: Soft float  
-d7ARM instruction set: ARM  
+◉ARM instruction set: ARM  
 ➤Toolchain  
 ◉C library: uClibc-ng  
 ◉Kernel Headers→Manually specified Linux version→linux version：3.4.110 (内核版本是3.4.110-rt140)  
