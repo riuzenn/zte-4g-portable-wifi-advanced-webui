@@ -2,9 +2,6 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
-int g_customer_type = 1;
-int g_ap_lock = 0;
-int get_mac_config_ssid_key_nv(void) {return 0;}
 extern int get_modem_info(const char *at, const char *fmt, ...);
 int main(int argc, char *argv[]) {
     if (argc < 2) {
