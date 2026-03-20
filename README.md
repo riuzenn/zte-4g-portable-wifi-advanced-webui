@@ -55,7 +55,8 @@ adb shell ls -l /etc/rc
 ◉Kernel Headers→Manually specified Linux version→linux version：3.4.110 (内核版本是3.4.110-rt140)  
 ◉Kernel Headers→Manually specified Linux version→Custom kernel headers series： 3.4.x  
 ◉Kernel Headers→Custom tarball→URL of custom kernel tarball：https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-3.4.110.tar.xz  
-编译：make -j$(nproc) toolchain  
+编译Buildroot交叉编译器：make -j$(nproc) toolchain  
+编译at：写好Makefile里的绝对路径后输入make。也可以export PATH=$PATH:编译器路径/bin，然后就写一个编译器名字。  
 编译失败清除中间文件：make clean  
 ### ➤安装:  
 [at](/sbin/at)  
