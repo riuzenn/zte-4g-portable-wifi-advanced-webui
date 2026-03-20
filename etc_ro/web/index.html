@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta charset="utf-8"/>
     <title></title>
-    <link type="text/css" href="theme/common.css" rel="stylesheet" />
-    <link type="text/css" href="theme/chosen.css" rel="stylesheet" />
-    <link href="favicon.ico" rel="shortcut icon" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link type="text/css" href="theme/common.css" rel="stylesheet"/>
+    <link type="text/css" href="theme/chosen.css" rel="stylesheet"/>
+    <link href="favicon.ico" rel="shortcut icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="./js/customfuncs.js" defer></script>
-    <!--[if lt IE 9]><link type="text/css" href="theme/IE678css.css" rel="stylesheet" /><![endif]-->
+    <!--[if lt IE 9]><link type="text/css" href="theme/IE678css.css" rel="stylesheet"/><![endif]-->
     <!--[if lt IE 9]><script type="text/javascript" src="js/lib/html5shiv.js"></script><![endif]-->
 </head>
 <body>
@@ -20,13 +20,13 @@
         <div id='topStatus' class="row-fluid">
             <div id='lang'>
                 <div id="langLogoBar" class="row-fluid langborder">
-                    <div class="span4"><a href="#home"><img src="img/logo_zte.png" class="paddingleft10" /></a>
+                    <div class="span4"><a href="#home"><img src="img/logo_zte.png" class="paddingleft10"/></a>
                         <!--span class="verticalalign" id="webui_title"></span-->
                     </div>
                     <div id="statusBar" class="span8 side-right margintop8" style="display: none;">
                         <span class="statusItem" title="network_type" i18n="true" id="networkType" data-bind="text: networkType"></span>
                         <span class="statusItem" title="network_provider" i18n="true" id="operator" data-bind="text: networkOperator"></span>
-                        <span class="statusItem" title="ota_title" i18n="true" id="OTA" data-bind="visible:OTAStatus"><a onclick="return showOTAAlert();"><img class="paddingbottom6" src="./img/update.gif" /></a></span>
+                        <span class="statusItem" title="ota_title" i18n="true" id="OTA" data-bind="visible:OTAStatus"><a onclick="return showOTAAlert();"><img class="paddingbottom6" src="./img/update.gif"/></a></span>
                         <span class="statusItem" title="signal_strength" i18n="true" id="signal_strength">
                             <i class="signal" data-bind="attr:{'class': signalCssClass}">&nbsp;</i></span>
                         <span class="statusItem" title="connection_status" i18n="true" id="connection_status">
@@ -34,18 +34,18 @@
                         </span>
                         <span class="statusItem" title="sms_unread_count" i18n="true" id="sms_unread_count" data-bind="visible: smsUnreadCount() > 0 || showSmsDeleteConfirm()" style="display: none;">
                             <a onclick="return gotoSmsList();" href="javascript: void(0)">
-                                <img data-bind="visible: smsUnreadCount() > 0 && !showSmsDeleteConfirm()" class="paddingbottom6" src="./img/sms_unread.png" />
-                                <img data-bind="visible: showSmsDeleteConfirm()" class="paddingbottom6" src="./img/sms_full.gif" />
+                                <img data-bind="visible: smsUnreadCount() > 0 && !showSmsDeleteConfirm()" class="paddingbottom6" src="./img/sms_unread.png"/>
+                                <img data-bind="visible: showSmsDeleteConfirm()" class="paddingbottom6" src="./img/sms_full.gif"/>
                                 <span data-bind="visible: smsUnreadCount() > 0, text: smsUnreadCount" class="smsUnreadCount"></span>
                             </a>
                         </span>
-                        <span class="statusItem" title="sim_status" i18n="true" id="statusItemSimStatus"><img data-bind="attr: {src: simStatus}" class="paddingbottom6" />
+                        <span class="statusItem" title="sim_status" i18n="true" id="statusItemSimStatus"><img data-bind="attr: {src: simStatus}" class="paddingbottom6"/>
                         </span>
                         <span class="statusItem" title="roaming_status" i18n="true" id="roamingStatus" data-bind="visible: roamingStatus() == 'R'" style="display: none;">
-                            <img class="paddingbottom6" src="./img/roaming.png" />
+                            <img class="paddingbottom6" src="./img/roaming.png"/>
                         </span>
                         <span class="statusItem" title="wifi_status" i18n="true" id="wifi_status" data-bind="visible: hasWifi">
-                            <img class="paddingbottom6" id="wifi_status_img" data-bind="attr: {src: wifiStatusImg}" />
+                            <img class="paddingbottom6" id="wifi_status_img" data-bind="attr: {src: wifiStatusImg}"/>
                         </span>
                         <!-- <span class="statusItem" title="battery_level" i18n="true" data-bind="visible: hasBattery"><img  class="paddingbottom6" id="batteryCharging" data-bind="attr: {src: batteryPers}"/></span> -->
                     </div>
@@ -56,7 +56,7 @@
                             <span class="colorBlock default" data-bind="css: {active: currentTheme() == 'style'}, click: function(data, event) { themeClickHandler(data, event, 'style') }">&nbsp;</span>
                             <!-- span class="colorBlock blue" data-bind="css: {active: currentTheme() == 'blue'}, click: function(data, event) { themeClickHandler(data, event, 'blue') }">&nbsp;</span-->
                             <span class="colorBlock mac" data-bind="css: {active: currentTheme() == 'mac'}, click: function(data, event) { themeClickHandler(data, event, 'mac') }">&nbsp;</span>
-                            <link data-bind="attr: {href: themeHref}" rel="stylesheet" id="customTheme" type="text/css" />
+                            <link data-bind="attr: {href: themeHref}" rel="stylesheet" id="customTheme" type="text/css"/>
                         </span>
                         <select id="language" class="marginright10" data-bind="visible:showLanguage,options: languages, value: currentLan, optionsText: 'text', optionsValue: 'value', event:{ change: langChangeHandler}"></select>
                         <span id="logout">
@@ -120,13 +120,13 @@
         </div>
     </div>
     <div id='loading'>
-        <div class='header'><span id="loadMsg"></span></div><br />
-        <div style='text-align: center'><img id="loadingImg" />
+        <div class='header'><span id="loadMsg"></span></div><br/>
+        <div style='text-align: center'><img id="loadingImg"/>
             <div id="loading_container"></div>
         </div>
     </div>
     <div id='progress'>
-        <div class='header'><span id="barMsg"></span></div><br />
+        <div class='header'><span id="barMsg"></span></div><br/>
         <div class="progress-content">
             <div class="progress-bar-container">
                 <div id="bar" class="progress-bar"></div>
@@ -138,24 +138,24 @@
     <div id='confirm'>
         <div class='header'><span id="popTitle"></span></div>
         <div id="confirm-message-container">
-            <div class='icon'><img id='confirmImg' /></div>
+            <div class='icon'><img id='confirmImg'/></div>
             <div class="confirm-message">
                 <div class='message'></div>
-                <div class='promptDiv hide'><input name="promptInput" id="promptInput" type="text" maxlength="25" class="width190" /><br /><label class="promptErrorLabel colorRed"></label></div>
+                <div class='promptDiv hide'><input name="promptInput" id="promptInput" type="text" maxlength="25" class="width190"/><br/><label class="promptErrorLabel colorRed"></label></div>
             </div>
         </div>
-        <div class='buttons'><input type="button" class="btn-1 simplemodal-close" id='okbtn' trans='ok' /><input type="button" class="btn-1 " id='yesbtn' trans='yes' /><input type="button" class="btn-1 simplemodal-close" id='nobtn' trans='no' /></div>
+        <div class='buttons'><input type="button" class="btn-1 simplemodal-close" id='okbtn' trans='ok'/><input type="button" class="btn-1 " id='yesbtn' trans='yes'/><input type="button" class="btn-1 simplemodal-close" id='nobtn' trans='no'/></div>
     </div><!-- confirm content for sbm -->
     <div id='confirm_sbm'>
         <div class='header'><span id="popTitle_sbm"></span></div>
         <div id="confirm-message-container_sbm">
-            <div class='icon'><img id='confirmImg_sbm' /></div>
+            <div class='icon'><img id='confirmImg_sbm'/></div>
             <div class="confirm-message">
                 <div class='message'></div>
-                <div class='promptDiv hide'><input name="promptInput" id="promptInput_sbm" type="text" maxlength="25" class="width190" /><br /><label class="promptErrorLabel colorRed"></label></div>
+                <div class='promptDiv hide'><input name="promptInput" id="promptInput_sbm" type="text" maxlength="25" class="width190"/><br/><label class="promptErrorLabel colorRed"></label></div>
             </div>
         </div>
-        <div class='buttons'><input type="button" class="btn-1 " id='okbtn_sbm' trans='ok' /><input type="button" class="btn-1 " id='yesbtn_sbm' trans='yes' /><input type="button" class="btn-1 " id='nobtn_sbm' trans='no' /></div>
+        <div class='buttons'><input type="button" class="btn-1 " id='okbtn_sbm' trans='ok'/><input type="button" class="btn-1 " id='yesbtn_sbm' trans='yes'/><input type="button" class="btn-1 " id='nobtn_sbm' trans='no'/></div>
     </div>
     <div id='popupSettingWindow'>
         <div class='header'>
