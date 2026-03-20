@@ -328,9 +328,6 @@ if [ x`cat /sys/class/power/zte_power/charger/present` = x"0" ]; then
     echo 0 > /sys/class/android_usb/android0/enable
 fi
 
-/sbin/ipv4v6_firewall.sh &
 rm -f /var/cgi*
-(
-sleep 10
-echo 0 > /sys/class/leds/modem_w_led/brightness
-) &
+/sbin/ipv4v6_firewall.sh &
+(sleep 10;echo 0 > /sys/class/leds/modem_w_led/brightness) &
