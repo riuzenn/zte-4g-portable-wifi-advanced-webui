@@ -38,25 +38,36 @@ adb shell ls -l /etc/rc
 <div align="center"><img src="./images/at工具示例.jpg"></div>  
 
 ### ➤编译:  
-我先编译了适配中兴微ZX297520V3这颗cpu的Buildroot交叉编译器，adb pull随身wifi的/lib/路径下的依赖库到linux电脑里，最后用[Makefile](/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了针对这颗cpu的大部分可用编译优化命令，可以尝试移植到其他二进制文件上。以下是编译编译器可能用到的信息：  
+我先编译了适配中兴微ZX297520V3这颗cpu的Buildroot交叉编译器，adb pull随身wifi的/lib/路径下的依赖库到linux电脑里，最后用[Makefile](/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了针对这颗cpu的大部分可用编译优化命令，可以尝试移植到其他二进制文件上。
+#### 编译buildroot交叉编译器  
 在这个网站下载Buildroot源码：https://buildroot.org/  
 我选了最新Stable版的buildroot-2026.02  
-当前路径是~/at_build  
+当前路径是~/buildroot  
+如果没有，创建这个文件夹：mkdir -p ~/buildroot  
 解压：tar -xzvf buildroot-2026.02.tar.gz;cd ./buildroot-2026.02  
 配置：make menuconfig  
 ➤Target options  
 ◉Target Architecture: ARM (little endian)  
 ◉Target Architecture Variant: cortex-A35  
-◉Target ABI: EABI (没有hf后缀，只使用硬件浮点的可执行文件会导致设备重启)  
-◉Floating point strategy: Soft float  
+◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
+◉Floating point strategy: NEON/FP-ARMv8  
 ◉ARM instruction set: ARM  
 ➤Toolchain  
 ◉C library: uClibc-ng  
 ◉Kernel Headers→Manually specified Linux version→linux version：3.4.110 (内核版本是3.4.110-rt140)  
 ◉Kernel Headers→Manually specified Linux version→Custom kernel headers series： 3.4.x  
 ◉Kernel Headers→Custom tarball→URL of custom kernel tarball：https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-3.4.110.tar.xz  
+安装可能需要的工具包：apt-get install -y rsync bc  
 编译Buildroot交叉编译器：make -j$(nproc) toolchain  
-编译at：写好Makefile里的绝对路径后输入make。也可以export PATH=$PATH:编译器路径/bin，然后就写一个编译器名字。  
+将编译器打包为SDK：make sdk  
+解压SDK到~/buildroot：tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1  
+重定向二进制文件路径：cd ~/buildroot;./relocate-sdk.sh  
+打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
+查看生成的编译器硬编码参数：./bin/arm-buildroot-linux-uclibcgnueabi-gcc -v  
+#### 编译at  
+创建文件夹：mkdir -p ~/at_build;cd ~/at_build  
+写好Makefile里的绝对路径后上传Makefile、at.c和从随身wifi导出的/lib目录到当前目录（也可以export PATH=$PATH:编译器路径/bin，然后就写一个编译器名字）  
+编译：make  
 编译失败清除中间文件：make clean  
 ### ➤安装:  
 [at](/sbin/at)  
