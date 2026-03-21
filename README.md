@@ -51,8 +51,8 @@ adb shell ls -l /etc/rc
 ◉Target Architecture: ARM (little endian)  
 ◉Target Architecture Variant: cortex-A35  
 ◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
-◉Floating point strategy: NEON/FP-ARMv8  
-◉ARM instruction set: ARM  
+◉Floating point strategy: NEON/FP-ARMv8 (编译文件时可以添加-mfloat-abi=softfp -mfpu=neon-fp-armv8)  
+◉ARM instruction set: ARM (编译文件时可以添加-mthumb)  
 ➤Toolchain  
 ◉C library: uClibc-ng  
 ◉Kernel Headers→Manually specified Linux version→linux version：3.4.110 (内核版本是3.4.110-rt140)  
@@ -66,6 +66,7 @@ cd /buildroot/buildroot-2026.02
 tmux attach
 ```
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
+编译时间近一小时，请耐心等待  
 打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
 将编译器打包为SDK：`make sdk`  
 解压SDK到~/buildroot：`tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1`  
