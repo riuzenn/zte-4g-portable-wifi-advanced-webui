@@ -52,7 +52,7 @@ adb shell ls -l /etc/rc
 
 ➤Target options  
 ◉Target Architecture: ARM (little endian)  
-◉Target Architecture Variant: cortex-A35  
+◉Target Architecture Variant: cortex-A53  
 ◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
 ◉Floating point strategy: NEON/FP-ARMv8 (编译文件时可以添加-mfloat-abi=softfp -mfpu=neon-fp-armv8)  
 ◉ARM instruction set: ARM (编译文件时可以添加-mthumb)  
