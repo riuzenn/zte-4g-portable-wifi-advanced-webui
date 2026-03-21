@@ -47,6 +47,9 @@ adb shell ls -l /etc/rc
 获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2026.02.tar.gz`  
 解压：`tar -xzvf buildroot-2026.02.tar.gz;cd ./buildroot-2026.02`  
 配置：`make menuconfig`  
+界面如下，纯键盘操作  
+<div align="center"><img src="./images/buildroot配置页面.jpg"></div>  
+
 ➤Target options  
 ◉Target Architecture: ARM (little endian)  
 ◉Target Architecture Variant: cortex-A35  
