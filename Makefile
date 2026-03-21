@@ -10,7 +10,7 @@ STRIP   = $(COMPILER)/bin/arm-buildroot-linux-uclibcgnueabi-strip
 
 # === 3. 编译参数 (CFLAGS) ===
 CFLAGS  = -Wextra \
-          -O3 -mcpu=cortex-a35 -mtune=cortex-a35 \
+          -O3 -mcpu=cortex-a53 -mtune=cortex-a53 \
           -mfloat-abi=softfp -mfpu=neon-fp-armv8 -mthumb \
           -fno-unwind-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer \
           -finline-functions -funroll-loops -ftree-vectorize \
