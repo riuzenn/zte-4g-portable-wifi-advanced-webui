@@ -54,7 +54,7 @@ adb shell ls -l /etc/rc
 ◉Target Architecture: ARM (little endian)  
 ◉Target Architecture Variant: cortex-A53  
 ◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
-◉Floating point strategy: Soft float (编译文件时可以添加-mfloat-abi=soft，这颗处理器完全不支持硬件浮点)  
+◉Floating point strategy: Soft float (编译文件时可以添加-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
 ◉ARM instruction set: ARM (编译文件时可以添加-mthumb缩小一点体积)  
 ➤Toolchain  
 ◉C library: uClibc-ng  
