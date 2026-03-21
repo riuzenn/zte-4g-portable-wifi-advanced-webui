@@ -1,12 +1,12 @@
 # === 1. 路径定义 ===
-BUILD_ROOT = $(HOME)/at_build
-SDK_BIN    = $(BUILD_ROOT)/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot/bin
-SYSROOT    = $(BUILD_ROOT)/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot
-LIB_DIR    = $(BUILD_ROOT)/lib
+BUILD_ROOT = $(shell echo $$HOME)/at_build
+COMPILER   = $(shell echo $$HOME)/buildroot
+SYSROOT    = $(COMPILER)/arm-buildroot-linux-uclibcgnueabi/sysroot
+ZTE_LIB    = $(BUILD_ROOT)/lib
 
 # === 2. 工具链定义 ===
-CC      = $(SDK_BIN)/arm-buildroot-linux-uclibcgnueabi-gcc
-STRIP   = $(SDK_BIN)/arm-buildroot-linux-uclibcgnueabi-strip
+CC      = $(COMPILER)/bin/arm-buildroot-linux-uclibcgnueabi-gcc
+STRIP   = $(COMPILER)/bin/arm-buildroot-linux-uclibcgnueabi-strip
 
 # === 3. 编译参数 (CFLAGS) ===
 CFLAGS  = -Wextra \
@@ -19,9 +19,9 @@ CFLAGS  = -Wextra \
           --sysroot=$(SYSROOT)
 
 # === 4. 链接参数 (LDFLAGS & LIBS) ===
-LDFLAGS = -L$(LIB_DIR) \
+LDFLAGS = -L$(ZTE_LIB) \
           -Wl,-O1 -Wl,--gc-sections \
-          -Wl,-rpath-link=$(LIB_DIR) \
+          -Wl,-rpath-link=$(ZTE_LIB) \
           -Wl,--allow-shlib-undefined \
           -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 \
           -Wl,-z,max-page-size=4096 \
