@@ -10,21 +10,21 @@ STRIP   = $(COMPILER)/bin/arm-buildroot-linux-uclibcgnueabi-strip
 
 # === 3. 编译参数 (CFLAGS) ===
 CFLAGS  = -Wextra \
-          -O3 -mcpu=cortex-a53 -mtune=cortex-a53 \
-          -mfloat-abi=softfp -mfpu=neon-fp-armv8 -mthumb \
+          -O2 -mcpu=cortex-a53 -mtune=cortex-a53 \
+          -mfloat-abi=soft -mthumb \
           -fno-unwind-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer \
-          -finline-functions -funroll-loops -ftree-vectorize \
           -falign-functions=16 -falign-loops=16 -falign-jumps=16 \
           -ffunction-sections -fdata-sections -fvisibility=hidden \
           --sysroot=$(SYSROOT)
 
 # === 4. 链接参数 (LDFLAGS & LIBS) ===
 LDFLAGS = -L$(ZTE_LIB) \
-          -Wl,-O1 -Wl,--gc-sections \
+          -Wl,-O2 \
+          -Wl,--gc-sections \
           -Wl,-rpath-link=$(ZTE_LIB) \
           -Wl,--allow-shlib-undefined \
           -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 \
-          -Wl,-z,max-page-size=4096 \
+          -Wl,-z,max-page-size=4096
 
 LIBS    = -Wl,--start-group \
           -latutils -lsoftap -lsoft_timer -lnvram -lpthread -lc -lgcc_s \
