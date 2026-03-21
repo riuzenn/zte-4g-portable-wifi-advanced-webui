@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         printf("_%s_\n", res_ptr);
         return 0;
     } else {
-        printf("%d\n_ERROR_\n", ret);
+        printf("_%d_\n_ERROR_\n", ret);
         return 1;
     }
 }
