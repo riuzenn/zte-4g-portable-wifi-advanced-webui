@@ -157,3 +157,14 @@ HideSSID=1，默认隐藏wifi名
 中兴工程师取文件名时写错英语单词了，正确文件名应该拼写为unlock_sim.html。如果要为其他IMEI计算切卡密码也可以手动输入然后点计算。  
 <div align="center"><img src="./images/自动计算切卡密码.jpg"></div>  
 
+◉测试内核是否支持硬件浮点  
+下载[fpu_test.c](./fpu_test.c)  
+```
+$HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
+  -Wextra -O2 -mcpu=cortex-a53 -mtune=cortex-a53 \
+  -mfloat-abi=softfp -mfpu=neon-fp-armv8 -mthumb \
+  --sysroot=$HOME/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot \
+  -Wl,-O2 \
+  fpu_test.c -o fpu_test
+```
+发现一运行fpu_test随身wifi就重启，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点。
