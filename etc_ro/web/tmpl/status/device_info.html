@@ -162,7 +162,7 @@
         const match = res.match(/^_(\d+),(\d+)_$/m);
         if (!match) {bandid.textContent = "无有效驻留频段";return;}        
         if (match[1] === "3") {bandid.textContent = `B${match[2]}`;}
-        else {bandid.textContent = match[1] + "," + match[2];}
+        else {bandid.textContent = `${match[1]},${match[2]}`;}
     };       
     const QoS = async () => {
         const res = await evalcmd('at "AT+CGEQOSRDP=1"');
