@@ -167,4 +167,7 @@ $HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
   -Wl,-O2 \
   fpu_test.c -o fpu_test
 ```
-发现一运行fpu_test随身wifi就重启，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点。
+发现一运行fpu_test随身wifi就重启，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点。  
+◉修改连接到随身wifi设备的默认dns  
+(adb shell)nv set dhcpDns="223.5.5.5 223.6.6.6"  
+(adb shell)nv set DNS_proxy=disable  
