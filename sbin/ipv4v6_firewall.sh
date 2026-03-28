@@ -1,5 +1,4 @@
 #!/bin/sh
-sleep 15
 #ipv4
 # 1. 部署 INPUT 链规则 (设备本体防护)
 iptables -I INPUT 1 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
