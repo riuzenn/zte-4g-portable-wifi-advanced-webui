@@ -174,6 +174,6 @@ $HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
 nv save  
 ◉修改linux系统dns为阿里dns  
 下载[resolv.conf](/etc_ro/resolv.conf)推送到相应位置  
-在rc里添加
+在rc里添加  
 mount --bind /etc_ro/resolv.conf /etc/resolv.conf  
 killall dnsmasq  
