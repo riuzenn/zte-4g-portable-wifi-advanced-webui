@@ -328,8 +328,15 @@ if [ x`cat /sys/class/power/zte_power/charger/present` = x"0" ]; then
     echo 0 > /sys/class/android_usb/android0/enable
 fi
 
+mount --bind /etc_ro/resolv.conf /etc/resolv.conf
+echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6
+echo 1 > /proc/sys/net/ipv6/conf/lo/disable_ipv6
+echo 30 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_time_wait
+echo 20 > /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_close_wait
+echo 15 > /proc/sys/net/netfilter/nf_conntrack_udp_timeout
 rm -f /var/cgi*
-
 sleep 15
 /sbin/ipv4v6_firewall.sh
 echo 0 > /sys/class/leds/modem_w_led/brightness
+killall dnsmasq
