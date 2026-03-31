@@ -60,7 +60,7 @@ adb shell ls -l /etc/rc
 ◉C library: uClibc-ng  
 ◉Kernel Headers→Manually specified Linux version→linux version：3.4.110 (内核版本是3.4.110-rt140)  
 ◉Kernel Headers→Manually specified Linux version→Custom kernel headers series： 3.4.x  
-◉Kernel Headers→Custom tarball→URL of custom kernel tarball：https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-3.4.110.tar.xz  
+~~◉Kernel Headers→Custom tarball→URL of custom kernel tarball：https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-3.4.110.tar.xz~~  
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
 普通用户不用管以下5行代码  
