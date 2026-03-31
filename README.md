@@ -136,7 +136,7 @@ AT+MAC=
 f30a pro的这个数据库文件默认为IP，我把数据库里国内运营商的APN都设为IPv4v6，想用IPv4使用手动APN。  
 <div align="center"><img src="./images/apn.jpg"></div>  
 
-◉开机后关闭白色led灯
+◉开机后关闭白色led灯（推送完rc记得chmod 755，不然重启后会砖）
 在[rc](/etc/rc) 里添加如下代码，sleep后面的数值是暂停的秒数  
 (sleep 10;echo 0 > /sys/class/leds/modem_w_led/brightness) &  
 ◉更严格的防火墙规则  
