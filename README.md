@@ -180,5 +180,5 @@ killall dnsmasq
 ◉内核优化参数  
 下载[sysctl.conf](/etc/sysctl.conf)  ，推送到/etc/sysctl.conf  
 rc中添加  
-sysctl -qp /etc/sysctl.conf
+sysctl -qp /etc/sysctl.conf  
 主要是内核级地禁用了ipv6，并激进地杀掉结束的或长时间不响应的链接来减少内存占用。  
