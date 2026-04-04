@@ -25,7 +25,7 @@ adb shell ls -l /etc/rc
 ◉反编译/bin/goahead可知f30a pro是支持cgi-bin的，硬编码了路径为/etc_ro/cgi-bin，只识别来自`http://192.168.0.1/cgi-bin/upload/`的命令请求。  
 ◉浏览器post了一个请求后，goahead将body的内容复制到/var/cgi*（*表示随机的一串字符），并将这个文件的路径赋值给$UPLOAD_FILENAME。我们要做的就是从$UPLOAD_FILENAME读取命令然后执行（eval）。  
 ◉/var路径挂载到硬盘不是内存，所以/var/cgi*重启还在，好在goahead会自动删除。少数情况如执行reboot后，goahead来不及删除，需要我们在/etc/rc开机脚本里添加rm -f /var/cgi*。  
-◉如图修改goahead的十六进制值将/var改为/tmp（tmp挂载到内存），就没有cgi*文件残留的问题，重启内存就会清空，/etc/rc里也不用加代码。我已经改好，下载推送设置权限即可[goahead](/bin/goahead)。  
+◉如图修改/bin/goahead的十六进制值将/var改为/tmp（tmp挂载到内存），就没有cgi*文件残留的问题，重启内存就会清空，/etc/rc里也不用加代码。我已经改好，下载推送设置权限即可[goahead](/bin/goahead)。  
 <div align="center"><img src="./images/路径var改为tmp.jpg"></div>
 
 ### ➤已知bug:  
