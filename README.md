@@ -34,7 +34,7 @@ adb shell ls -l /etc/rc
 ◉如果替换了我修改的goahead，千万不要`cat /tmp/cgi*`，内存应该会撑爆。  
 ### ➤备注：  
 ◉受限于实现原理，每次fork出的shell进程执行过一次命令就会销毁，想一次执行多个命令建议用“;”分割,，比如说`ls /;ls /etc`  
-◉我在/etc/rc里加了开机关闭led灯的命令和往防火墙里添加规则，不需要可以删除  
+◉我在/etc/rc里加了开机关闭led灯的命令、往防火墙里添加规则、修改dns和修改内核参数实现减少内存占用的代码，不需要可以删除  
 ◉customfuncs.js封装了getAD();、evalcmd();等js函数。getAD();用于post某些goahead原生命令需要AD参数的情况；evalcmd();工作原理就是上面提到的，可以用于自定义链接，如<a href="javascript:void(0);" onclick="confirm('即将执行XX命令'); evalcmd('这里写shell命令如reboot');">我是重启</a>。  
 ◉index.html下面这一栏“开/关”是开/关adb，会重启；“退出”是退出登录；"重启"字面意思（值得一提的是goahead原生提供了REBOOT_DEVICE接口，但是需要处于登录状态，所以重启我调用的是evalcmd('reboot');。  
 ## 中兴随身wifi全功能后台的最后一块拼图--at工具
