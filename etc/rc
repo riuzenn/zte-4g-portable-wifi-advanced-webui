@@ -329,7 +329,6 @@ if [ x`cat /sys/class/power/zte_power/charger/present` = x"0" ]; then
 fi
 
 sysctl -qp /etc/sysctl.conf
-rm -f /var/cgi*
 sleep 15
 /sbin/ipv4v6_firewall.sh
 echo 0 > /sys/class/leds/modem_w_led/brightness
