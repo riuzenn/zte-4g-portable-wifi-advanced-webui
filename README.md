@@ -106,7 +106,7 @@ adb shell chmod 755 /sbin/at
 ### ➤基于at工具实现的功能:  
 ◉首先需要下载推送以下文件，如有定制化需求自行适配。  
 /etc_ro/cgi-bin/shell：通过post请求执行shell命令，一切的基础  
-/etc/rc：一定确保push完后它有执行权限，不然设备开机不能初始化会变砖！！！开机脚本，可选。没有它运行久了/var路径可能会有垃圾（替换了goahead就没有这个问题）
+/etc/rc：一定确保push完后它有执行权限，不然设备开机不能初始化会变砖！！！开机脚本，可选。没有它运行久了/var路径可能会有垃圾（替换了goahead就没有这个问题）  
 /bin/goahead：可选，解决了原来路径/var/cgi*文件残留的问题  
 /sbin/at：今天的主角，命令行执行at命令用  
 /etc_ro/web/index.html：后台主界面，我在上面加了很多蓝色功能键  
