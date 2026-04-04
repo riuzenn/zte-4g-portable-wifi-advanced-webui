@@ -8,8 +8,8 @@ if [ -f "$UPLOAD_FILENAME" ]; then
         echo "$CMD"
         eval "$CMD" 2>&1
     else
-        echo "/var/cgi*为空"
+        echo "/tmp/cgi*为空"
     fi
 else
-    echo "未找到/var/cgi*"
+    echo "未找到/tmp/cgi*"
 fi
