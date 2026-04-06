@@ -117,7 +117,7 @@ adb shell chmod 755 /sbin/at
 <div align="center"><img src="./images/锁频关.jpg"></div>  
 <div align="center"><img src="./images/锁频开.jpg"></div>  
 
-◉设备信息页面添加当前频段和签约速率：AT+CGEQOSRDP=1实现  
+◉设备信息页面添加当前频段和签约速率：AT+ZBAND?和AT+CGEQOSRDP=1实现  
 <div align="center"><img src="./images/信息页面.jpg"></div>  
 
 改串和锁小区等功能我用不到所以没在网页上加按钮。既然有了at工具可以自己在左下角的输入框执行AT命令，加at 前缀即可。  
