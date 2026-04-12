@@ -189,3 +189,6 @@ sysctl -qp /etc/sysctl.conf
 主要是内核级地禁用了ipv6，并激进地杀掉结束的或长时间不响应的链接来减少内存占用。  
 ◉修改后台web图标为蓝字ZTE、透明底的网页标签图标  
 下载[favicon.ico](/etc_ro/web/favicon.ico)，推送到/etc_ro/web/favicon.ico  
+<div align="center"><img src="./images/蓝字ZTE透明底的网页标签图标.png"></div>  
+
+
