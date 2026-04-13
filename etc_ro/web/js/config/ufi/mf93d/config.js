@@ -1,0 +1,1 @@
+define(function(){var a={IPV6_SUPPORT:true,WIFI_BAND_SUPPORT:true,WIFI_BANDWIDTH_SUPPORT:true,AP_STATION_SUPPORT:false,WEBUI_TITLE:"Riuzenn's Portable Wifi",AUTO_MODES:[{name:"Automatic",value:"WCDMA_AND_LTE"},{name:"4G Only",value:"Only_LTE"},{name:"3G Only",value:"Only_WCDMA"}],CHANGE_SIM:[{name:"China Telecom",value:"0300"},{name:"China Mobile",value:"0200"}]};return a});
