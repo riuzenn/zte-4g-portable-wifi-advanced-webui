@@ -1,4 +1,4 @@
-window.safeFetch = async (url, options, actionName, type = 'text') => {
+window.safeFetch = async (url, options, actionName, type = 'json') => {
     const res = await fetch(url, options).catch(() => null);
     if (!res || !res.ok) {showinbox(res?.status ? `${actionName}失败 (状态码: ${res.status})` : '设备连接已断开。');return null;}
     try {return type === 'json' ? await res.json() : await res.text();} catch (e) {
@@ -6,7 +6,7 @@ window.safeFetch = async (url, options, actionName, type = 'text') => {
 };
 // AD = Hash(Hash(rd0 + rd1) + RD), 逻辑参考自service.js，生成goform接口校验参数AD
 window.getAD = async () => {
-    const data = await safeFetch('/goform/goform_get_cmd_process?cmd=RD', {}, '获取校验凭证', 'json');
+    const data = await safeFetch('/goform/goform_get_cmd_process?cmd=RD', {}, '获取校验凭证');
     if (!data?.RD) {showinbox("凭证解析异常：RD缺失，请登录");return null;}
     const dB = paswordAlgorithmsCookie(rd0 + rd1);
     return paswordAlgorithmsCookie(dB + data.RD);
@@ -36,8 +36,8 @@ window.evalcmd = async (cmd) => {
         method: 'POST',
         body: finalCmd,
         headers: {'Content-Type': 'text/plain'}
-    }, '指令执行', 'text');
-    if (text !== null) if (!cmd) {showinbox(text)};return text;
+    }, '执行Shell命令', 'text');
+    if (text !== null && !cmd) showinbox(text);return text;
 };
 const resultBox = document.getElementById('resultBox');
 window.showinbox = (res) => {resultBox.textContent = res;};
@@ -63,7 +63,7 @@ window.showband = async () => {
         button.textContent = isHidden ? '收起面板' : '频段选择';
         if (isHidden) refreshband();return; 
     }
-    const html = await safeFetch('./tmpl/bandlock.html', {}, '频段面板模板', 'text');
+    const html = await safeFetch('./tmpl/bandlock.html', {}, '获取频段面板', 'text');
     if (!html) {container.innerHTML = '<span style="color:red;">请检查 ./tmpl/bandlock.html 或网络状态。</span>';return;}
     container.innerHTML = html;
     checkboxes = container.querySelectorAll('input');
@@ -101,13 +101,13 @@ window.ADB = async (option) => {
     const res = await safeFetch('/goform/goform_set_cmd_process', {
         method: 'POST',
         body: new URLSearchParams({ goformId: 'SET_DEVICE_MODE', debug_enable: option })
-    }, '开关ADB', 'json');
-    if (res) showinbox(`操作成功！已发送${act}指令，设备即将重启。`);
+    }, '开关ADB');
+    if (res) showinbox(`操作成功！已发送${act}ADB指令，设备即将重启。`);
 };
 window.setDefaultBand = async () => {
     if (!confirm('重置频段（全选所有频段）吗？')) return;
     const res = await evalcmd('at AT+ZLTEBAND=');
-    if (!res || res.includes("_ERROR_")) return alert(`恢复默认失败：${res}`);
+    if (!res || res.includes("_ERROR_")) return alert(`恢复默认频段失败：${res}`);
     showinbox("重置成功, 正在重启网络...");
     await resetmodem();
     refreshband();
