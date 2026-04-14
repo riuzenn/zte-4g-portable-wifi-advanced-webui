@@ -193,7 +193,7 @@ sysctl -qp /etc/sysctl.conf
 <div align="center"><img src="./images/更改后台网页标题.png"></div>  
 
 ◉显示所有接入设备的名称和物理地址  
-下载[home.html](/etc_ro/web/tmpl/home.html)，推送到/etc_ro/web/tmpl/home.html
+下载[home.html](/etc_ro/web/tmpl/home.html)，推送到/etc_ro/web/tmpl/home.html  
 点查看就能看到。  
 ip neigh show结果中REACHABLE是处于连接状态的设备。  
 dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前不一定在线。  
