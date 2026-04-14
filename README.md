@@ -142,10 +142,10 @@ f30a pro的这个数据库文件默认为IP，我把数据库里国内运营商�
 <div align="center"><img src="./images/apn.jpg"></div>  
 
 ◉开机后关闭白色led灯（推送完rc记得chmod 755，不然重启后会砖）
-在[rc](/etc/rc) 里添加如下代码，sleep后面的数值是暂停的秒数  
+在/etc/rc里添加如下代码，sleep后面的数值是暂停的秒数：  
 (sleep 10;echo 0 > /sys/class/leds/modem_w_led/brightness) &  
 ◉更严格的防火墙规则  
-在[rc](/etc/rc) 里添加如下代码  
+在/etc/rc里添加如下代码：  
 /sbin/ipv4v6_firewall.sh  
 adb push[ipv4v6_firewall.sh](/sbin/ipv4v6_firewall.sh)文件到/sbin/ipv4v6_firewall.sh，chmod 755这个文件  
 ◉修改nv默认设置（推送完记得chmod 755，不然恢复出厂后会砖）  
@@ -187,10 +187,16 @@ killall dnsmasq
 rc中添加  
 sysctl -qp /etc/sysctl.conf  
 主要是内核级地禁用了ipv6，并激进地杀掉结束的或长时间不响应的链接来减少内存占用。  
-◉修改后台网页图标为蓝字ZTE、透明底的网页标签图标  
-下载[favicon.ico](/etc_ro/web/favicon.ico)，推送到/etc_ro/web/favicon.ico  
-<div align="center"><img src="./images/蓝字ZTE透明底的网页标签图标.png"></div>  
-
-◉修改后台网页标题  
+◉修改后台网页标题、修改后台网页图标为蓝字ZTE、透明底的网页标签图标  
 修改/etc_ro/web/js/config/ufi/mf93d/config.js里的WEBUI_TITLE:"4G Mobile Hotspot"，修改引号里的内容为自定义字符串。  
+下载[favicon.ico](/etc_ro/web/favicon.ico)，推送到/etc_ro/web/favicon.ico。  
 <div align="center"><img src="./images/更改后台网页标题.png"></div>  
+
+◉显示所有接入设备的名称和物理地址  
+下载[home.html](/etc_ro/web/tmpl/home.html)，推送到/etc_ro/web/tmpl/home.html
+点查看就能看到。  
+ip neigh show结果中REACHABLE是处于连接状态的设备。  
+dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前不一定在线。  
+两个结合一下就能得出当前在线的所有设备。但是目前我不知道如何很好地区分wifi和rndis设备。  
+另外js提取一下字符串，再加一个官方风格的<table>标签，会和谐一点，但是我懒，凑活看吧。  
+<div align="center"><img src="./images/显示所有接入设备的名称和物理地址.png"></div>  
