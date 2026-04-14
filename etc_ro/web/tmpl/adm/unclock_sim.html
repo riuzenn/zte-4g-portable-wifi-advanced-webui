@@ -55,7 +55,7 @@
 		targetInput.dispatchEvent(new Event('change'));
   }
 	const fetchAndFillImei = async () => {
-		const data = await safeFetch('/goform/goform_get_cmd_process?isTest=false&cmd=imei&multi_data=1',{},'获取IMEI','json');
+		const data = await safeFetch('/goform/goform_get_cmd_process?isTest=false&cmd=imei&multi_data=1', {}, '获取IMEI');
     if (data && data.imei && data.imei.length >= 6) {
         imeiInput.value = data.imei.slice(-6);
         zteCalcPassword();
