@@ -198,5 +198,5 @@ sysctl -qp /etc/sysctl.conf
 ip neigh show结果中REACHABLE是处于连接状态的设备。  
 dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前不一定在线。  
 两个结合一下就能得出当前在线的所有设备。但是目前我不知道如何很好地区分wifi和rndis设备。  
-另外js提取一下字符串，再加一个官方风格的<table>标签，会和谐一点，但是我懒，凑活看吧。  
+另外js提取一下字符串，再加一个官方风格的`<table>`标签，会和谐一点，但是我懒，凑活看吧。  
 <div align="center"><img src="./images/显示所有接入设备的名称和物理地址.png"></div>  
