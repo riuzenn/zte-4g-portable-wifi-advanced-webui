@@ -214,12 +214,12 @@ dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前
 }
 ```
 从通电到设备变白灯这段时间不会因为快速开机开关改变，都是20s左右。我看了一下service.js文件负责传递网页上用户选是还是否（mgmt_quicken_power_on，/etc_ro/default/default_parameter_user有这个flag，默认为0），传给goahead，后者写入nv。zte_mifi读取nv设置值，执行相应逻辑。zte_mifi里面藏着相关逻辑。开启了mgmt_quicken_power_on，设备并不会真正关机，而是进入低功耗模式，我觉得类似电脑睡眠，设备并没有真正关机断电。按下电源键开机后只是把设备唤醒，自然快咯。棒子没有电源键也没电池，所以这个功能对于棒子来说没用，所以隐藏了。  
-<div align="center"><img src="./images/快速开机设置.png"></div>  
+<div align="center"><img src="./images/快速开机设置.jpeg"></div>  
 
-◉登录机制
+◉登录机制  
 http://192.168.0.1/goform/goform_get_cmd_process?isTest=false&cmd=LD  
 得到json格式的LD登录凭证  
-{"LD":"427C02FDC13A7F4842703C2081DC56070572422BD398AD411B6A00C34EAE5267"}
+{"LD":"427C02FDC13A7F4842703C2081DC56070572422BD398AD411B6A00C34EAE5267"}  
 最终密码=sha256加密((sha256加密明文密码，结果转大写字母)拼接LD字符串)，结果转大写字母  
 http://192.168.0.1/goform/goform_set_cmd_process?isTest=false&goformId=LOGIN&password=最终密码  
 备注：  
