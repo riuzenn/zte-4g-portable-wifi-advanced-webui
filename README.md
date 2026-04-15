@@ -200,3 +200,28 @@ dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前
 两个结合一下就能得出当前在线的所有设备。但是目前我不知道如何很好地区分wifi和rndis设备。  
 另外js提取一下字符串，再加一个官方风格的`<table>`标签，会和谐一点，但是我懒，凑活看吧。  
 <div align="center"><img src="./images/显示所有接入设备的名称和物理地址.png"></div>  
+
+◉快速开机不适用中兴随身wifi棒子  
+往/etc_ro/web/js/config/ufi/mf93d/menu.js添加以下代码，在设置-设备设置里会多出快速开机，真的会快一点吗？我没感觉出来。  
+```
+,{
+  hash: "#fastboot",
+  path: "adm/fastboot",
+  level: "3",
+  parent: "#device_setting",
+  requireLogin: a,
+  checkSIMStatus: false
+}
+```
+从通电到设备变白灯这段时间不会因为快速开机开关改变，都是20s左右。我看了一下service.js文件负责传递网页上用户选是还是否（mgmt_quicken_power_on，/etc_ro/default/default_parameter_user有这个flag，默认为0），传给goahead，后者写入nv。zte_mifi读取nv设置值，执行相应逻辑。zte_mifi里面藏着相关逻辑。开启了mgmt_quicken_power_on，设备并不会真正关机，而是进入低功耗模式，我觉得类似电脑睡眠，设备并没有真正关机断电。按下电源键开机后只是把设备唤醒，自然快咯。棒子没有电源键也没电池，所以这个功能对于棒子来说没用，所以隐藏了。  
+<div align="center"><img src="./images/快速开机设置.png"></div>  
+
+◉登录机制
+http://192.168.0.1/goform/goform_get_cmd_process?isTest=false&cmd=LD  
+得到json格式的LD登录凭证  
+{"LD":"427C02FDC13A7F4842703C2081DC56070572422BD398AD411B6A00C34EAE5267"}
+最终密码=sha256加密((sha256加密明文密码，结果转大写字母)拼接LD字符串)，结果转大写字母  
+http://192.168.0.1/goform/goform_set_cmd_process?isTest=false&goformId=LOGIN&password=最终密码  
+备注：  
+LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成的sha256值，且会为每个未登录的 IP 分配一个临时的 LD，如果前一个 LD 还没有被“消耗”（即还没有进行过一次失败或成功的 LOGIN POST），后端程序为了节省计算资源，会返回同一个LD值。  
+原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
