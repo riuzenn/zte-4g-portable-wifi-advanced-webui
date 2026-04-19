@@ -157,6 +157,7 @@ admin_Password=，设置默认密码，sha256加密
 privacy_read_flag=1，关闭重置后的隐私协议弹窗  
 dm_update_mode=0，默认关闭自动检测新版本  
 HideSSID=1，默认隐藏wifi名  
+wifi_11n_cap=0，wifi默认频宽设为20MHz  
 ◉f30a pro自动计算切卡密码，下载推送到/etc_ro/web/tmpl/adm/unclock_sim.html  
 [unclock_sim.html](/etc_ro/web/tmpl/adm/unclock_sim.html)  
 中兴工程师取文件名时写错英语单词了，正确文件名应该拼写为unlock_sim.html。如果要为其他IMEI计算切卡密码也可以手动输入然后点计算。  
