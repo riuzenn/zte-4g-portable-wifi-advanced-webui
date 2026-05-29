@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     else if (strlen(argv[1]) > 250) {
-        fputs("命令过长, 最大250字符\n", stderr);
+        fputs("AT命令过长, 最大250字节\n", stderr);
         return 1;
     }
     char at[256];
