@@ -1,6 +1,10 @@
 # zte-4g-portable-wifi-advanced-webui
 中兴4G随身WiFi全功能后台 / A full-featured WebUI for ZTE 4G Mifi  
 ◉本工具目前只在f30a pro上测试过，其他设备请自行适配！！！shell、at、customfunc.js、bandlock.html这几个文件应该是通用的。  
+## 开启adb  
+http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=1
+## 关闭adb  
+http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=0
 ## 利用原生CGI在web后台执行shell命令
 ### ➤下载:  
 [shell](/etc_ro/cgi-bin/shell)  
@@ -113,6 +117,7 @@ adb shell chmod 755 /sbin/at
 /etc_ro/web/js/customfuncs.js：我写的大部分js函数都在里面  
 /etc_ro/web/tmpl/bandlock.html：插入主界面的锁频面板  
 /etc_ro/web/tmpl/status/device_info.html：设备信息页面添加当前频段和签约速率，我没有加定时刷新的代码，频段变化后要手动刷新页面  
+◉开 关这两个蓝色链接功能是开关adb，原理是在后台访问本文开头提到的两个链接  
 ◉锁频面板：at+zlteband=逗号分割的9组数字实现  
 <div align="center"><img src="./images/锁频关.jpg"></div>  
 <div align="center"><img src="./images/锁频开.jpg"></div>  
