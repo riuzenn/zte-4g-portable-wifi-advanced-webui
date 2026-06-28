@@ -32,7 +32,8 @@
 </div>
 <script>
 	function zteUnlockPassword(imei) {
-			return (imei[5] * 7 % 10) + "" +
+			return "" +
+			       (imei[5] * 7 % 10) + 
 						 (imei[4] * 6 % 10) + 
 						 (imei[3] * 5 % 10) + 
 						 (imei[2] * 4 % 10) + 
@@ -55,7 +56,9 @@
 		targetInput.dispatchEvent(new Event('change'));
   }
 	const fetchAndFillImei = async () => {
-		const data = await safeFetch('/goform/goform_get_cmd_process?isTest=false&cmd=imei&multi_data=1', {}, '获取IMEI');
+		const res = await fetch('/goform/goform_get_cmd_process?isTest=false&cmd=imei');
+		if (!res || !res.ok) {resultDiv.textContent = '获取imei失败，请手动输入imei后6位';return null;}
+		const data = await res.json();
     if (data && data.imei && data.imei.length >= 6) {
         imeiInput.value = data.imei.slice(-6);
         zteCalcPassword();
