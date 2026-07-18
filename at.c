@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
-#include <ctype.h>
 extern int get_modem_info(const char *at, const char *fmt, ...);
 int main(int argc, char *argv[]) {
     if (argc < 2) {
