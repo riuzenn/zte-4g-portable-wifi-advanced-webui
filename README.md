@@ -82,7 +82,9 @@ adb shell ls -l /etc/rc
 `sudo chown -R $(whoami):$(whoami) /buildroot`  
 `cd /buildroot/buildroot-2026.02`  
 `tmux attach`  
-`export PATH=$PATH:~/buildroot/bin`
+`export PATH=$PATH:~/buildroot/bin`  
+`echo 'export PATH=$PATH:~/buildroot/bin' >> ~/.bashrc`  
+`source ~/.bashrc`  
   
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
 编译时间近一小时，请耐心等待。看到`>>> toolchain  Installing to target`就成了  
