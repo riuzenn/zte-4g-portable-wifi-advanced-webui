@@ -239,7 +239,14 @@ http://192.168.0.1/goform/goform_set_cmd_process?isTest=false&goformId=LOGIN&pas
 LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成的sha256值，且会为每个未登录的 IP 分配一个临时的 LD，如果前一个 LD 还没有被“消耗”（即还没有进行过一次失败或成功的 LOGIN POST），后端程序为了节省计算资源，会返回同一个LD值。  
 原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
 ## 编译的其他应用  
-除了at外，我还编译了以下应用。所有应用的二进制文件都用https://github.com/BR903/ELFkickers处理过，缩小了体积。  
+除了at外，我还编译了以下应用。所有应用的二进制文件都用[sstrip](https://github.com/BR903/ELFkickers)处理过，缩小了体积。  
+sstrip编译：  
+```
+cd ~
+git clone https://github.com/BR903/ELFkickers.git
+cd ELFkickers/sstrip
+make
+```
 ### dropbear及其附带的scp、dropbearkey  
 编译dropbear可能会用到[libz.so.1.2.11库](https://www.zlib.net/zlib-1.3.1.tar.gz)的两个头文件，解压出zconf.h和zlib.h放到/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/，不知道为啥buildroot不自带。
 ### sftp-server  
