@@ -77,12 +77,11 @@ adb shell ls -l /etc/rc
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
-普通用户不用管以下5行代码  
+普通用户不用管以下几行代码  
 `sudo cp -r ~/buildroot /buildroot/`  
 `sudo chown -R $(whoami):$(whoami) /buildroot`  
 `cd /buildroot/buildroot-2026.02`  
 `tmux attach`  
-`export PATH=$PATH:~/buildroot/bin`  
 `echo 'export PATH=$PATH:~/buildroot/bin' >> ~/.bashrc`  
 `source ~/.bashrc`  
   
