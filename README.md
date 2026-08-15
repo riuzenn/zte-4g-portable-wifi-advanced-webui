@@ -80,7 +80,7 @@ adb shell ls -l /etc/rc
 普通用户不用管以下几行代码  
 `sudo cp -r ~/buildroot /buildroot/`  
 `sudo chown -R $(whoami):$(whoami) /buildroot`  
-`cd /buildroot/buildroot-2026.02`  
+`cd /buildroot/buildroot-2026.05.1`  
 `tmux attach`  
 `echo 'export PATH=$PATH:~/buildroot/bin' >> ~/.bashrc`  
 `source ~/.bashrc`  
