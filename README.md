@@ -49,11 +49,11 @@ adb shell ls -l /etc/rc
 我先编译了适配中兴微ZX297520V3这颗cpu的Buildroot交叉编译器，adb pull随身wifi的/lib/路径下的依赖库到linux电脑里，最后用[Makefile](/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了针对这颗cpu的大部分可用编译优化命令，可以尝试移植到其他二进制文件上。
 #### 编译buildroot交叉编译器  
 在这个网站下载Buildroot源码：https://buildroot.org/  
-我选了最新Stable版的buildroot-2026.02  
+我选了最新Stable版的buildroot-2026.05.1  
 当前路径是`~/buildroot`  
 如果没有，创建并转到这个文件夹：`mkdir -p ~/buildroot;cd ~/buildroot`  
-获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2026.02.tar.gz`  
-解压：`tar -xzvf buildroot-2026.02.tar.gz;cd ./buildroot-2026.02`  
+获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2026.05.1.tar.gz`  
+解压：`tar -xzvf buildroot-2026.05.1.tar.gz;cd ./buildroot-2026.05.1`  
 配置：`make menuconfig`  
 界面如下，纯键盘操作  
 <div align="center"><img src="./images/buildroot配置页面.jpg"></div>  
@@ -141,19 +141,19 @@ AT+MAC=
 <div align="center"><img src="./images/官方锁频接口.jpg"></div>  
 
 ## 其他功能
-◉自动APN设为IPv4v6,下载推送到/etc_ro/config/auto_apn/auto_apn.db  
+### ◉自动APN设为IPv4v6,下载推送到/etc_ro/config/auto_apn/auto_apn.db  
 [auto_apn.db](/etc_ro/config/auto_apn/auto_apn.db)  
 f30a pro的这个数据库文件默认为IP，我把数据库里国内运营商的APN都设为IPv4v6，想用IPv4使用手动APN。  
 <div align="center"><img src="./images/apn.jpg"></div>  
 
-◉开机后关闭白色led灯（推送完rc记得chmod 755，不然重启后会砖）
+### ◉开机后关闭白色led灯（推送完rc记得chmod 755，不然重启后会砖）
 在/etc/rc里添加如下代码，sleep后面的数值是暂停的秒数：  
 (sleep 10;echo 0 > /sys/class/leds/modem_w_led/brightness) &  
-◉更严格的防火墙规则  
+### ◉更严格的防火墙规则  
 在/etc/rc里添加如下代码：  
 /sbin/ipv4v6_firewall.sh  
 adb push[ipv4v6_firewall.sh](/sbin/ipv4v6_firewall.sh)文件到/sbin/ipv4v6_firewall.sh，chmod 755这个文件  
-◉修改nv默认设置（推送完记得chmod 755，不然恢复出厂后会砖）  
+### ◉修改nv默认设置（推送完记得chmod 755，不然恢复出厂后会砖）  
 [default_parameter_sys](/etc_ro/default/default_parameter_sys)文件中  
 cdrom_state=0和usb_devices_debug=diag,adb,serial（删掉mass_storage），adb开启状态不会加载CDROM设备（设备管理器和我的电脑不会显示cd设备）  
 [default_parameter_user](/etc_ro/default/default_parameter_user)文件中  
@@ -163,12 +163,12 @@ privacy_read_flag=1，关闭重置后的隐私协议弹窗
 dm_update_mode=0，默认关闭自动检测新版本  
 HideSSID=1，默认隐藏wifi名  
 wifi_11n_cap=0，wifi默认频宽设为20MHz  
-◉f30a pro自动计算切卡密码，下载推送到/etc_ro/web/tmpl/adm/unclock_sim.html  
+### ◉f30a pro自动计算切卡密码，下载推送到/etc_ro/web/tmpl/adm/unclock_sim.html  
 [unclock_sim.html](/etc_ro/web/tmpl/adm/unclock_sim.html)  
 中兴工程师取文件名时写错英语单词了，正确文件名应该拼写为unlock_sim.html。如果要为其他IMEI计算切卡密码也可以手动输入然后点计算。  
 <div align="center"><img src="./images/自动计算切卡密码.jpg"></div>  
 
-◉测试内核是否支持硬件浮点  
+### ◉测试内核是否支持硬件浮点  
 下载[fpu_test.c](./fpu_test.c)，按如下命令编译  
 ```
 $HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
@@ -179,26 +179,26 @@ $HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
   fpu_test.c -o fpu_test
 ```
 发现一运行fpu_test随身wifi就重启，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点。  
-◉修改连接到随身wifi设备的默认dns  
+### ◉修改连接到随身wifi设备的默认dns  
 (adb shell)nv set dhcpDns="223.5.5.5 223.6.6.6"  
 (adb shell)nv set DNS_proxy=disable  
 nv save  
-◉修改linux系统dns为阿里dns  
+### ◉修改linux系统dns为阿里dns  
 下载[resolv.conf](/etc_ro/resolv.conf)推送/etc_ro/resolv.conf  
 在rc里添加  
 mount --bind /etc_ro/resolv.conf /etc/resolv.conf  
 killall dnsmasq  
-◉内核优化参数  
+### ◉内核优化参数  
 下载[sysctl.conf](/etc/sysctl.conf)  ，推送到/etc/sysctl.conf  
 rc中添加  
 sysctl -qp /etc/sysctl.conf  
 主要是内核级地禁用了ipv6，并激进地杀掉结束的或长时间不响应的链接来减少内存占用。  
-◉修改后台网页标题、修改后台网页图标为蓝字ZTE、透明底的网页标签图标  
+### ◉修改后台网页标题、修改后台网页图标为蓝字ZTE、透明底的网页标签图标  
 修改/etc_ro/web/js/config/ufi/mf93d/config.js里的WEBUI_TITLE:"4G Mobile Hotspot"，修改引号里的内容为自定义字符串。  
 下载[favicon.ico](/etc_ro/web/favicon.ico)，推送到/etc_ro/web/favicon.ico。  
 <div align="center"><img src="./images/更改后台网页标题.png"></div>  
 
-◉显示所有接入设备的名称和物理地址  
+### ◉显示所有接入设备的名称和物理地址  
 下载[home.html](/etc_ro/web/tmpl/home.html)，推送到/etc_ro/web/tmpl/home.html  
 点查看就能看到。  
 ip neigh show结果中REACHABLE是处于连接状态的设备。  
@@ -207,7 +207,7 @@ dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前
 另外js提取一下字符串，再加一个官方风格的`<table>`标签，会和谐一点，但是我懒，凑活看吧。  
 <div align="center"><img src="./images/显示所有接入设备的名称和物理地址.png"></div>  
 
-◉快速开机不适用中兴随身wifi棒子  
+### ◉快速开机不适用中兴随身wifi棒子  
 往/etc_ro/web/js/config/ufi/mf93d/menu.js添加以下代码，在设置-设备设置里会多出快速开机，真的会快一点吗？我没感觉出来。  
 ```
 ,{
@@ -222,7 +222,7 @@ dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前
 从通电到设备变白灯这段时间不会因为快速开机开关改变，都是20s左右。我看了一下service.js文件负责传递网页上用户选是还是否（mgmt_quicken_power_on，/etc_ro/default/default_parameter_user有这个flag，默认为0），传给goahead，后者写入nv。zte_mifi读取nv设置值，执行相应逻辑。zte_mifi里面藏着相关逻辑。开启了mgmt_quicken_power_on，设备并不会真正关机，而是进入低功耗模式，我觉得类似电脑睡眠，设备并没有真正关机断电。按下电源键开机后只是把设备唤醒，自然快咯。棒子没有电源键也没电池，所以这个功能对于棒子来说没用，所以隐藏了。  
 <div align="center"><img src="./images/快速开机设置.jpeg"></div>  
 
-◉登录机制  
+### ◉登录机制  
 http://192.168.0.1/goform/goform_get_cmd_process?isTest=false&cmd=LD  
 得到json格式的LD登录凭证  
 {"LD":"427C02FDC13A7F4842703C2081DC56070572422BD398AD411B6A00C34EAE5267"}  
