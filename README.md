@@ -246,9 +246,54 @@ cd ~
 git clone https://github.com/BR903/ELFkickers.git
 cd ELFkickers/sstrip
 make
+# 超级精简一个二进制可执行文件
+~/ELFkickers/sstrip/sstrip 目标文件
 ```
-### dropbear及其附带的scp、dropbearkey  
-编译dropbear可能会用到[libz.so.1.2.11库](https://www.zlib.net/zlib-1.3.1.tar.gz)的两个头文件，解压出zconf.h和zlib.h放到/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/，不知道为啥buildroot不自带。
-### sftp-server  
+### ◉dropbear及其附带的scp、dropbearkey  
+#### 编译命令已写入[Makefile-dropbear](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-dropbear)。以下是几个注意点：  
+➤如需使用密码登录ssh，dropbear会用到/lib/libcrypt.so.0库的crypt()函数，[testcrypt.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/testcrypt.c)检测结果显示自带的libcrypt库只支持DES和MD5算法，如调用不支持的算法会回退到DES算法，取原盐值的前两位如$6作为新盐值。最后得出和/etc/shadow(默认SHA512算法)里记录的不一样的密码哈希值，从而一直验证失败。  
+<div align="center"><img src="./images/testcrypt结果.jpg"></div>  
 
-### neatvi  
+解决方式有把全功能的libcrypt静态编译进dropbear，  
+要么改随身wifi的/etc/shadow里的密码算法为MD5，格式：  
+`账户名:$1$盐值$MD5值:17751:0:99999:7:::`  
+要么改随身wifi的/etc/passwd里的密码为空，配合dropbear的`-B Allow blank password logins`参数空密码登录。格式：  
+`root:x(去掉这个x):0:0:root:/:/bin/sh`  
+要么禁用密码登录`-s Disable password logins`，改用密钥登录。  
+➤还是libcrypt库的问题，`export LIBS="-Wl,--no-as-needed ${ZTE_LIB}/libcrypt.so.0"`不能少，不然编译出的文件的依赖库里没有它，不能验证密码。  
+➤如需压缩功能，编译dropbear可能会用到[libz.so.1.2.11库](https://www.zlib.net/zlib-1.3.1.tar.gz)的两个头文件，解压出zconf.h和zlib.h放到/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/，不知道为啥buildroot不自带。  
+➤第一次连接ssh会提示服务主机的公钥指纹不在已知列表，输入yes。之后输入账户明文密码，输入的密码不会同步显示到屏幕，也不会有光标闪烁，第一次接触这个机制时我还以为程序卡住了。  
+#### 参考安装过程：
+编译好的[dropbearmulti](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/dropbearmulti)和[sshon](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshon)还有[sshoff](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshoff)推送到/usr/sbin，更新过的[index.html](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/etc_ro/web/index.html)推送到/etc_ro/web，执行：  
+```  
+mount -o remount,rw /
+chmod 755 /usr/sbin/dropbearmulti
+ln -s /usr/sbin/dropbearmulti /usr/sbin/scp
+ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbear
+ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbearkey
+# 生成dropbear服务器端密钥
+mkdir -p /etc/dropbear
+dropbearkey -t ed25519 -f /etc/dropbear/dropbear_ed25519_host_key
+# 查看生成的dropbear服务器公钥
+dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
+```
+#### 如需密钥登录，执行：  
+windows电脑上执行：  
+```
+# 生成windows用户端密钥，不设密码的话一直回车
+ssh-keygen -t ed25519
+```
+随身wifi的终端里执行：  
+```
+# 把windows用户端公钥放进dropbear可以识别的目录~/.ssh
+# f30ap的HOME路径就是根目录
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+# 在windows电脑C:\Users\你的用户名\.ssh路径找到公钥文件id_ed25519.pub，用文本编辑器打开，换行符换成LF，另存为authorized_keys，推送到/.ssh
+chmod 600 ~/.ssh/authorized_keys
+# 之后直接通过密钥认证，不需要输入账户密码
+```  
+
+### ◉sftp-server  
+
+### ◉neatvi  
