@@ -76,9 +76,12 @@
             <span trans="vertical_bar"></span>
             <a href="https://opensource.ztedevices.com" target="_blank" rel="noopener noreferrer" trans="open_source_licenses"></a>
             <a id="privacy_a" href="http://www.ztedevices.com/en/Privacy-Policy" target="_blank" rel="noopener noreferrer" trans="privacy_policy"></a>
-            <span trans="vertical_bar"></span>
+            <span trans="vertical_bar"></span><span>ADB</span>
             <a href="javascript:void(0);" onclick="ADB('1');" trans="on"></a>
             <a href="javascript:void(0);" onclick="ADB('0');" trans="off"></a>
+            <span trans="vertical_bar"></span><span>SSH</span>
+            <a href="javascript:void(0);" onclick="evalcmd('/usr/sbin/sshon');showinbox('dropbear started');" trans="on"></a>
+            <a href="javascript:void(0);" onclick="evalcmd('/usr/sbin/sshoff');showinbox('dropbear stopped');" trans="off"></a>
             <span trans="vertical_bar"></span>
             <a href="javascript:void(0);" id="band-btn" onclick="showband();" trans="network_band_selection"></a>
             <span trans="vertical_bar"></span>
