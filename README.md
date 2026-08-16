@@ -260,7 +260,7 @@ make
 要么改随身wifi的/etc/shadow里的密码算法为MD5，格式：  
 `账户名:$1$盐值$MD5值:17751:0:99999:7:::`  
 要么改随身wifi的/etc/passwd里的密码为空，配合dropbear的`-B Allow blank password logins`参数空密码登录。格式：  
-`root:x(去掉这个x):0:0:root:/:/bin/sh`  
+`账户名:x(去掉这个x):0:0:root:/:/bin/sh`  
 要么禁用密码登录`-s Disable password logins`，改用密钥登录。  
 ➤还是libcrypt库的问题，`export LIBS="-Wl,--no-as-needed ${ZTE_LIB}/libcrypt.so.0"`不能少，不然编译出的文件的依赖库里没有它，不能验证密码。  
 ➤如需压缩功能，编译dropbear可能会用到[libz.so.1.2.11库](https://www.zlib.net/zlib-1.3.1.tar.gz)的两个头文件，解压出zconf.h和zlib.h放到/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/，不知道为啥buildroot不自带。  
