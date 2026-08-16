@@ -28,7 +28,7 @@ window.ztebandlock = async () => {
     if (res) {showinbox("锁定成功, 稍等生效。");await resetmodem();}
 };
 const cmdContainer = document.getElementById('cmdInput')
-window.evalcmd = async (cmd) => {
+window.evalcmd = async (cmd, show = false) => {
     const finalCmd = cmd || cmdContainer.value.trim();
     if (!finalCmd) return showinbox("请输入命令!");
     if (!cmd) {showinbox(`正在执行：${finalCmd} ...`);}
@@ -37,7 +37,7 @@ window.evalcmd = async (cmd) => {
         body: finalCmd,
         headers: {'Content-Type': 'text/plain'}
     }, '执行Shell命令', 'text');
-    if (text && !cmd) showinbox(text);return text;
+    if (text && (show || !cmd)) {showinbox(text)};return text;
 };
 const resultBox = document.getElementById('resultBox');
 window.showinbox = (res) => {resultBox.textContent = res;};
