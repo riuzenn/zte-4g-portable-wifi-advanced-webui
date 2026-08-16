@@ -298,6 +298,8 @@ chmod 600 ~/.ssh/authorized_keys
 #### 启动和连接dropbear的ssh的命令  
 我写了sshon和sshoff，直接输入它们的文件名就可以开启和关闭。windows的cmd里输入ssh admin@192.168.0.1即可连接。  
 f30ap的默认账户名是admin，如需修改要同步改/etc里的passwd和shadow。另外以管理员身份打开文本编辑器，在`C:\Windows\System32\drivers\etc\hosts`里加入`192.168.0.1 自定义字符`就可以以域名连接，如`ssh admin@f30`。  
+<div align="center"><img src="./images/包含ssh的index.jpg"></div>  
+
 #### scp用法  
 scp和下面的sftp-server都依赖dropbear提供的ssh环境，使用前二者前要先启用dropbear。  
 <div align="center"><img src="./images/scp.png"></div>  
@@ -309,7 +311,12 @@ scp和下面的sftp-server都依赖dropbear提供的ssh环境，使用前二者�
 ### ◉neatvi  
 #### 编译命令已写入[Makefile-neatvi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-neatvi)。编译好的[vi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/vi)推送到/bin路径。有几个注意点：  
 ➤如下改源码里的term.c里的term_read()函数，不然不识别windows的回车。  
+```
+# 添加
+    if (c == '\r')
+        c = '\n'; 
+```
 <div align="center"><img src="./images/修改term_read()函数.png"></div>  
 
-➤编译命令里`export CFLAGS="-D__stdin=stdin"`不能少，f30ap的c库只有stdin符号。  
+➤编译命令里`export CFLAGS="-D__stdin=stdin"`不能少，f30ap的libc库只有stdin符号。  
 vi对我来说是个新奇玩意，还在探索。  
