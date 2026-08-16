@@ -7,8 +7,8 @@ $HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
 -mthumb \
 testcrypt.c \
 -o testcrypt \
--L$HOME/at_build/lib \
--Wl,-rpath-link=$HOME/at_build/lib \
+-L$HOME/buildroot/ztelib \
+-Wl,-rpath-link=$HOME/buildroot/ztelib \
 -Wl,--no-as-needed \
-$HOME/at_build/lib/libcrypt.so.0 \
+$HOME/buildroot/ztelib/libcrypt.so.0 \
 -Wl,--as-needed
