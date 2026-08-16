@@ -1,0 +1,60 @@
+wget https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-8.9p1.tar.gz
+tar -xzf openssh-8.9p1.tar.gz
+mv ./openssh-8.9p1 ./openssh_build
+cd openssh_build
+
+export TOOLCHAIN=${HOME}/buildroot
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${TOOLCHAIN}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}ar"
+export RANLIB="${CROSS_COMPILE}ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fno-stack-protector -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT}"
+
+export LDFLAGS="-L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined"
+
+export LIBS="-Wl,--start-group -lz -lutil -lpthread -lc -lgcc_s -Wl,--end-group"
+
+./configure \
+  --host=arm-buildroot-linux-uclibcgnueabi \
+  --sysconfdir=/etc/ssh \
+  --disable-largefile \
+  --disable-pkcs11 \
+  --disable-security-key \
+  --disable-etc-default-login \
+  --disable-lastlog \
+  --disable-utmp \
+  --disable-utmpx \
+  --disable-wtmp \
+  --disable-wtmpx \
+  --disable-libutil \
+  --disable-pututline \
+  --disable-pututxline \
+  --without-openssl-header-check \
+  --without-stackprotect \
+  --without-hardening \
+  --without-rpath \
+  --with-sandbox=no \
+  --without-openssl
+
+cat << 'EOF' >> config.h
+/* Force use of compat implementations */
+#undef HAVE_EXPLICIT_BZERO
+#undef HAVE_REALLOCARRAY
+EOF
+
+make V=1 sftp-server -j$(nproc) > ~/1.txt 2>&1
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata sftp-server
+~/ELFkickers/sstrip/sstrip ~/openssh_build/sftp-server
+
+ls -l sftp-server
+arm-buildroot-linux-uclibcgnueabi-readelf -d sftp-server
+readelf -d sftp-server | grep NEEDED
+${CROSS_COMPILE}readelf -s sftp-server | grep "UND"
+${CROSS_COMPILE}readelf -s sftp-server | grep "_"
+${CROSS_COMPILE}readelf -s sftp-server | grep -E "crypt"
+make distclean
