@@ -1,6 +1,7 @@
 # zte-4g-portable-wifi-advanced-webui
 中兴4G随身WiFi全功能后台 / A full-featured WebUI for ZTE 4G Mifi  
 ◉本工具目前只在f30a pro上测试过，其他设备请自行适配！！！shell、at、customfunc.js、bandlock.html这几个文件应该是通用的。  
+[123网盘备份](https://www.123pan.com/s/NV4Qjv-IZYvd)  
 ## 开启adb  
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=1
 ## 关闭adb  
@@ -92,11 +93,12 @@ adb shell ls -l /etc/rc
 解压SDK到~/buildroot：`tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1`  
 重定向二进制文件路径：`cd ~/buildroot;./relocate-sdk.sh`  
 查看生成的编译器硬编码参数：`./bin/arm-buildroot-linux-uclibcgnueabi-gcc -v`  
+把f30ap/lib目录下的所有文件复制到编译电脑的~/buildroot/ztelib路径  
 #### 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
-写好Makefile里的绝对路径后上传Makefile、at.c和从随身wifi导出的/lib目录到当前目录  
+写好Makefile里的绝对路径后上传Makefile、at.c到当前目录  
 编译：`make`  
-编译失败清除中间文件：`make clean`
+编译失败重置：`make clean`
 ### ➤安装:  
 [at](/sbin/at)  
 adb shell mount -o remount,rw /  
@@ -278,7 +280,7 @@ dropbearkey -t ed25519 -f /etc/dropbear/dropbear_ed25519_host_key
 dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
 ```
 #### 如需密钥登录，执行：  
-windows电脑上执行：  
+windows电脑cmd里执行：  
 ```
 # 生成windows用户端密钥，不设密码的话一直回车
 ssh-keygen -t ed25519
@@ -292,8 +294,22 @@ chmod 700 ~/.ssh
 # 在windows电脑C:\Users\你的用户名\.ssh路径找到公钥文件id_ed25519.pub，用文本编辑器打开，换行符换成LF，另存为authorized_keys，推送到/.ssh
 chmod 600 ~/.ssh/authorized_keys
 # 之后直接通过密钥认证，不需要输入账户密码
-```  
+```
+#### 启动和连接dropbear的ssh的命令  
+我写了sshon和sshoff，直接输入它们的文件名就可以开启和关闭。windows的cmd里输入ssh admin@192.168.0.1即可连接。  
+f30ap的默认账户名是admin，如需修改要同步改/etc里的passwd和shadow。另外以管理员身份打开文本编辑器，在`C:\Windows\System32\drivers\etc\hosts`里加入`192.168.0.1 自定义字符`就可以以域名连接，如`ssh admin@f30`。  
+#### scp用法  
+scp和下面的sftp-server都依赖dropbear提供的ssh环境，使用前二者前要先启用dropbear。  
+<div align="center"><img src="./images/scp.png"></div>  
 
 ### ◉sftp-server  
+#### 编译命令已写入[Makefile-sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-sftp-server)。编译好的[sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/libexec/sftp-server)推送到/usr/libexec路径。  
+<div align="center"><img src="./images/sftp.png"></div>  
 
 ### ◉neatvi  
+#### 编译命令已写入[Makefile-neatvi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-neatvi)。编译好的[vi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/vi)推送到/bin路径。有几个注意点：  
+➤如下改源码里的term.c里的term_read()函数，不然不识别windows的回车。  
+<div align="center"><img src="./images/修改term_read()函数.png"></div>  
+
+➤编译命令里`export CFLAGS="-D__stdin=stdin"`不能少，f30ap的c库只有stdin符号。  
+vi对我来说是个新奇玩意，还在探索。  
