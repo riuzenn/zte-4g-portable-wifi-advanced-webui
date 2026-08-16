@@ -1,0 +1,14 @@
+$HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
+--sysroot=$HOME/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot \
+-Os \
+-mcpu=cortex-a53 \
+-mtune=cortex-a53 \
+-mfloat-abi=soft \
+-mthumb \
+testcrypt.c \
+-o testcrypt \
+-L$HOME/at_build/lib \
+-Wl,-rpath-link=$HOME/at_build/lib \
+-Wl,--no-as-needed \
+$HOME/at_build/lib/libcrypt.so.0 \
+-Wl,--as-needed
