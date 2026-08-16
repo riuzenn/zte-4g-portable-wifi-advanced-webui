@@ -1,0 +1,165 @@
+cd ~
+wget https://matt.ucc.asn.au/dropbear/releases/dropbear-2026.94.tar.bz2
+
+# 解压并进入目录
+tar -jxvf dropbear-2026.94.tar.bz2
+mv ./dropbear-2026.94 ./dropbear_build
+cd ./dropbear_build
+
+rm ./localoptions.h
+cat << 'EOF' > localoptions.h
+/* ================================================================
+   1. 强行屏蔽目标系统缺失的 API，改用 Dropbear 内部实现
+   ================================================================ */
+#undef HAVE_EXPLICIT_BZERO
+#undef HAVE_FEXECVE
+#undef HAVE_OPENPTY
+#define USE_DEV_PTMX 1
+
+/* ================================================================
+   2. 密钥交换算法 (KEX) 优化 —— 只保留轻量且安全的
+   ================================================================ */
+#define DROPBEAR_CURVE25519 1              /* 保留 Curve25519（轻量且安全） */
+#define DROPBEAR_ECDH 0                    /* 关闭 NIST 椭圆曲线（省 ~30KB 内存） */
+#define DROPBEAR_DH_GROUP14_SHA256 1       /* 保留基础 DH 2048-bit + SHA-256（兼容） */
+#define DROPBEAR_DH_GROUP14_SHA1 0         /* 关闭弱 SHA-1 版本 */
+#define DROPBEAR_DH_GROUP1 0               /* 关闭 1024-bit DH（不安全） */
+#define DROPBEAR_DH_GROUP16 0              /* 关闭 4096-bit DH（体积大、用不上） */
+#define DROPBEAR_SNTRUP761 0               /* 关闭后量子 sntrup761（~9KB） */
+#define DROPBEAR_MLKEM768 0                /* 关闭后量子 ML-KEM（~34KB！） */
+
+/* ================================================================
+   3. 主机密钥 / 公钥认证算法 —— 保留主流，移除冗余
+   ================================================================ */
+#define DROPBEAR_ED25519 1                 /* 强烈推荐，速度快且体积小 */
+#define DROPBEAR_RSA 1                     /* 保留 RSA 保证 100% 兼容性 */
+#define DROPBEAR_RSA_SHA1 0                /* 关闭 RSA-SHA1（不安全，默认已关） */
+#define DROPBEAR_ECDSA 0                   /* 关闭 ECDSA（省 TomMath 大块代码） */
+#define DROPBEAR_DSS 0                     /* 关闭 DSS（不安全，默认已关） */
+#define DROPBEAR_SK_KEYS 0                 /* 关闭 FIDO/U2F 硬件密钥支持（嵌入式用不上） */
+
+/* ================================================================
+   4. 对称加密算法 (Cipher) —— 仅保留 ChaCha20 和 AES128-CTR（备胎）
+   ================================================================ */
+#define DROPBEAR_CHACHA20POLY1305 1        /* 首选，ARM 上无 AES 硬件时极快 */
+#define DROPBEAR_AES128 1                  /* 保留 AES128 作为备胎（兼容老旧客户端） */
+#define DROPBEAR_AES256 0                  /* 关闭 AES256（省内存） */
+#define DROPBEAR_3DES 0                    /* 关闭老旧 3DES */
+#define DROPBEAR_TWOFISH 0                 /* 关闭 Twofish */
+#define DROPBEAR_BLOWFISH 0                /* 关闭 Blowfish */
+#define DROPBEAR_ENABLE_CTR_MODE 1         /* AES-CTR 模式（AES128 必须开启此模式才能用） */
+#define DROPBEAR_ENABLE_CBC_MODE 0         /* 关闭 CBC（不安全） */
+#define DROPBEAR_ENABLE_GCM_MODE 0         /* 关闭 GCM（体积大，已有 ChaCha） */
+
+/* ================================================================
+   5. 消息认证算法 (MAC) —— 只用 SHA2-256，其余关闭
+   ================================================================ */
+#define DROPBEAR_SHA1_HMAC 0               /* 关闭 SHA1-HMAC（不安全） */
+#define DROPBEAR_SHA1_96_HMAC 0            /* 关闭 SHA1-96（更弱） */
+#define DROPBEAR_SHA2_256_HMAC 1           /* 保留标准 SHA2-256 */
+#define DROPBEAR_SHA2_512_HMAC 0           /* 关闭 SHA2-512（体积大，用不上） */
+
+/* ================================================================
+   6. 转发与重执行 —— 全部禁用（嵌入式设备不需要）
+   ================================================================ */
+#define DROPBEAR_X11FWD 0                  /* 关闭 X11 转发 */
+#define DROPBEAR_SVR_AGENTFWD 0            /* 关闭服务端 Agent 转发 */
+#define DROPBEAR_CLI_AGENTFWD 0            /* 关闭客户端 Agent 转发 */
+
+/* ================================================================
+   7. TCP 端口转发 —— 全部禁用（只用 SSH 会话和 SCP）
+   ================================================================ */
+#define DROPBEAR_CLI_LOCALTCPFWD 0
+#define DROPBEAR_CLI_REMOTETCPFWD 0
+#define DROPBEAR_SVR_LOCALTCPFWD 0
+#define DROPBEAR_SVR_REMOTETCPFWD 0
+#define DROPBEAR_SVR_LOCALSTREAMFWD 0
+#define DROPBEAR_SVR_REMOTESTREAMFWD 0
+
+/* ================================================================
+   8. 客户端相关功能 —— 本设备仅作为服务端，全部关闭
+   ================================================================ */
+#define DROPBEAR_CLI_PASSWORD_AUTH 0
+#define DROPBEAR_CLI_PUBKEY_AUTH 0
+#define DROPBEAR_CLI_PROXYCMD 0
+#define DROPBEAR_CLI_NETCAT 0
+#define DROPBEAR_CLI_COMPRESSION 0         /* 关闭客户端压缩（服务端无压缩） */
+#define DROPBEAR_USE_SSH_CONFIG 0
+#define DROPBEAR_USE_PASSWORD_ENV 0
+#define DROPBEAR_CLI_ASKPASS_HELPER 0
+#define DROPBEAR_CLI_IMMEDIATE_AUTH 0
+
+/* ================================================================
+   9. 其他可节省 ROM 的选项
+   ================================================================ */
+#define DO_MOTD 0                          /* 关闭登录后的 MOTD 显示 */
+
+/* ================================================================
+   10. 安全与并发限制（降低资源占用）
+   ================================================================ */
+#define MAX_UNAUTH_CLIENTS 2               /* 未认证并发连接数限制（防内存耗尽） */
+#define MAX_AUTH_TRIES 3                   /* 最大认证尝试次数 */
+#define MAX_UNAUTH_PER_IP 2                /* 单 IP 未认证连接限制 */
+#define MAX_PUBKEY_QUERIES 2               /* 最大公钥查询次数（减少 CPU 开销） */
+EOF
+
+export TOOLCHAIN=${HOME}/buildroot
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${TOOLCHAIN}/ztelib
+
+# 指定交叉编译器
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}ar"
+export RANLIB="${CROSS_COMPILE}ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fno-stack-protector -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT}"
+
+export LDFLAGS="-L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined"
+
+export LIBS="-Wl,--no-as-needed ${ZTE_LIB}/libcrypt.so.0 -Wl,--as-needed -lz"
+
+./configure \
+  --host=arm-buildroot-linux-uclibcgnueabi \
+  --disable-pam \
+  --disable-lastlog \
+  --disable-utmp \
+  --disable-utmpx \
+  --disable-wtmp \
+  --disable-wtmpx \
+  --disable-loginfunc \
+  --disable-pututline \
+  --disable-pututxline \
+  --disable-openpty \
+  --disable-harden \
+  --disable-largefile
+  
+
+cat << 'EOF' >> config.h
+#undef HAVE_EXPLICIT_BZERO
+#undef HAVE_FEXECVE
+#undef HAVE_OPENPTY
+#define USE_DEV_PTMX 1
+EOF
+
+  # 1. 编译生成所有二进制文件
+make V=1 MULTI=1 PROGRAMS="dropbear dropbearkey scp" -j$(nproc) > ~/1.txt 2>&1
+
+# 2. 使用你的交叉编译工具链剥离符号（减小体积）
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata dropbearmulti
+~/ELFkickers/sstrip/sstrip ~/dropbear_build/dropbearmulti
+
+make distclean
+readelf -s dropbearmulti | grep -E "crypt|openpty|fexecve|explicit_bzero"
+readelf -d dropbearmulti | grep NEEDED
+${CROSS_COMPILE}readelf -s dropbearmulti | grep -E "_"
+${CROSS_COMPILE}readelf -s dropbearmulti | grep "UND"
+file dropbearmulti
+ls -l  ./dropbearmulti
+
+chmod 755 /usr/sbin/dropbearmulti
+
+ln -s /usr/sbin/dropbearmulti /usr/sbin/scp
+ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbear
+ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbearkey
