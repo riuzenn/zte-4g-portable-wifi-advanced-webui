@@ -37,7 +37,7 @@ window.evalcmd = async (cmd) => {
         body: finalCmd,
         headers: {'Content-Type': 'text/plain'}
     }, '执行Shell命令', 'text');
-    if (text !== null && !cmd) showinbox(text);return text;
+    if (text && !cmd) showinbox(text);return text;
 };
 const resultBox = document.getElementById('resultBox');
 window.showinbox = (res) => {resultBox.textContent = res;};
