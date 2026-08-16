@@ -1,0 +1,28 @@
+git clone https://github.com/aligrudi/neatvi.git ./neatvi_build
+cd neatvi_build
+
+export TOOLCHAIN=${HOME}/buildroot
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${TOOLCHAIN}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}ar"
+export RANLIB="${CROSS_COMPILE}ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fno-stack-protector -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -D__stdin=stdin"
+
+export LDFLAGS="-L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--defsym=__stdin=stdin -Wl,--no-undefined -Wl,--no-allow-shlib-undefined"
+
+export LIBS="-lc"
+
+make V=1 vi CC="${CC}" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" -j$(nproc) > ~/1.txt 2>&1
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata vi
+~/ELFkickers/sstrip/sstrip ~/neatvi_build/vi
+
+ls -l vi
+${CROSS_COMPILE}readelf -d vi | grep NEEDED
+${CROSS_COMPILE}readelf -s vi | grep -E "_"
+${CROSS_COMPILE}readelf -s vi | grep "UND"
+make clean
