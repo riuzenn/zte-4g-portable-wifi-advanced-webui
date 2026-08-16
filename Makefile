@@ -1,19 +1,19 @@
 # === 1. 路径定义 ===
-BUILD_ROOT = $(shell echo $$HOME)/at_build
-COMPILER   = $(shell echo $$HOME)/buildroot
-SYSROOT    = $(COMPILER)/arm-buildroot-linux-uclibcgnueabi/sysroot
-ZTE_LIB    = $(BUILD_ROOT)/lib
+TOOLCHAIN=$(HOME)/buildroot
+CROSS_COMPILE=$(TOOLCHAIN)/bin/arm-buildroot-linux-uclibcgnueabi-
+SYSROOT=$(TOOLCHAIN)/arm-buildroot-linux-uclibcgnueabi/sysroot
+ZTE_LIB=$(TOOLCHAIN)/ztelib
 
 # === 2. 工具链定义 ===
-CC      = $(COMPILER)/bin/arm-buildroot-linux-uclibcgnueabi-gcc
-STRIP   = $(COMPILER)/bin/arm-buildroot-linux-uclibcgnueabi-strip
+CC=$(CROSS_COMPILE)gcc
+STRIP=$(CROSS_COMPILE)strip
 
 # === 3. 编译参数 (CFLAGS) ===
 CFLAGS  = -Wextra \
-          -O2 -mcpu=cortex-a53 -mtune=cortex-a53 \
+          -Os -mcpu=cortex-a53 -mtune=cortex-a53 \
           -mfloat-abi=soft -mthumb \
           -fno-unwind-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer \
-          -falign-functions=16 -falign-loops=16 -falign-jumps=16 \
+          -fno-ident -fno-stack-protector \
           -ffunction-sections -fdata-sections -fvisibility=hidden \
           --sysroot=$(SYSROOT)
 
@@ -21,7 +21,6 @@ CFLAGS  = -Wextra \
 LDFLAGS = -L$(ZTE_LIB) \
           -Wl,-O2 \
           -Wl,--gc-sections \
-          -Wl,-rpath-link=$(ZTE_LIB) \
           -Wl,--allow-shlib-undefined \
           -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 \
           -Wl,-z,max-page-size=4096
@@ -37,7 +36,7 @@ SRCS   = at.c
 .PHONY: all clean
 
 all: $(TARGET)
-	$(STRIP) --strip-all $(TARGET)
+	$(STRIP) --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata $(TARGET)
 
 $(TARGET): $(SRCS)
 	$(CC) $(CFLAGS) $(SRCS) -o $@ $(LDFLAGS) $(LIBS)
