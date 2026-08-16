@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ "$PS1" ]; then
+    export PS1="\[\033[0;36m\]\w \\$\[\033[0m\] "
+    export HISTFILE=/dev/null
+    alias ls='ls --color=auto'
+    alias ll='ls -alFh --color=auto'
+fi
