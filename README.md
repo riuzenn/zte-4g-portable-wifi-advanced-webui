@@ -73,6 +73,7 @@ adb shell ls -l /etc/rc
 ◉Enable stack protection support：勾选（按y）  
 ➤Build options  
 ◉gcc optimization level：optimize for size  
+◉Stack Smashing Protection：选择-fstack-protection-strong（编译时可通过CFLAGS覆盖：-fno-stack-protector、-fstack-protector、-fstack-protector-strong、-fstack-protector-all）  
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
