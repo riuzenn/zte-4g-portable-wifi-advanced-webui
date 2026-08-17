@@ -68,13 +68,10 @@ adb shell ls -l /etc/rc
 ➤Toolchain  
 ◉C library: uClibc-ng  
 ◉Kernel Headers→选择Manually specified Linux version→linux version：输入3.4.110 (内核版本是3.4.110-rt140)  
-◉Kernel Headers→选择Manually specified Linux version→Custom kernel headers series：输入3.4.x  
+◉Kernel Headers→选择Manually specified Linux version→Custom kernel headers series：选择3.4.x  
 ~~◉Kernel Headers→Custom tarball→URL of custom kernel tarball：https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-3.4.110.tar.xz~~  
 ➤Build options  
 ◉gcc optimization level：optimize for size  
-◉RELRO Protection：None  
-◉Build code with PIC/PIE：取消勾选（按n）  
-◉Stack Smashing Protection：None
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
