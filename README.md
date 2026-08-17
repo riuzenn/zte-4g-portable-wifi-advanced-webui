@@ -269,6 +269,8 @@ make
 ```  
 mount -o remount,rw /
 chmod 755 /usr/sbin/dropbearmulti
+chmod 755 /usr/sbin/sshon
+chmod 755 /usr/sbin/sshoff
 ln -s /usr/sbin/dropbearmulti /usr/sbin/scp
 ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbear
 ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbearkey
@@ -304,11 +306,11 @@ scp和下面的sftp-server都依赖dropbear提供的ssh环境，使用前二者�
 <div align="center"><img src="./images/scp.png"></div>  
 
 ### ◉sftp-server  
-#### 编译命令已写入[Makefile-sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-sftp-server)。编译好的[sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/libexec/sftp-server)推送到/usr/libexec路径。  
+#### 编译命令已写入[Makefile-sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-sftp-server)。编译好的[sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/libexec/sftp-server)推送到/usr/libexec路径，chmod 755。  
 <div align="center"><img src="./images/sftp.png"></div>  
 
 ### ◉neatvi  
-#### 编译命令已写入[Makefile-neatvi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-neatvi)。编译好的[vi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/vi)推送到/bin路径。有几个注意点：  
+#### 编译命令已写入[Makefile-neatvi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-neatvi)。编译好的[vi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/vi)推送到/bin路径，chmod 755。有几个注意点：  
 ➤如下改源码里的term.c里的term_read()函数，不然不识别windows的回车。  
 ```
 # 添加
