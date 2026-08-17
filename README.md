@@ -78,13 +78,13 @@ adb shell ls -l /etc/rc
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
 普通用户不用管以下几行代码  
-`sudo cp -r ~/buildroot /buildroot/`  
-`sudo chown -R $(whoami):$(whoami) /buildroot`  
-`cd /buildroot/buildroot-2026.05.1`  
-`tmux attach`  
-`echo 'export PATH=$PATH:~/buildroot/bin' >> ~/.bashrc`  
-`source ~/.bashrc`  
-  
+```
+sudo cp -r ~/buildroot /buildroot
+sudo chown -R $(whoami):$(whoami) /buildroot
+cd /buildroot/buildroot-2026.05.1
+cp /buildroot/buildroot-2026.05.1/output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz ~/buildroot
+```
+
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
 编译时间近一小时，请耐心等待。看到`>>> toolchain  Installing to target`就成了  
 打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
@@ -92,6 +92,9 @@ adb shell ls -l /etc/rc
 解压SDK到~/buildroot：`tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1`  
 重定向二进制文件路径：`cd ~/buildroot;./relocate-sdk.sh`  
 查看生成的编译器硬编码参数：`./bin/arm-buildroot-linux-uclibcgnueabi-gcc -v`  
+将编译器路径写入用户变量：  
+`echo 'export PATH=$PATH:~/buildroot/bin' >> ~/.bashrc`  
+`source ~/.bashrc`  
 把f30ap/lib目录下的所有文件复制到编译电脑的~/buildroot/ztelib路径  
 #### 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
