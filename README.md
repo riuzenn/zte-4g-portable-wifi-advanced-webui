@@ -265,7 +265,7 @@ make
 ➤如需压缩功能，编译dropbear可能会用到[libz.so.1.2.11库](https://www.zlib.net/zlib-1.3.1.tar.gz)的两个头文件，解压出zconf.h和zlib.h放到/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/，不知道为啥buildroot不自带。  
 ➤第一次连接ssh会提示服务主机的公钥指纹不在已知列表，输入yes。之后输入账户明文密码按回车，输入的密码不会同步显示到屏幕，也不会有光标闪烁，第一次接触这个机制时我还以为程序卡住了。  
 #### 参考安装过程：
-编译好的[dropbearmulti](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/dropbearmulti)连同[sshon](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshon)和[sshoff](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshoff)推送到/usr/sbin，更新过的[index.html](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/etc_ro/web/index.html)和[customfuncs.js](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/etc_ro/web/js/customfuncs.js)推送到/etc_ro/web，执行：  
+编译好的[dropbearmulti](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/dropbearmulti)连同[sshon](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshon)和[sshoff](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshoff)推送到/usr/sbin，更新过的[index.html](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/etc_ro/web/index.html)和[customfuncs.js](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/etc_ro/web/js/customfuncs.js)推送到/etc_ro/web和/etc_ro/web/js，执行：  
 ```  
 mount -o remount,rw /
 chmod 755 /usr/sbin/dropbearmulti
