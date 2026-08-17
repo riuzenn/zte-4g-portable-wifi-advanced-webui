@@ -70,7 +70,7 @@ adb shell ls -l /etc/rc
 ◉Kernel Headers→选择Manually specified Linux version→linux version：输入3.4.110 (内核版本是3.4.110-rt140)  
 ◉Kernel Headers→选择Manually specified Linux version→Custom kernel headers series：选择3.4.x  
 ~~◉Kernel Headers→Custom tarball→URL of custom kernel tarball：https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-3.4.110.tar.xz~~  
-◉Enable stack protection support：勾选（按y）
+◉Enable stack protection support：勾选（按y）  
 ➤Build options  
 ◉gcc optimization level：optimize for size  
 
