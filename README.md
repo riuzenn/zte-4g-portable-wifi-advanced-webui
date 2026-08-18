@@ -244,6 +244,10 @@ LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成
 原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
 ## 编译的其他应用  
 除了at外，我还编译了以下应用。所有应用的二进制文件都用[sstrip](https://github.com/BR903/ELFkickers)处理过，缩小了体积。  
+dropbear和sftp-server可能暴露在公网，所以启用了生成位置无关可执行文件、重定位只读、栈溢出保护，开启与否有KB的大小差别。可如下关闭：  
+export CFLAGS="-fno-pie -fno-stack-protector"  
+export LDFLAGS="-no-pie -Wl,-z,norelro"  
+
 sstrip编译：  
 ```
 cd ~
