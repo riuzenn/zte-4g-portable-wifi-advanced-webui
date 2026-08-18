@@ -249,7 +249,7 @@ sstrip编译：
 cd ~
 git clone https://github.com/BR903/ELFkickers.git
 cd ELFkickers/sstrip
-make
+make > ~/1.txt 2>&1
 # 超级精简一个二进制可执行文件
 ~/ELFkickers/sstrip/sstrip 目标文件
 ```
