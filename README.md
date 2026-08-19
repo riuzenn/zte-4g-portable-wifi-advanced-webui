@@ -50,7 +50,7 @@ adb shell ls -l /etc/rc
 我先编译了适配中兴微ZX297520V3这颗cpu的Buildroot交叉编译器，adb pull随身wifi的/lib/路径下的依赖库到linux电脑里，最后用[Makefile](/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了针对这颗cpu的大部分可用编译优化命令，可以尝试移植到其他二进制文件上。
 #### 编译buildroot交叉编译器  
 在这个网站下载Buildroot源码：https://buildroot.org/  
-我选了最新Stable版的buildroot-2026.05.1  
+我选了buildroot-2015.11.1因为它是最后一个支持uClibc-0.9.33.2（f30ap使用这个版本的c库）的版本。  
 当前路径是`~/buildroot`  
 如果没有，创建并转到这个文件夹：`mkdir -p ~/buildroot;cd ~/buildroot`  
 获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2026.05.1.tar.gz`  
@@ -61,19 +61,22 @@ adb shell ls -l /etc/rc
 
 ➤Target options  
 ◉Target Architecture: ARM (little endian)  
-◉Target Architecture Variant: cortex-A53  
+◉Target Architecture Variant: cortex-A53（需运行[add-a53.sh](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/add-a53.sh)才有这个选项）  
 ◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
 ◉Floating point strategy: Soft float (编译文件时可以添加-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
 ◉ARM instruction set: ARM (编译文件时可以添加-mthumb缩小一点体积)  
 ➤Toolchain  
-◉C library: uClibc-ng  
-◉Kernel Headers→选择Manually specified Linux version→linux version：输入3.4.110 (内核版本是3.4.110-rt140)  
-◉Kernel Headers→选择Manually specified Linux version→Custom kernel headers series：选择3.4.x  
-~~◉Kernel Headers→Custom tarball→URL of custom kernel tarball：https://cdn.kernel.org/pub/linux/kernel/v3.x/linux-3.4.110.tar.xz~~  
+◉Kernel Headers：选择Linux 3.4.x kernel headers (内核版本是3.4.110-rt140)  
+◉C library: 选择uClibc  
+◉uClibc C library Version：选择uClibc 0.9.33.x
+◉uClibc configuration file to use?：输入我配置好的package/uclibc/uClibc-0.9.33.2.config（下载[uClibc-0.9.33.2.config](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/uClibc-0.9.33.2.config)推送到~/buildroot/buildroot-2015.11.1/package/uclibc）  
+◉Enable RPC support：选中  
+◉Enable WCHAR support：选中  
+◉Enable toolchain locale/i18n support：选中  
+◉Compile and install uClibc utilities：取消勾选  
 ◉Enable stack protection support：勾选（按y）  
 ➤Build options  
-◉gcc optimization level：optimize for size  
-◉Stack Smashing Protection：选择-fstack-protection-strong（编译时可通过CFLAGS覆盖：-fno-stack-protector、-fstack-protector、-fstack-protector-strong、-fstack-protector-all）  
+◉build code with Stack Smashing Protection：勾选（编译时可通过CFLAGS覆盖：-fno-stack-protector、-fstack-protector、-fstack-protector-strong、-fstack-protector-all）  
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
