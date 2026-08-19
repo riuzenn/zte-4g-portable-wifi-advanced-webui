@@ -93,7 +93,14 @@ cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueab
 
 可能需要：  
 buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有宏定义变化问题，如SIGSTKSZ，可以考虑用docker  
-docker run --rm -it     -v /buildroot:/buildroot     ubuntu:18.04    
+```
+docker run --rm -it     -v /buildroot:/buildroot     ubuntu:18.04
+cd /buildroot/buildroot-2015.11.1
+apt-get update
+apt-get install -y build-essential wget cpio python unzip rsync bc make gcc g++ bison flex libncurses-dev libssl-dev file patch gawk xz-utils git locales coreutils
+locale-gen en_US.UTF-8 zh_CN.UTF-8
+ln -s /bin/mkdir /usr/bin/mkdir
+```
 下载这个修改过的[gen_wctype.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/gen_wctype.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/extra/locale  
 echo 'CFLAGS += -march=armv7-a' >> /buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/Rules.mak  
 下载这个修改过的[reload1.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/reload1.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/host-gcc-final-4.9.3/gcc  
