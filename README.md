@@ -110,17 +110,14 @@ make host-gcc-final
 make host-gcc-final CXXFLAGS="-std=gnu++03"  
 make host-gcc-final CXXFLAGS="-std=gnu++11"  
 
-tar -czf toolchain-backup.tar.gz output/host/
-
-打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
-将编译器打包为SDK：`make sdk`  
-解压SDK到~/buildroot：`tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1`  
-重定向二进制文件路径：`cd ~/buildroot;./relocate-sdk.sh`  
+打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host/usr)挪个地  
+打包编译器：`tar -czf toolchain-backup.tar.gz output/host/`  
+解压SDK到~/buildroot：`tar -xvf ./output/host/usr/tar -czf toolchain-backup.tar.gz -C ~/buildroot --strip-components=3`  
 查看生成的编译器硬编码参数：`./bin/arm-buildroot-linux-uclibcgnueabi-gcc -v`  
 将编译器路径写入用户变量：  
 `echo 'export PATH=$PATH:~/buildroot/bin' >> ~/.bashrc`  
 `source ~/.bashrc`  
-把f30ap/lib目录下的所有文件复制到编译电脑的~/buildroot/ztelib路径  
+把f30ap/lib目录下的所有文件复制到编译电脑的~/ztelib路径  
 #### 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
 写好Makefile里的绝对路径后上传Makefile、at.c到当前目录  
