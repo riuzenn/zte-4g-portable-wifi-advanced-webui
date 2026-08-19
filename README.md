@@ -105,17 +105,9 @@ sudo chown -R $(whoami):$(whoami) /buildroot
 ```
 下载这个修改过的[gen_wctype.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/gen_wctype.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/extra/locale  
 echo 'CFLAGS += -march=armv7-a' >> /buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/Rules.mak  
-下载这个修改过的[reload1.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/reload1.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/host-gcc-final-4.9.3/gcc  
-如果宿主机编译器太新，使用gcc11编译host-gcc-final  
-```
-sudo apt install gcc-11 g++-11
-export CC=gcc-11
-export CXX=g++-11
-export HOSTCC=gcc-11
-export HOSTCXX=g++-11
-rm -rf output/build/host-gcc-final-4.9.3
-make host-gcc-final
-```
+make host-gcc-final CXXFLAGS="-std=gnu++11"  
+make host-gcc-final CXXFLAGS="-std=gnu++03"  
+
 
 打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
 将编译器打包为SDK：`make sdk`  
