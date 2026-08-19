@@ -53,8 +53,8 @@ adb shell ls -l /etc/rc
 我选了buildroot-2015.11.1因为它是最后一个支持uClibc-0.9.33.2（f30ap使用这个版本的c库）的版本。  
 当前路径是`~/buildroot`  
 如果没有，创建并转到这个文件夹：`mkdir -p ~/buildroot;cd ~/buildroot`  
-获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2026.05.1.tar.gz`  
-解压：`tar -xzvf buildroot-2026.05.1.tar.gz;cd ./buildroot-2026.05.1`  
+获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2015.11.1.tar.gz`  
+解压：`tar -xzvf buildroot-2015.11.1.tar.gz;cd ./buildroot-2015.11.1`  
 配置：`make menuconfig`  
 界面如下，纯键盘操作  
 <div align="center"><img src="./images/buildroot配置页面.jpg"></div>  
@@ -84,8 +84,8 @@ adb shell ls -l /etc/rc
 ```
 sudo cp -r ~/buildroot /buildroot
 sudo chown -R $(whoami):$(whoami) /buildroot
-cd /buildroot/buildroot-2026.05.1
-cp /buildroot/buildroot-2026.05.1/output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz ~/buildroot
+cd /buildroot/buildroot-2015.11.1
+cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz ~/buildroot
 ```
 
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
