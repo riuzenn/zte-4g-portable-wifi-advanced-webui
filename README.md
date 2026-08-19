@@ -90,6 +90,7 @@ cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueab
 
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
 编译时间近一小时，请耐心等待。看到`>>> toolchain  Installing to target`就成了  
+buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有宏定义变化问题，如SIGSTKSZ，可以考虑用docker  
 打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
 将编译器打包为SDK：`make sdk`  
 解压SDK到~/buildroot：`tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1`  
