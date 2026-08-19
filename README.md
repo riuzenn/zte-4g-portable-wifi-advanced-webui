@@ -89,10 +89,10 @@ cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueab
 ```
 
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
-编译时间几个小时，请耐心等待。看到`>>> toolchain  Installing to target`就成了  
+编译时间1个多小时，请耐心等待。看到`>>> toolchain  Installing to target`就成了  
 
 可能需要：  
-buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有宏定义变化问题，如SIGSTKSZ，可以考虑用docker  
+buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有SIGSTKSZ定义变化问题，可以考虑用docker  
 ```
 docker run --rm -it     -v /buildroot:/buildroot     ubuntu:18.04
 cd /buildroot/buildroot-2015.11.1
@@ -101,6 +101,7 @@ apt-get install -y build-essential wget cpio python unzip rsync bc make gcc g++ 
 locale-gen en_US.UTF-8 zh_CN.UTF-8
 ln -s /bin/mkdir /usr/bin/mkdir
 exit
+sudo chown -R $(whoami):$(whoami) /buildroot
 ```
 下载这个修改过的[gen_wctype.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/gen_wctype.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/extra/locale  
 echo 'CFLAGS += -march=armv7-a' >> /buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/Rules.mak  
