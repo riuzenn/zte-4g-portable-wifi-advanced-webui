@@ -89,8 +89,13 @@ cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueab
 ```
 
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
-编译时间近一小时，请耐心等待。看到`>>> toolchain  Installing to target`就成了  
+编译时间几个小时，请耐心等待。看到`>>> toolchain  Installing to target`就成了  
+
+可能需要：  
 buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有宏定义变化问题，如SIGSTKSZ，可以考虑用docker  
+下载这个修改过的[gen_wctype.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/gen_wctype.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/extra/locale。  
+echo 'CFLAGS += -march=armv7-a' >> /buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/Rules.mak  
+
 打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
 将编译器打包为SDK：`make sdk`  
 解压SDK到~/buildroot：`tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1`  
