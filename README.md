@@ -110,6 +110,8 @@ make host-gcc-final
 make host-gcc-final CXXFLAGS="-std=gnu++03"  
 make host-gcc-final CXXFLAGS="-std=gnu++11"  
 
+tar -czf toolchain-backup.tar.gz output/host/
+
 打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host)挪个地  
 将编译器打包为SDK：`make sdk`  
 解压SDK到~/buildroot：`tar -xvf ./output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz -C ~/buildroot --strip-components=1`  
