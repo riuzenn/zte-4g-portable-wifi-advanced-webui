@@ -110,12 +110,12 @@ make host-gcc-final
 make host-gcc-final CXXFLAGS="-std=gnu++03"  
 make host-gcc-final CXXFLAGS="-std=gnu++11"  
 
-打包、解压SDK和重定向的操作相当于给生成的编译器(位于./output/host/usr)挪个地  
+打包、解压的操作相当于给生成的编译器(位于./output/host/usr)挪个地  
 打包编译器：`tar -czf toolchain-backup.tar.gz output/host/`  
-解压SDK到~/buildroot：`tar -xvf toolchain-backup.tar.gz -C ~/buildroot --strip-components=3`  
-查看生成的编译器硬编码参数：`cd ~/buildroot;./bin/arm-buildroot-linux-uclibcgnueabi-gcc -v`  
+解压到~/buildroot：`mkdir -p ~/buildroot;tar -xvf toolchain-backup.tar.gz -C ~/buildroot --strip-components=2`  
+查看生成的编译器硬编码参数：`cd ~/buildroot;./usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc -v`  
 将编译器路径写入用户变量：  
-`echo 'export PATH=$PATH:~/buildroot/bin' >> ~/.bashrc`  
+`echo 'export PATH=$PATH:~/buildroot/usr/bin' >> ~/.bashrc`  
 `source ~/.bashrc`  
 把f30ap/lib目录下的所有文件复制到编译电脑的~/ztelib路径  
 #### 编译at  
