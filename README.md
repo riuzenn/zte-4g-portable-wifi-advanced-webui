@@ -118,7 +118,7 @@ make host-gcc-final CXXFLAGS="-std=gnu++11"
 `echo 'export PATH=$PATH:~/usr/bin' >> ~/.bashrc`  
 `echo 'export LD_LIBRARY_PATH=~/usr/lib:$LD_LIBRARY_PATH' >> ~/.bashrc`  
 `source ~/.bashrc`  
-把f30ap/lib目录下的所有文件复制到编译电脑的~/usr/ztelib路径（建议通过adb pull或cp -rL方式将软链接转换成实际文件，另外复制一份libuClibc-0.9.33.2.so重命名为libc.so，防止编译器用buildroot的sysroot路径下的c库）。  
+把f30ap/lib目录下的所有文件复制到编译电脑的~/usr/ztelib路径（建议通过adb pull或cp -rL等方式将软链接转换成实际文件，另外复制一份libuClibc-0.9.33.2.so重命名为libc.so，防止编译器用buildroot的sysroot路径下的c库，其他标准库同理）。  
 #### 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
 写好Makefile里的绝对路径后上传Makefile、at.c到当前目录  
