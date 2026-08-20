@@ -117,7 +117,7 @@ make host-gcc-final CXXFLAGS="-std=gnu++11"
 将编译器路径写入用户变量：  
 `echo 'export PATH=$PATH:~/usr/bin' >> ~/.bashrc`  
 `source ~/.bashrc`  
-把f30ap/lib目录下的所有文件复制到编译电脑的~/ztelib路径  
+把f30ap/lib目录下的所有文件复制到编译电脑的~/usr/ztelib路径  
 #### 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
 写好Makefile里的绝对路径后上传Makefile、at.c到当前目录  
