@@ -115,7 +115,8 @@ make host-gcc-final CXXFLAGS="-std=gnu++11"
 解压到~：`tar -xvf toolchain-backup.tar.gz -C ~`  
 查看生成的编译器硬编码参数：`cd ~;./usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc -v`  
 将编译器路径写入用户变量：  
-`echo 'export PATH=$PATH:~/usr/bin' >> ~/.bashrc`  
+`echo 'export PATH=$PATH:~/usr/bin' >> ~/.bashrc` 
+`echo 'export LD_LIBRARY_PATH=~/usr/lib:$LD_LIBRARY_PATH' >> ~/.bashrc`  
 `source ~/.bashrc`  
 把f30ap/lib目录下的所有文件复制到编译电脑的~/usr/ztelib路径  
 #### 编译at  
