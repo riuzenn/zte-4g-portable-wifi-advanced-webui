@@ -66,9 +66,11 @@ adb shell ls -l /etc/rc
 ◉Floating point strategy: Soft float (编译文件时可以添加-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
 ◉ARM instruction set: ARM (编译文件时可以添加-mthumb缩小一点体积)  
 ➤Toolchain  
-◉Kernel Headers：选择Linux 3.4.x kernel headers (内核版本是3.4.110-rt140)  
-◉C library: 选择uClibc（我看过.config，2015.11.1默认用0.9.33.2版的）  
-◉uClibc C library Version：选择uClibc 0.9.33.x  
+◉Kernel Headers：选择Manually specified Linux version(内核版本是3.4.110-rt140)  
+◉linux version：输入3.4.110(内核版本是3.4.110-rt140)  
+◉Custom kernel headers series：选择3.4.x  
+◉C library: 选择uClibc  
+◉uClibc C library Version：选择uClibc 0.9.33.x（我看过.config，2015.11.1默认用0.9.33.2版的）  
 ◉uClibc configuration file to use?：输入我配置好的package/uclibc/uClibc-0.9.33.2.config（下载[uClibc-0.9.33.2.config](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/uClibc-0.9.33.2.config)推送到~/buildroot/buildroot-2015.11.1/package/uclibc）  
 ◉Enable RPC support：选中  
 ◉Enable WCHAR support：选中  
