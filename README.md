@@ -75,7 +75,6 @@ adb shell ls -l /etc/rc
 ◉Enable RPC support：选中  
 ◉Enable WCHAR support：选中  
 ◉Enable toolchain locale/i18n support：选中  
-◉Compile and install uClibc utilities：取消勾选  
 ◉Enable stack protection support：勾选（按y）  
 ➤Build options  
 ◉build code with Stack Smashing Protection：勾选（编译时可通过CFLAGS覆盖：-fno-stack-protector、-fstack-protector、-fstack-protector-strong、-fstack-protector-all）  
