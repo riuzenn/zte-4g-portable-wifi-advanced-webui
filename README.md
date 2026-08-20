@@ -205,14 +205,15 @@ wifi_11n_cap=0，wifi默认频宽设为20MHz
 ### ◉测试内核是否支持硬件浮点  
 下载[fpu_test.c](./fpu_test.c)，按如下命令编译  
 ```
-$HOME/buildroot/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
-  -Wextra -O2 -mcpu=cortex-a53 -mtune=cortex-a53 \
-  -mfloat-abi=softfp -mfpu=neon-fp-armv8 -mthumb \
-  --sysroot=$HOME/buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot \
-  -Wl,-O2 \
-  fpu_test.c -o fpu_test
+$HOME/usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
+    -O2 \
+    -mcpu=cortex-a53 \
+    -mfloat-abi=softfp \
+    -mfpu=vfp \
+    fpu_test.c \
+    -o fpu_vfp
 ```
-发现一运行fpu_test随身wifi就重启，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点。  
+发现一执行到VFP指令集就退出，报错Illegal instruction，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点。  
 ### ◉修改连接到随身wifi设备的默认dns  
 (adb shell)nv set dhcpDns="223.5.5.5 223.6.6.6"  
 (adb shell)nv set DNS_proxy=disable  
