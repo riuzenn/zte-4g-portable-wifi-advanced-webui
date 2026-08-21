@@ -72,11 +72,8 @@ adb shell ls -l /etc/rc
 ◉C library: 选择uClibc  
 ◉uClibc C library Version：选择uClibc 0.9.33.x（我看过.config，2015.11.1默认用0.9.33.2版的）  
 ◉uClibc configuration file to use?：输入我配置好的package/uclibc/uClibc-0.9.33.2.config（下载[uClibc-0.9.33.2.config](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/uClibc-0.9.33.2.config)推送到~/buildroot/buildroot-2015.11.1/package/uclibc）  
-◉Enable RPC support：选中  
 ◉Enable WCHAR support：选中   
 ◉Enable stack protection support：勾选（按y）  
-➤Build options  
-◉build code with Stack Smashing Protection：勾选（编译时可通过CFLAGS覆盖：-fno-stack-protector、-fstack-protector、-fstack-protector-strong、-fstack-protector-all）  
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
