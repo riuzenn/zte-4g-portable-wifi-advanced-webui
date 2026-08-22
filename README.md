@@ -55,6 +55,7 @@ adb shell ls -l /etc/rc
 如果没有，创建并转到这个文件夹：`mkdir -p ~/buildroot;cd ~/buildroot`  
 获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2015.11.1.tar.gz`  
 解压：`tar -xzvf buildroot-2015.11.1.tar.gz;cd ./buildroot-2015.11.1`  
+可能需要：改extra/config/lxdialog/check-lxdialog.sh里的`main() {}`为`int main() { return 0; }`  
 配置：`make menuconfig`  
 界面如下，纯键盘操作  
 <div align="center"><img src="./images/buildroot配置页面.jpg"></div>  
