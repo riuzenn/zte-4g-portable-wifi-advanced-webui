@@ -8,10 +8,10 @@ http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=0  
 ## 避免adb push /etc/rc后忘加执行权限导致砖机的可能办法  
 往/etc/inittab（644权限）的最开头加三行    
-`::sysinit:mount -o remount,rw /`  
-`::sysinit:/bin/chmod +x /etc/rc`  
-`::sysinit:mount -o remount,ro /`  
-命令会在每次开机时自动加执行权限。这个办法我没试过，只是个建议！！！  
+`::sysinit:mount -o remount,rw /dev/root /`  
+`::sysinit:/bin/chmod 755 /etc/rc`  
+`::sysinit:mount -o remount,ro /dev/root /`  
+命令会在每次开机时重置权限。这个办法我试过可行（mount确认根目录是/dev/root这个设备路径，chmod 711 /etc/rc，reboot看权限有没有改成755），但是不推荐！！！  
 
 我更推荐以下办法：  
 往/etc/rc最后添加  
