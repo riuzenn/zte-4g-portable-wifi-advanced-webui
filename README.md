@@ -1,6 +1,6 @@
 # zte-4g-portable-wifi-advanced-webui
 中兴4G随身WiFi全功能后台 / A full-featured WebUI for ZTE 4G Mifi  
-◉本工具目前只在f30a pro上测试过，其他设备请自行适配！！！shell、at、customfunc.js、bandlock.html这几个文件应该是通用的。  
+◉本工具目前只在f30a pro上测试过，其他设备请自行适配！！！  
 [123网盘备份](https://www.123pan.com/s/NV4Qjv-IZYvd)  
 ## 开启adb  
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=1  
