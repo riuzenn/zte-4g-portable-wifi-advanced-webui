@@ -7,13 +7,17 @@ http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_
 ## 关闭adb  
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=0  
 ## 避免adb push /etc/rc后忘加执行权限导致砖机的可能办法  
-往/etc/inittab（644权限）的最开头加一行  
+往/etc/inittab（644权限）的最开头加三行  
+`mount -o remount,rw /`  
 `::sysinit:/bin/chmod +x /etc/rc`  
+`mount -o remount,ro /`
 这条命令会在每次开机时自动加执行权限。这个办法我没试过，只是个建议！！！  
 
 我更推荐以下办法：  
 往/etc/rc最后添加  
+`mount -o remount,rw /`
 `chmod +x /opt/mybin/mods.sh`  
+`mount -o remount,ro /`  
 `/opt/mybin/mods.sh &`  
 以后自定义命令都在/opt/mybin/mods.sh里添加。  
 ## 自定义可执行文件和配置文件放哪  
