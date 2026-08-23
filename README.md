@@ -16,6 +16,8 @@ http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_
 `chmod +x /opt/mybin/mods.sh`  
 `/opt/mybin/mods.sh &`  
 以后自定义命令都在/opt/mybin/mods.sh里添加。  
+## 自定义可执行文件和配置文件放哪  
+我倾向于/opt/mybin和myconf，但是busybox貌似硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来就可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
 ## 利用原生CGI在web后台执行shell命令
 ### ➤下载:  
 [shell](/etc_ro/cgi-bin/shell)  
