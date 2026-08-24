@@ -104,7 +104,7 @@ cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueab
 ```
 
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
-编译时间1个多小时，请耐心等待。看到`>>> toolchain virtual Installing to target`就成了  
+不算debug时间，wsl2用上了全部12核，编译时间不到半小时，牛逼。我之前用cloud shell都要几个小时，过的是什么苦日子。看到`>>> toolchain virtual Installing to target`就成了  
 
 可能需要：  
 buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有SIGSTKSZ定义变化问题，可以考虑用docker  
@@ -112,7 +112,7 @@ buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有SIGSTKS
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 newgrp docker
-docker run --rm -it     -v /buildroot:/buildroot     ubuntu:18.04
+docker run --rm -it     -v /home/展开为用户名/buildroot:/home/展开为用户名/buildroot     ubuntu:18.04
 cd /buildroot/buildroot-2015.11.1
 apt-get update
 apt install -y build-essential python unzip rsync bc wget cpio file
