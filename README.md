@@ -113,11 +113,11 @@ sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 newgrp docker
 docker run --rm -it     -v /home/展开为用户名/buildroot:/home/展开为用户名/buildroot     ubuntu:18.04
-cd /buildroot/buildroot-2015.11.1
+cd ~/buildroot/buildroot-2015.11.1
 apt-get update
 apt install -y build-essential python unzip rsync bc wget cpio file
 exit
-sudo chown -R $(whoami):$(whoami) /buildroot
+#sudo chown -R $(whoami):$(whoami) /buildroot
 ```
 ~~下载这个修改过的[gen_wctype.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/gen_wctype.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/extra/locale  
 echo 'CFLAGS += -march=armv7-a' >> /buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/Rules.mak  
