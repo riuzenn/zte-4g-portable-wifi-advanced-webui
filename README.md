@@ -109,12 +109,13 @@ cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueab
 可能需要：  
 buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有SIGSTKSZ定义变化问题，可以考虑用docker  
 ```
+sudo apt install -y docker.io
+sudo usermod -aG docker $USER
+newgrp docker
 docker run --rm -it     -v /buildroot:/buildroot     ubuntu:18.04
 cd /buildroot/buildroot-2015.11.1
 apt-get update
-apt-get install -y build-essential wget cpio python unzip rsync bc make gcc g++ bison flex libncurses-dev libssl-dev file patch gawk xz-utils git locales coreutils
-locale-gen en_US.UTF-8 zh_CN.UTF-8
-ln -s /bin/mkdir /usr/bin/mkdir
+apt install -y build-essential python unzip rsync bc wget cpio file
 exit
 sudo chown -R $(whoami):$(whoami) /buildroot
 ```
