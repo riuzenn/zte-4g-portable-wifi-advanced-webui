@@ -78,7 +78,7 @@ adb shell ls -l /etc/rc
 
 ➤Target options  
 ◉Target Architecture: ARM (little endian)  
-◉Target Architecture Variant: cortex-A53（需运行[add-a53.sh](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/add-a53.sh)才有这个选项）  
+◉Target Architecture Variant: cortex-A7  
 ◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
 ◉Floating point strategy: Soft float (编译文件时可以添加-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
 ◉ARM instruction set: ARM (编译文件时可以添加-mthumb缩小一点体积)  
@@ -89,8 +89,9 @@ adb shell ls -l /etc/rc
 ◉C library: 选择uClibc  
 ◉uClibc C library Version：选择uClibc 0.9.33.x（我看过.config，2015.11.1默认用0.9.33.2版的）  
 ◉uClibc configuration file to use?：输入我配置好的package/uclibc/uClibc-0.9.33.2.config（下载[uClibc-0.9.33.2.config](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/uClibc-0.9.33.2.config)推送到~/buildroot/buildroot-2015.11.1/package/uclibc）  
-◉Enable WCHAR support：选中   
-◉Enable stack protection support：勾选（按y）  
+◉Enable RPC support：勾选（按y）  
+◉Enable WCHAR support：勾选  
+◉Enable stack protection support：勾选  
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
