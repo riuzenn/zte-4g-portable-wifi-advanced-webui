@@ -103,8 +103,9 @@ cd /buildroot/buildroot-2015.11.1
 cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz ~/buildroot
 ```
 
+会去国外网站下源码，国内网络直连速度非常慢，记得...  
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
-不算debug时间，wsl2用上了全部12核，编译时间不到半小时，牛逼。我之前用cloud shell都要几个小时，过的是什么苦日子。看到`>>> toolchain virtual Installing to target`就成了  
+wsl2用上了全部12核，不算debug时间，编译时间不到半小时，牛逼。我之前用cloud shell都要几个小时，过的是什么苦日子。看到`>>> toolchain virtual Installing to target`就成了  
 
 可能需要：  
 buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有SIGSTKSZ定义变化问题，可以考虑用docker  
@@ -113,7 +114,7 @@ sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 newgrp docker
 docker run --rm -it     -v /home/展开为用户名/buildroot:/home/展开为用户名/buildroot     ubuntu:18.04
-cd ~/buildroot/buildroot-2015.11.1
+cd /home/展开为用户名/buildroot/buildroot-2015.11.1
 apt-get update
 apt install -y build-essential python unzip rsync bc wget cpio file
 exit
