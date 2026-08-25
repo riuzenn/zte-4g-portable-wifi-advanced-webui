@@ -81,7 +81,7 @@ adb shell ls -l /etc/rc
 ◉Target Architecture Variant: cortex-A7  
 ◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
 ◉Floating point strategy: Soft float (编译文件时可以添加-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
-◉ARM instruction set: ARM (编译文件时可以添加-mthumb缩小一点体积)  
+◉ARM instruction set: Thumb2  
 ➤Toolchain  
 ◉Kernel Headers：选择Manually specified Linux version(内核版本是3.4.110-rt140)  
 ◉linux version：输入3.4.110(内核版本是3.4.110-rt140)  
