@@ -229,7 +229,7 @@ $HOME/usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
     fpu_test.c \
     -o fpu_vfp
 ```
-发现一执行到VFP指令集就退出，报错Illegal instruction，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点。  
+发现一执行到VFP指令集就退出，报错Illegal instruction，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点，但是库文件里可以搜到硬件浮点指令，这一点很割裂。  
 ### ◉修改连接到随身wifi设备的默认dns  
 (adb shell)nv set dhcpDns="223.5.5.5 223.6.6.6"  
 (adb shell)nv set DNS_proxy=disable  
