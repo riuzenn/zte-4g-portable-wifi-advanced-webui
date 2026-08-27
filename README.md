@@ -222,7 +222,7 @@ wifi_11n_cap=0，wifi默认频宽设为20MHz
 下载[fpu_test.c](./fpu_test.c)，按如下命令编译  
 ```
 $HOME/usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
-    -O2 \
+    -Os \
     -march=armv7-a -mtune=cortex-a53 \
     -mfloat-abi=softfp \
     -mfpu=vfp \
