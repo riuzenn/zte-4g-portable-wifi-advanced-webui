@@ -223,7 +223,7 @@ wifi_11n_cap=0，wifi默认频宽设为20MHz
 ```
 $HOME/usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
     -O2 \
-    -mcpu=cortex-a53 \
+    -march=armv7-a -mtune=cortex-a53 \
     -mfloat-abi=softfp \
     -mfpu=vfp \
     fpu_test.c \
