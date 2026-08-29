@@ -10,22 +10,22 @@ http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_
 adb push支持中文字符和空格，用引号包裹整个路径即可  
 直接从文件管理器拖动文件到cmd终端，自动填写路径  
 ## 避免adb push /etc/rc后忘加执行权限导致砖机的可能办法  
-往/etc/inittab（644权限）的最开头加三行    
+➤往/etc/inittab（644权限）的最开头加三行    
 `::sysinit:mount -o remount,rw /dev/root /`  
 `::sysinit:/bin/chmod 755 /etc/rc`  
 `::sysinit:mount -o remount,ro /dev/root /`  
 命令会在每次开机时重置权限。这个办法我试过可行（mount确认根目录是/dev/root这个设备路径，chmod 711 /etc/rc，reboot看权限有没有改成755），但是不推荐，万一这个文件里命令有错误就砖机了！！！  
 
 我更推荐以下两个办法：  
-往/etc/rc最后添加  
+➤往/etc/rc最后添加  
 `mount -o remount,rw /`
 `chmod +x /opt/mybin/mods.sh`  
 `mount -o remount,ro /`  
 `/opt/mybin/mods.sh &`  
 以后自定义命令都在/opt/mybin/mods.sh里添加。  
 
-使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
-#下载修改版的[adbd](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/adbd)  
+➤使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
+下载修改版的[adbd](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/adbd)  
 ```
 adb shell mount -o remount,rw /
 #debug_enable模式下adbd应该不能直接覆盖
