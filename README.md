@@ -37,7 +37,7 @@ adb shell chmod 755 /bin/adbd
 adb shell mount -o remount,ro / 
 ```
 ## 自定义可执行文件和配置文件放哪  
-我倾向于/opt/mybin和myconf，但是busybox貌似硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来将可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
+我倾向于/opt/mybin和/opt/myconf，但是busybox貌似硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来将可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
 ## 利用原生CGI在web后台执行shell命令
 ### ➤下载:  
 [shell](/etc_ro/cgi-bin/shell)  
@@ -121,7 +121,7 @@ cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueab
 
 会去国外网站下源码，国内网络直连速度非常慢，记得...  
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
-wsl2用上了全部12核，不算debug时间，编译时间不到5分钟，牛逼。我之前用cloud shell都要几个小时，过的是什么苦日子。看到`>>> toolchain virtual Installing to target`就成了  
+wsl2用上了全部12线程，不算debug时间，编译时间不到5分钟，牛逼。我之前用cloud shell都要几个小时，过的是什么苦日子。看到`>>> toolchain virtual Installing to target`就成了  
 
 可能需要：  
 buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有SIGSTKSZ定义变化问题，可以考虑用docker  
@@ -162,7 +162,7 @@ adb shell mount -o remount,rw /
 adb push at文件在你电脑上的路径  /sbin/at  
 adb shell chmod 755 /sbin/at  
 ### ➤原理：  
-官方封装了一套和at串口通信的方法：zte_mifi把守大门，goahead接受前端url，向底层提交申请然后排队执行。我写的这个c程序就是调用官方的get_modem_info()函数，发送at命令，接收返回值。和已有的atwed的区别在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能没有编译后的c程序好。它就是个at端口信息的搬运工，和后台web的通信还是依赖默认的80端口，不需要后台。  
+官方封装了一套和at串口通信的方法：zte_mifi把守大门，goahead接受前端url，向底层提交申请然后排队执行。我写的这个c程序就是调用官方的get_modem_info()函数，发送at命令，接收返回值。和已有的atwed的区别在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能比编译后的c程序好，因为js在访问后台的电脑和手机执行，c程序在性能孱弱的随身wifi运行，占用仅24MB的运行内存。它就是个at端口信息的搬运工，和后台web的通信还是依赖默认的80端口，不需要后台。  
 ### ➤为什么要重复造轮子？  
 用十六进制查看atweb就能发现它里面封装了收集包括imei、iccid等在内的信息然后和一串加密字符串拼接成url检测是否付费的函数，再加上atweb有很高权限，所以我才花时间把这个小东西写出来，并且附上源码[at.c](/at.c)，感兴趣可以自己编译。一切代码都是明文，我可以保证我提交的代码没有后台。不过值得注意的安全隐患是我没加校验，网络攻击者可以很轻易地执行shell命令，建议apn里不要启用ipv4v6。  
 ### ➤已知bug：  
@@ -302,7 +302,8 @@ LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成
 除了at外，我还编译了以下应用。所有应用的二进制文件都用[sstrip](https://github.com/BR903/ELFkickers)处理过，缩小了体积。  
 dropbear可能暴露在公网，所以启用了生成位置无关可执行文件、完整重定位只读、栈溢出保护，开启与否有约10KB的大小差别。可如下关闭：  
 export CFLAGS="-fno-pie -fno-stack-protector"  
-export LDFLAGS="-no-pie -Wl,-z,norelro -Wl,-z,lazy"  
+export LDFLAGS="-Wl,-z,norelro -Wl,-z,lazy"  
+#gcc4.9不支持-no-pie参数  
 
 sstrip编译：  
 ```
