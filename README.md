@@ -6,20 +6,36 @@
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=1  
 ## 关闭adb  
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=0  
+## 关于adb的小知识
+adb push支持中文字符和空格，用引号包裹整个路径即可  
+直接从文件管理器拖动文件到cmd终端，自动填写路径  
 ## 避免adb push /etc/rc后忘加执行权限导致砖机的可能办法  
 往/etc/inittab（644权限）的最开头加三行    
 `::sysinit:mount -o remount,rw /dev/root /`  
 `::sysinit:/bin/chmod 755 /etc/rc`  
 `::sysinit:mount -o remount,ro /dev/root /`  
-命令会在每次开机时重置权限。这个办法我试过可行（mount确认根目录是/dev/root这个设备路径，chmod 711 /etc/rc，reboot看权限有没有改成755），但是不推荐！！！  
+命令会在每次开机时重置权限。这个办法我试过可行（mount确认根目录是/dev/root这个设备路径，chmod 711 /etc/rc，reboot看权限有没有改成755），但是不推荐，万一这个文件里命令有错误就砖机了！！！  
 
-我更推荐以下办法：  
+我更推荐以下两个办法：  
 往/etc/rc最后添加  
 `mount -o remount,rw /`
 `chmod +x /opt/mybin/mods.sh`  
 `mount -o remount,ro /`  
 `/opt/mybin/mods.sh &`  
 以后自定义命令都在/opt/mybin/mods.sh里添加。  
+
+使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
+#下载修改版的[adbd](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/adbd)  
+```
+adb shell mount -o remount,rw /
+#debug_enable模式下adbd应该不能直接覆盖
+adb push adbd在你电脑上的位置 /
+#备份原版adbd
+adb shell mv /bin/adbd adbd.bak
+adb shell mv /adbd /bin
+adb shell chmod 755 /bin/adbd
+adb shell mount -o remount,ro / 
+```
 ## 自定义可执行文件和配置文件放哪  
 我倾向于/opt/mybin和myconf，但是busybox貌似硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来将可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
 ## 利用原生CGI在web后台执行shell命令
@@ -41,7 +57,7 @@ adb push rc在你电脑上的位置 /etc/rc
 这个命令给rc执行权限，adb push的文件默认权限没有执行  
 adb shell chmod 755 /etc/rc  
 确认结果为-rwxr-xr-x开头，不要是-rw-rw-rw-开头  
-adb shell ls -l /etc/rc  
+adb shell ls -l /etc/rc
 ### ➤原理：  
 ◉反编译/bin/goahead可知f30a pro是支持cgi-bin的，硬编码了路径为/etc_ro/cgi-bin，只识别来自`http://192.168.0.1/cgi-bin/upload/`的命令请求。  
 ◉浏览器post了一个请求后，goahead将body的内容复制到/var/cgi*（*表示随机的一串字符），并将这个文件的路径赋值给$UPLOAD_FILENAME。我们要做的就是从$UPLOAD_FILENAME读取命令然后执行（eval）。  
