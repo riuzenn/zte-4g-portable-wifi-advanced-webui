@@ -36,6 +36,16 @@ adb shell mv /adbd /bin
 adb shell chmod 755 /bin/adbd
 adb shell mount -o remount,ro / 
 ```
+修改原理：  
+```
+文件偏移    原始字节（小端）     修改为  
+0x479e      c0 f3 08 08        40 f2 ed 18  
+原本是ubfx r8, r0, #0, #9，改为movw r8, #493 ; 0x1ed，强制寄存器r8 = 0x1ed（即 0755）。无论adb客户端传了啥权限值，都只用固定的0755  
+0x483e      46 ea 08 08        00 bf 00 bf  
+原本orr.w r8, r6, r8把owner的权限赋给group，r8会变成0775，改为nop,nop（无操作），防止r8被修改  
+0x486c      32 46              42 46  
+原本mov r2, r6改为mov r2, r8，直接使用固定的r8的值作为最终权限（这里r6是两次提权的结果，数值是0777）
+```
 ## 自定义可执行文件和配置文件放哪  
 我倾向于/opt/mybin和/opt/myconf，但是busybox貌似硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来将可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
 ## 利用原生CGI在web后台执行shell命令
