@@ -122,6 +122,7 @@ adb shell ls -l /etc/rc
 ◉Enable RPC support：勾选（按y）  
 ◉Enable WCHAR support：勾选  
 ◉Enable stack protection support：勾选  
+◉Enable compiler link-time-optimization support：勾选  
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
