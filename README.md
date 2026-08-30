@@ -403,7 +403,7 @@ scp和下面的sftp-server都依赖dropbear提供的ssh环境，使用前二者�
 
 ### ◉neatvi  
 #### 编译命令已写入[Makefile-neatvi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-neatvi)。编译好的[vi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/vi)推送到/bin路径，chmod 755。有几个注意点：  
-➤如下改源码里的term.c里的term_read()函数，不然不识别windows的回车。  
+➤如下改源码里的term.c里的term_read()函数，不然不识别windows的回车（也可以不改，只用ctrl+j当回车）。  
 ```
 # 添加
     if (c == '\r')
