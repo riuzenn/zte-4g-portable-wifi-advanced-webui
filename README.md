@@ -34,7 +34,7 @@ exit
 scp adbd在你电脑上的位置 /
 ssh admin@192.168.0.1
 #备份原版adbd
-mv /bin/adbd adbd.bak
+mv /bin/adbd /bin/adbd.bak
 mv /adbd /bin
 chmod 755 /bin/adbd
 mount -o remount,ro /
