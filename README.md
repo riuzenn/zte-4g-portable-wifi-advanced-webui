@@ -141,7 +141,7 @@ cd /buildroot/buildroot-2015.11.1
 cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz ~/buildroot
 ```
 
-会去国外网站下源码，国内网络直连速度非常慢，记得...  
+buildroot会去国外网站下源码，国内网络直连速度非常慢，记得...  
 编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
 wsl2用上了全部12线程，不算debug时间，编译时间10分钟，牛逼。之前用cloud shell要几个小时，过的是什么苦日子。  
 看到`>>> toolchain virtual Installing to target`就成了  
