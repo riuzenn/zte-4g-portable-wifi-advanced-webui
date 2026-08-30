@@ -27,14 +27,18 @@ adb push支持中文字符和空格，用引号包裹整个路径即可
 ➤使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
 下载修改版的[adbd](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/adbd)  
 ```
-adb shell mount -o remount,rw /
-#debug_enable模式下adbd应该不能直接覆盖
-adb push adbd在你电脑上的位置 /
+#adb shell依赖adbd提供支持，改用ssh
+ssh admin@192.168.0.1
+mount -o remount,rw /
+exit
+scp adbd在你电脑上的位置 /
+ssh admin@192.168.0.1
 #备份原版adbd
-adb shell mv /bin/adbd adbd.bak
-adb shell mv /adbd /bin
-adb shell chmod 755 /bin/adbd
-adb shell mount -o remount,ro / 
+mv /bin/adbd adbd.bak
+mv /adbd /bin
+chmod 755 /bin/adbd
+mount -o remount,ro /
+exit
 ```
 修改原理：  
 ```
