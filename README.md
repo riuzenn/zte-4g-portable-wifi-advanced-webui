@@ -80,7 +80,7 @@ adb shell ls -l /etc/rc
 <div align="center"><img src="./images/路径var改为tmp.jpg"></div>
 
 ### ➤已知bug:  
-◉ls /var会比正常结果多一个cgi*，这是正常的，因为咱们靠cgi*文件工作，该文件在命令执行后就会删除。  
+◉ls /var会比正常结果多一个`cgi*`，这是正常的，因为咱们靠`cgi*`文件工作，该文件在命令执行后就会删除。  
 ◉千万不要`cat /var/cgi*`，某个cgi*会发疯似的扩容到占满硬盘，具体原理不清楚。  
 ◉如果替换了我修改的goahead，千万不要`cat /tmp/cgi*`，内存应该会撑爆。  
 ### ➤备注：  
