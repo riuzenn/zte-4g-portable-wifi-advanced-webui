@@ -312,7 +312,7 @@ LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成
 除了at外，我还编译了以下应用。所有应用的二进制文件都用[sstrip](https://github.com/BR903/ELFkickers)处理过，缩小了体积。  
 为了缩小体积，我编译的应用都没启用生成位置无关可执行文件（#gcc4.9不支持-no-pie参数）、完整重定位只读、栈溢出保护。dropbear可能暴露在公网，可如下添加参数开启保护，开启与否有约10KB的大小差别：  
 export CFLAGS="-fPIE -fstack-protector-strong"  
-export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"  
+export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now ./stack_chk_fix.o"  
 cat > stack_chk_fix.c << 'EOF'  
 /* 弱符号定义，c库不提供这个符号，满足链接器的符号检查，运行时由动态链接器提供真实值 */  
 void *__stack_chk_guard __attribute__((weak, visibility("hidden")));  
