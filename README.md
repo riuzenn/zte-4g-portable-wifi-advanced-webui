@@ -108,12 +108,12 @@ adb shell ls -l /etc/rc
 
 ➤Target options  
 ◉Target Architecture: ARM (little endian)  
-◉Target Architecture Variant: cortex-A7（这一版的buildroot还没有添加A53选项，只能在编译时往CFLAGS和LDFLAGS里添加-mcpu=cortex-a53 -mtune=cortex-a53）  
+◉Target Architecture Variant: cortex-A7(这一版的buildroot还没有添加A53选项，只能在编译时往CFLAGS和LDFLAGS里添加-mcpu=cortex-a53 -mtune=cortex-a53)  
 ◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
-◉Floating point strategy: Soft float (编译文件时可以添加-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
+◉Floating point strategy: Soft float (-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
 ◉ARM instruction set: Thumb2  
 ➤Toolchain  
-◉Kernel Headers：选择Manually specified Linux version(内核版本是3.4.110-rt140)  
+◉Kernel Headers：选择Manually specified Linux version  
 ◉linux version：输入3.4.110(内核版本是3.4.110-rt140)  
 ◉Custom kernel headers series：选择3.4.x  
 ◉C library: 选择uClibc  
@@ -121,8 +121,8 @@ adb shell ls -l /etc/rc
 ◉uClibc configuration file to use?：输入我配置好的package/uclibc/uClibc-0.9.33.2.config（下载[uClibc-0.9.33.2.config](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/uClibc-0.9.33.2.config)推送到~/buildroot/buildroot-2015.11.1/package/uclibc）  
 ◉Enable RPC support：勾选（按y）  
 ◉Enable WCHAR support：勾选  
-◉Enable stack protection support：勾选  
-◉Enable compiler link-time-optimization support：勾选  
+◉Enable stack protection support：勾选(对应-fstack-protector-strong)  
+◉Enable compiler link-time-optimization support：勾选(对应-flto=auto)  
 ```
 Enable compiler link-time-optimization support可以不勾选。若不勾选，makefile里的命令需要如下更改：
 AR和RANLIB使用没gcc字样版的（若编译时出错）
