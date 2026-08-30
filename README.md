@@ -310,6 +310,15 @@ LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成
 原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
 ## 编译的其他应用  
 除了at外，我还编译了以下应用。所有应用的二进制文件都用[sstrip](https://github.com/BR903/ELFkickers)处理过，缩小了体积。  
+编译sstrip：  
+```
+cd ~
+git clone https://github.com/BR903/ELFkickers.git
+cd ELFkickers/sstrip
+make > ~/1.txt 2>&1
+# 超级精简一个二进制可执行文件
+~/ELFkickers/sstrip/sstrip 目标文件
+```
 为了缩小体积，我编译的应用都没启用生成位置无关可执行文件（#gcc4.9不支持-no-pie参数）、完整重定位只读、栈溢出保护。dropbear可能暴露在公网，可如下添加参数开启保护，开启与否有约10KB的大小差别：  
 export CFLAGS="-fPIE -fstack-protector-strong"  
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now ./stack_chk_fix.o"  
@@ -319,15 +328,6 @@ void *__stack_chk_guard __attribute__((weak, visibility("hidden")));
 EOF  
 ${CROSS_COMPILE}gcc -c stack_chk_fix.c -o stack_chk_fix.o ${CFLAGS}  
 
-sstrip编译：  
-```
-cd ~
-git clone https://github.com/BR903/ELFkickers.git
-cd ELFkickers/sstrip
-make > ~/1.txt 2>&1
-# 超级精简一个二进制可执行文件
-~/ELFkickers/sstrip/sstrip 目标文件
-```
 ### ◉dropbear及其附带的scp、dropbearkey  
 #### 编译命令已写入[Makefile-dropbear](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-dropbear)。以下是几个注意点：  
 ➤如需使用密码登录ssh，dropbear会用到/lib/libcrypt.so.0库的crypt()函数，[testcrypt.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/testcrypt.c)检测结果显示自带的libcrypt库只支持DES和MD5算法，如调用不支持的算法会回退到DES算法，取原盐值的前两位如$6作为新盐值。最后得出和/etc/shadow(默认SHA512算法)里记录的不一样的密码哈希值，从而一直验证失败。  
