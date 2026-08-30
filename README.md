@@ -27,7 +27,7 @@ adb push支持中文字符和空格，用引号包裹整个路径即可
 ➤使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
 下载修改版的[adbd](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/adbd)  
 ```
-#adb shell依赖adbd提供支持，改用ssh
+#adb shell依赖要修改的adbd，改用ssh（需安装本页提供的dropbearmulti）  
 ssh admin@192.168.0.1
 mount -o remount,rw /
 exit
