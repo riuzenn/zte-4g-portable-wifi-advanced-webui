@@ -31,7 +31,7 @@ adb push支持中文字符和空格，用引号包裹整个路径即可
 ssh admin@192.168.0.1
 mount -o remount,rw /
 exit
-scp adbd在你电脑上的位置 /
+scp adbd在你电脑上的位置 admin@192.168.0.1:/
 ssh admin@192.168.0.1
 #备份原版adbd
 mv /bin/adbd /bin/adbd.bak
