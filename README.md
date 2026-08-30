@@ -123,6 +123,13 @@ adb shell ls -l /etc/rc
 ◉Enable WCHAR support：勾选  
 ◉Enable stack protection support：勾选  
 ◉Enable compiler link-time-optimization support：勾选  
+```
+Enable compiler link-time-optimization support可以不勾选。若不勾选，makefile里的命令需要如下更改：
+AR和RANLIB使用没gcc字样版的（若编译时出错）
+export AR="${CROSS_COMPILE}ar"
+export RANLIB="${CROSS_COMPILE}ranlib"
+CFLAGS和LDFLAGS里去除-flto=auto（若有）
+```
 
 安装可能需要的工具包：`apt-get install -y rsync bc`  
 
