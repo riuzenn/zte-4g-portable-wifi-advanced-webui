@@ -121,7 +121,7 @@ adb shell ls -l /etc/rc
 ◉uClibc configuration file to use?：输入我配置好的package/uclibc/uClibc-0.9.33.2.config（下载[uClibc-0.9.33.2.config](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/uClibc-0.9.33.2.config)推送到~/buildroot/buildroot-2015.11.1/package/uclibc）  
 ◉Enable RPC support：勾选（按y）  
 ◉Enable WCHAR support：勾选  
-◉Enable stack protection support：勾选(对应-fstack-protector-strong)  
+◉Enable stack protection support：勾选(对应-fstack-protector-strong，如不需要栈保护则-fno-stack-protector)  
 ◉Enable compiler link-time-optimization support：勾选(对应-flto=auto)  
 ```
 Enable compiler link-time-optimization support可以不勾选。若不勾选，makefile里的命令需要如下更改：
