@@ -366,27 +366,27 @@ chmod 755 /usr/sbin/sshoff
 ln -s /usr/sbin/dropbearmulti /usr/sbin/scp
 ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbear
 ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbearkey
-# 生成dropbear服务器端密钥
+#生成dropbear服务器端密钥
 mkdir -p /etc/dropbear
 dropbearkey -t ed25519 -f /etc/dropbear/dropbear_ed25519_host_key
-# 查看生成的dropbear服务器公钥
+#查看生成的dropbear服务器公钥
 dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
 ```
 #### 如需密钥登录，执行：  
 windows电脑cmd里执行：  
 ```
-# 生成windows用户端密钥，不设密码的话一直回车
+#生成windows用户端密钥，不设密码的话一直回车
 ssh-keygen -t ed25519
 ```
 随身wifi的终端里执行：  
 ```
-# 把windows用户端公钥放进dropbear可以识别的目录~/.ssh
-# f30ap的HOME路径就是根目录
+#把windows用户端公钥放进dropbear可以识别的目录~/.ssh
+#f30ap的HOME路径就是根目录
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
-# 在windows电脑C:\Users\你的用户名\.ssh路径找到公钥文件id_ed25519.pub，用文本编辑器打开，换行符换成LF，另存为authorized_keys，推送到/.ssh
+#在windows电脑C:\Users\你的用户名\.ssh路径找到公钥文件id_ed25519.pub，用文本编辑器打开，换行符换成LF，另存为authorized_keys，推送到/.ssh
 chmod 600 ~/.ssh/authorized_keys
-# 之后直接通过密钥认证，不需要输入账户密码
+#之后直接通过密钥认证，不需要输入账户密码
 ```
 #### 启动和连接dropbear的ssh的命令  
 我写了sshon和sshoff，直接输入它们的文件名就可以开启和关闭。windows的cmd里输入ssh admin@192.168.0.1即可连接。  
