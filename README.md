@@ -333,11 +333,12 @@ make > ~/1.txt 2>&1
 # 超级精简一个二进制可执行文件
 ~/ELFkickers/sstrip/sstrip 目标文件
 ```
-为了缩小体积，我编译的应用都没启用生成位置无关可执行文件（#gcc4.9不支持-no-pie参数）、完整重定位只读、栈溢出保护。dropbear可能暴露在公网，可如下添加参数开启保护，开启与否有约十位数KB的大小差别：  ```
+为了缩小体积，我编译的应用都没启用生成位置无关可执行文件（#gcc4.9不支持-no-pie参数）、完整重定位只读、栈溢出保护。dropbear可能暴露在公网，可如下添加参数开启保护，开启与否有约十位数KB的大小差别。 
+```
 export CFLAGS="-fPIE -fstack-protector-strong"  
 export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now ./stack_chk_fix.o"  
 cat > stack_chk_fix.c << 'EOF'  
-/* 弱符号定义，c库不提供这个符号，满足链接器的符号检查，运行时由动态链接器提供真实值 */  
+/* c库不提供这个符号。弱符号定义，满足链接器的符号检查，运行时由动态链接器提供真实值 */  
 void *__stack_chk_guard __attribute__((weak, visibility("hidden")));  
 EOF  
 ${CROSS_COMPILE}gcc -c stack_chk_fix.c -o stack_chk_fix.o ${CFLAGS}  
@@ -405,7 +406,7 @@ scp和下面的sftp-server都依赖dropbear提供的ssh环境，使用前二者�
 #### 编译命令已写入[Makefile-neatvi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-neatvi)。编译好的[vi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/vi)推送到/bin路径，chmod 755。有几个注意点：  
 ➤如下改源码里的term.c里的term_read()函数，不然不识别windows的回车（也可以不改，只用ctrl+j当回车）。  
 ```
-# 添加
+#添加
     if (c == '\r')
         c = '\n'; 
 ```
