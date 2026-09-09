@@ -1,0 +1,6 @@
+::sysinit:mount -o remount,rw /dev/root /
+::sysinit:chmod 755 /etc/rc
+::sysinit:mount -o remount,ro /dev/root /
+::sysinit:/etc/rc
+::respawn:-/bin/login
+
