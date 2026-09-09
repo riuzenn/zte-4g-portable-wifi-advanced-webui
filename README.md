@@ -120,7 +120,7 @@ adb shell mount -o remount,ro /
 <div><img src="./images/底层日志.jpg"  style="width: 600px; height: auto;"></div>  
 
 更新！！！我重写了libatutils库里的几个函数，彻底不打印无关日志。受cvghh@酷安启发，用第二个参数控制输出格式，为1时打印`_返回字符串_`方便正则匹配。  
-<div><img src="./images/at工具示例2.jpg" style="width: 350px; height: auto;"></div>  
+<div><img src="./images/at工具示例2.jpg" style="width: 600px; height: auto;"></div>  
 
 ### ➤小设计：  
 成功输出_at串口返回值_  
