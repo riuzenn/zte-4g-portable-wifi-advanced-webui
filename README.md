@@ -1,44 +1,42 @@
 # zte-4g-portable-wifi-advanced-webui
 中兴4G随身WiFi全功能后台 / A full-featured WebUI for ZTE 4G Mifi  
-◉本工具目前只在f30a pro上测试过，其他设备请自行适配！！！  
+本工具目前只在f30a pro上测试过，其他设备请自行适配！！！  
 [123网盘备份](https://www.123pan.com/s/NV4Qjv-IZYvd)  
-## 开启adb  
+### 开启adb  
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=1  
-## 关闭adb  
+### 关闭adb  
 http://192.168.0.1/goform/goform_set_cmd_process?goformId=SET_DEVICE_MODE&debug_enable=0  
-## 关于adb的小知识
+## § 关于adb的小知识
 adb push支持中文字符和空格，用引号包裹整个路径即可  
 直接从文件管理器拖动文件到cmd终端，自动填写路径  
-## 避免adb push /etc/rc后忘加执行权限导致砖机的可能办法  
-➤往/etc/inittab（644权限）的最开头加三行    
-`::sysinit:mount -o remount,rw /dev/root /`  
-`::sysinit:/bin/chmod 755 /etc/rc`  
-`::sysinit:mount -o remount,ro /dev/root /`  
+## § 避免adb push /etc/rc后忘加执行权限导致砖机的可能办法  
+◉往/etc/inittab（644权限）的最开头加三行    
+```
+::sysinit:mount -o remount,rw /dev/root /
+::sysinit:/bin/chmod 755 /etc/rc
+::sysinit:mount -o remount,ro /dev/root /
+```
 命令会在每次开机时重置权限。这个办法我试过可行（mount确认根目录是/dev/root这个设备路径，chmod 711 /etc/rc，reboot看权限有没有改成755），但是不推荐，万一这个文件里命令有错误就砖机了！！！  
 
-我更推荐以下两个办法：  
-➤往/etc/rc最后添加  
-`mount -o remount,rw /`
-`chmod +x /opt/mybin/mods.sh`  
-`mount -o remount,ro /`  
-`/opt/mybin/mods.sh &`  
-以后自定义命令都在/opt/mybin/mods.sh里添加。  
+我更推荐以下三个办法：  
+◉往/etc/rc最后添加  
+```
+mount -o remount,rw /
+chmod +x /opt/mybin/mods.sh
+mount -o remount,ro /
+/opt/mybin/mods.sh &
+```
+以后自定义开机命令都在/opt/mybin/mods.sh里添加。  
 
-➤使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
+◉使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
 下载修改版的[adbd](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/adbd)  
 ```
-#adb shell依赖要修改的adbd，改用ssh（需安装本页提供的dropbearmulti）  
-ssh admin@192.168.0.1
-mount -o remount,rw /
-exit
-scp adbd在你电脑上的位置 admin@192.168.0.1:/
-ssh admin@192.168.0.1
+adb shell mount -o remount,rw /
 #备份原版adbd
-mv /bin/adbd /bin/adbd.bak
-mv /adbd /bin
-chmod 755 /bin/adbd
-mount -o remount,ro /
-exit
+adb shell mv /bin/adbd /bin/adbd.bak
+adb push adbd在你电脑上的位置 /bin
+adb shell chmod 755 /bin/adbd
+adb shell mount -o remount,ro /
 ```
 修改原理：  
 ```
@@ -50,15 +48,24 @@ exit
 0x486c      32 46              42 46  
 原本mov r2, r6改为mov r2, r8，直接使用固定的r8的值作为最终权限（这里r6是两次提权的结果，数值是0777）
 ```
-## 自定义可执行文件和配置文件放哪  
-我倾向于/opt/mybin和/opt/myconf，但是busybox貌似硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来将可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
-## 利用原生CGI在web后台执行shell命令
+◉手动确认rc权限  
+```
+adb push rc在你电脑上的位置 /etc/rc  
+#下面这两个命令一定确保执行，不然重启设备不能初始化会软砖！！！  
+#这个命令给rc执行权限，adb push的文件默认没有执行权限  
+adb shell chmod 755 /etc/rc  
+#确认结果为-rwxr-xr-x开头  
+adb shell ls -l /etc/rc
+```
+## § 自定义可执行文件和配置文件放哪  
+我倾向于/opt/mybin和/opt/myconf，但是busybox硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来将可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
+## § 利用原生CGI在web后台执行shell命令
 ### ➤下载:  
 [shell](/etc_ro/cgi-bin/shell)  
 [index.html](/etc_ro/web/index.html)  
 [customfuncs.js](/etc_ro/web/js/customfuncs.js)  
-[rc](/etc/rc)  
-### ➤adb执行：  
+### ➤adb执行： 
+```
 adb shell mount -o remount,rw /  
 adb shell mkdir -p /etc_ro/cgi-bin/  
 adb push shell在你电脑上的位置 /etc_ro/cgi-bin/shell  
@@ -66,17 +73,14 @@ adb shell chmod 755 /etc_ro/cgi-bin/shell
 adb push index.html在你电脑上的位置 /etc_ro/web/index.html  
 adb shell chmod 755 /etc_ro/web/index.html  
 adb push customfuncs.js在你电脑上的位置 /etc_ro/web/js/customfuncs.js  
-adb push rc在你电脑上的位置 /etc/rc  
-下面这两个命令一定确保执行，不然重启设备不能初始化会软砖！！！  
-这个命令给rc执行权限，adb push的文件默认权限没有执行  
-adb shell chmod 755 /etc/rc  
-确认结果为-rwxr-xr-x开头，不要是-rw-rw-rw-开头  
-adb shell ls -l /etc/rc
+adb shell chmod 755 /etc_ro/web/js/customfuncs.js
+adb shell mount -o remount,ro /  
+```
 ### ➤原理：  
 ◉反编译/bin/goahead可知f30a pro是支持cgi-bin的，硬编码了路径为/etc_ro/cgi-bin，只识别来自`http://192.168.0.1/cgi-bin/upload/`的命令请求。  
 ◉浏览器post了一个请求后，goahead将body的内容复制到`/var/cgi*（*表示随机的一串字符）`，并将这个文件的路径赋值给$UPLOAD_FILENAME。我们要做的就是从$UPLOAD_FILENAME读取命令然后执行（eval）。  
-◉/var路径挂载到硬盘不是内存，所以`/var/cgi*`重启还在，好在goahead会自动删除。少数情况如执行reboot后，goahead来不及删除，需要我们在/etc/rc开机脚本里添加`rm -f /var/cgi*`。  
-◉如图修改/bin/goahead的十六进制值将/var改为/tmp（tmp挂载到内存），就没有`/var/cgi*`文件残留的问题，因为重启后内存就会重置，/etc/rc里也不用加代码。我已经改好，下载推送设置权限即可[goahead](/bin/goahead)。  
+◉/var路径挂载到硬盘不是运行内存，所以`/var/cgi*`重启还在，好在goahead会自动删除。少数情况如执行reboot后，goahead来不及删除，需要我们在/etc/rc开机脚本里添加`rm -f /var/cgi*`。  
+◉如图修改/bin/goahead的十六进制值将/var改为/tmp（tmp挂载到运行内存），就没有`/var/cgi*`文件残留的问题，因为重启后内存就会重置，/etc/rc里也不用加代码。我已经改好，下载推送设置权限即可[goahead](/bin/goahead)。  
 <div align="center"><img src="./images/路径var改为tmp.jpg"></div>
 
 ### ➤已知bug:  
@@ -85,106 +89,27 @@ adb shell ls -l /etc/rc
 ◉如果替换了我修改的goahead，千万不要`cat /tmp/cgi*`，内存应该会撑爆。  
 ### ➤备注：  
 ◉受限于实现原理，每次fork出的shell进程执行过一次命令就会销毁，想一次执行多个命令建议用“;”分割,，比如说`ls /;ls /etc`  
-◉我在/etc/rc里加了开机关闭led灯的命令、往防火墙里添加规则、修改dns和修改内核参数实现减少内存占用的代码，不需要可以删除  
 ◉customfuncs.js封装了getAD();、evalcmd();等js函数。getAD();用于post某些goahead原生命令需要AD参数的情况；evalcmd();工作原理就是上面提到的，可以用于自定义链接，如`<a href="javascript:void(0);" onclick="confirm('即将执行XX命令'); evalcmd('这里写shell命令如reboot');">我是重启</a>`。  
 ◉index.html下面这一栏“开/关”是开/关adb，会重启；“退出”是退出登录；"重启"字面意思（值得一提的是goahead原生提供了REBOOT_DEVICE接口，但是需要处于登录状态，所以重启我调用的是evalcmd('reboot');。  
-## 中兴随身wifi全功能后台的最后一块拼图--at工具
-我编译了一个可执行文件，可以调用这个工具在命令行执行at命令。工具参考了官方zte_mifi和atweb的反编译代码，在这里向包括mWIFI_icu在内的前辈表示感谢。冲着这个工具可以给我一个star吗😍。  
+## § 中兴随身wifi全功能后台的最后一块拼图--at工具
+我编译了一个可执行文件，可以调用这个工具在命令行执行at命令。工具参考了官方zte_mifi、libatutils.so和atweb的反编译代码，在这里向包括mWIFI_icu、棒子版煤油等在内的前辈表示感谢。  
 <div align="center"><img src="./images/at工具示例.jpg"></div>  
 
 ### ➤编译:  
-我先编译了适配中兴微ZX297520V3这颗cpu的Buildroot交叉编译器，adb pull随身wifi的/lib/路径下的依赖库到linux电脑里，最后用[Makefile](/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了针对这颗cpu的大部分可用编译优化命令，可以尝试移植到其他二进制文件上。
-#### 编译buildroot交叉编译器  
-在这个网站下载Buildroot源码：https://buildroot.org/  
-我选了buildroot-2015.11.1因为它是最后一个支持uClibc-0.9.33.2（f30ap使用这个版本的c库）的版本。  
-当前路径是`~/buildroot`  
-如果没有，创建并转到这个文件夹：`mkdir -p ~/buildroot;cd ~/buildroot`  
-获取buildroot源码：`wget https://buildroot.org/downloads/buildroot-2015.11.1.tar.gz`  
-解压：`tar -xzvf buildroot-2015.11.1.tar.gz;cd ./buildroot-2015.11.1`  
-可能需要：改extra/config/lxdialog/check-lxdialog.sh里的`main() {}`为`int main() { return 0; }`  
-配置：`make menuconfig`  
-界面如下，纯键盘操作  
-<div align="left"><img src="./images/buildroot配置页面.jpg"></div>  
-
-➤Target options  
-◉Target Architecture: ARM (little endian)  
-◉Target Architecture Variant: cortex-A7(这一版的buildroot还没有添加A53选项，只能在编译时往CFLAGS和LDFLAGS里添加-mcpu=cortex-a53 -mtune=cortex-a53)  
-◉Target ABI: EABI (没有hf后缀，随身wifi使用软件浮点，运行硬件浮点的二进制文件会导致重启)  
-◉Floating point strategy: Soft float (-mfloat-abi=soft，中兴编译的内核没加入硬件浮点支持，不确定处理器本身是否支持)  
-◉ARM instruction set: Thumb2  
-➤Toolchain  
-◉Kernel Headers：选择Manually specified Linux version  
-◉linux version：输入3.4.110(内核版本是3.4.110-rt140)  
-◉Custom kernel headers series：选择3.4.x  
-◉C library: 选择uClibc  
-◉uClibc C library Version：选择uClibc 0.9.33.x（我看过.config，2015.11.1默认用0.9.33.2版的）  
-◉uClibc configuration file to use?：输入我配置好的package/uclibc/uClibc-0.9.33.2.config（下载[uClibc-0.9.33.2.config](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/uClibc-0.9.33.2.config)推送到~/buildroot/buildroot-2015.11.1/package/uclibc）  
-◉Enable RPC support：勾选（按y）  
-◉Enable WCHAR support：勾选  
-◉Enable stack protection support：勾选(对应-fstack-protector-strong，如不需要栈保护则-fno-stack-protector)  
-◉Enable compiler link-time-optimization support：勾选(对应-flto=auto)  
-```
-Enable compiler link-time-optimization support可以不勾选。若不勾选，makefile里的命令需要如下更改：
-AR和RANLIB使用没gcc字样版的（若编译时出错）
-export AR="${CROSS_COMPILE}ar"
-export RANLIB="${CROSS_COMPILE}ranlib"
-CFLAGS和LDFLAGS里去除-flto=auto（若有）
-```
-
-安装可能需要的工具包：`apt-get install -y rsync bc`  
-
-普通用户不用管以下几行代码  
-```
-sudo cp -r ~/buildroot /buildroot
-sudo chown -R $(whoami):$(whoami) /buildroot
-cd /buildroot/buildroot-2015.11.1
-cp /buildroot/buildroot-2015.11.1/output/images/arm-buildroot-linux-uclibcgnueabi_sdk-buildroot.tar.gz ~/buildroot
-```
-
-buildroot会去国外网站下源码，国内网络直连速度非常慢，记得...  
-编译Buildroot交叉编译器：`make -j$(nproc) toolchain`  
-wsl2用上了全部12线程，不算debug时间，编译时间10分钟，牛逼。之前用cloud shell要几个小时，过的是什么苦日子。  
-看到`>>> toolchain virtual Installing to target`就成了  
-<div><img src="./images/buildroot编译成功.jpg" style="width: 350px; height: auto;"></div>  
-
-可能需要：  
-buildroot-2015.11.1太老了，如果在新版本宿主机编译可能有SIGSTKSZ定义变化问题，可以考虑用docker  
-```
-sudo apt install -y docker.io
-sudo usermod -aG docker $USER
-newgrp docker
-docker run --rm -it     -v /home/展开为用户名/buildroot:/home/展开为用户名/buildroot     ubuntu:18.04
-cd /home/展开为用户名/buildroot/buildroot-2015.11.1
-apt-get update
-apt install -y build-essential python unzip rsync bc wget cpio file
-exit
-sudo chown -R $(whoami):$(whoami) ~/buildroot
-```
-~~下载这个修改过的[gen_wctype.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/gen_wctype.c)，覆盖到/buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/extra/locale  
-echo 'CFLAGS += -march=armv7-a' >> /buildroot/buildroot-2015.11.1/output/build/uclibc-0.9.33.2/Rules.mak  
-rm -rf output/build/host-gcc-final-4.9.3  
-make host-gcc-final  
-make host-gcc-final CXXFLAGS="-std=gnu++03"  
-make host-gcc-final CXXFLAGS="-std=gnu++11"~~  
-
-打包、解压的操作相当于给生成的编译器(位于./output/host/usr)挪个地  
-打包编译器：`cd output/host/;tar -czf toolchain-backup.tar.gz usr/`  
-解压到~：`tar -xvf toolchain-backup.tar.gz -C ~`  
-查看生成的编译器硬编码参数：`cd ~;./usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc -v`  
-将编译器路径写入用户变量：  
-`echo 'export PATH=$PATH:~/usr/bin' >> ~/.bashrc`  
-`source ~/.bashrc`  
-把f30ap/lib目录下的所有文件复制到编译电脑的~/usr/ztelib路径（建议通过adb pull或cp -rL等方式将软链接转换成实际文件，另外复制一份libuClibc-0.9.33.2.so重命名为libc.so，防止编译器用buildroot的sysroot路径下的c库，其他标准库同理）。  
+我编译了适配官方3.4.110内核和uClibc 0.9.33.2库的Buildroot交叉编译器（详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries），用[Makefile](./编译命令/at/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了大部分可用编译优化命令，可以尝试移植到其他二进制文件的编译命令里。  
 #### 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
-写好Makefile里的绝对路径后上传Makefile、at.c到当前目录  
+写好Makefile里的绝对路径后上传Makefile、at.c到`~/at_build`    
 编译：`make`  
-编译失败重置：`make clean`
+编译失败重置：`make clean`  
 ### ➤安装:  
-[at](/sbin/at)  
+下载[at](.usr/sbin/at)  
+```
 adb shell mount -o remount,rw /  
-adb push at文件在你电脑上的路径  /sbin/at  
-adb shell chmod 755 /sbin/at  
+adb push at文件在你电脑上的路径  /usr/sbin/at  
+adb shell chmod 755 /usr/sbin/at
+adb shell mount -o remount,ro /  
+```
 ### ➤原理：  
 官方封装了一套和at串口通信的方法：goahead接受前端url，zte_mifi把守大门（阻塞了几个疑似modem的串口），向底层提交申请然后排队执行。我写的这个c程序就是调用重写后的官方的send_req_and_wait函数，发送at命令，接收返回值。和已有的atwed的区别在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能比编译后的c程序好，因为js在访问后台的电脑和手机执行，c程序在性能孱弱的随身wifi运行，占用总共约32MB的运行内存的一部分。它就是个at端口信息的搬运工，通过cgi和后台的通信依赖已有的goahead的80端口，不需要后台。  
 ### ➤为什么要重复造轮子？  
