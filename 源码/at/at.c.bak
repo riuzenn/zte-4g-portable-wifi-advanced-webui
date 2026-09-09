@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+#include <strings.h>
+#include <unistd.h>
+
+extern void get_modem_info(const char *at, const char *fmt, char **buf);
+int main(int argc, char *argv[]) {
+    // 1. 参数检查（使用 write 直接输出，避免 stderr 初始化问题）
+    if (argc < 2) {
+        write(STDERR_FILENO,
+              "用法：at 'AT命令'。AT命令不区分大小写，可以没有引号，不要有空格。\n"
+              "by孙石讷@酷安、riuzenn@GitHub\n",
+              sizeof("用法：at 'AT命令'。AT命令不区分大小写，可以没有引号，不要有空格。\n"
+                     "by孙石讷@酷安、riuzenn@GitHub\n") - 1);
+        return 1;
+    }
+
+    if (strncasecmp(argv[1], "AT", 2) != 0) {
+        write(STDERR_FILENO, "必须AT开头, 不区分大小写\n",
+              sizeof("必须AT开头, 不区分大小写\n") - 1);
+        return 1;
+    }
+
+    if (strlen(argv[1]) > 250) {
+        write(STDERR_FILENO, "AT命令过长, 最大250字节\n",
+              sizeof("AT命令过长, 最大250字节\n") - 1);
+        return 1;
+    }
+
+    // 2. 缓冲区：res 扩大到 4096 匹配底层最大响应
+    char at[256];           // 后面snprintf会在末尾自动添加\0，所以不特别清零
+    char res[4096] = {0};   // 底层 msgrcv 最大约 3500 字节，4K 安全
+
+    // 3. 构建 AT 命令（末尾加 \r\n）
+    snprintf(at, sizeof(at), "%s\r\n", argv[1]);
+
+    // 4. 调用库函数（无返回值，结果直接写入 res）
+    char *res_ptr = res;
+    get_modem_info(at, "%s", &res_ptr);
+
+    // 5. 判断结果
+    if (res[0] != '\0') {
+        printf("_%s_\n", res);
+        return 0;
+    } else {
+        printf("_ERROR_\n");
+        return 1;
+    }
+}
