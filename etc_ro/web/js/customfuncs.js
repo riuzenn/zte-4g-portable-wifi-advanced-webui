@@ -45,7 +45,7 @@ let checkboxes = null;
 const container = document.getElementById('band-container');
 const button = document.getElementById('band-btn');
 window.refreshband = async () => {
-    const res = await evalcmd('at "AT+ZLTEBAND?"');
+    const res = await evalcmd('at "AT+ZLTEBAND?" 1');
     if (!res) return;
     const match = res.match(/^_(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)_$/m);
     if (!match) return alert(`频段解析失败：${res}`);
@@ -64,7 +64,7 @@ window.showband = async () => {
         if (isHidden) refreshband();return; 
     }
     const html = await safeFetch('./tmpl/bandlock.html', {}, '获取频段面板', 'text');
-    if (!html) {container.innerHTML = '<span style="color:red;">请检查 ./tmpl/bandlock.html 或网络状态。</span>';return;}
+    if (!html) {container.innerHTML = '<span style="color:red;">请检查./tmpl/bandlock.html或网络状态。</span>';return;}
     container.innerHTML = html;
     checkboxes = container.querySelectorAll('input');
     checkboxes.forEach(cb => {cb._bitPos = (cb.value - 1) | 0;});
@@ -81,7 +81,7 @@ window.lockSelectedBands = async () => {
         const bit = cb._bitPos;
         bytes[bit >> 3] |= (1 << (bit & 7));
     }
-    const res = await evalcmd(`at AT+ZLTEBAND=${bytes.join(',')}`);
+    const res = await evalcmd(`at AT+ZLTEBAND=${bytes.join(',')} 1`);
     if (!res || res.includes("_ERROR_")) {return alert(`锁定失败：${res}`);}
     showinbox("锁定成功, 正在重启网络...");
     await resetmodem(); 
@@ -106,7 +106,7 @@ window.ADB = async (option) => {
 };
 window.setDefaultBand = async () => {
     if (!confirm('重置频段（全选所有频段）吗？')) return;
-    const res = await evalcmd('at AT+ZLTEBAND=');
+    const res = await evalcmd('at "AT+ZLTEBAND=" 1');
     if (!res || res.includes("_ERROR_")) return alert(`恢复默认频段失败：${res}`);
     showinbox("重置成功, 正在重启网络...");
     await resetmodem();
