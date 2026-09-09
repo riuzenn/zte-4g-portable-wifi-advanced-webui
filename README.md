@@ -259,7 +259,7 @@ LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成
 原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
 ## § 编译的其他应用  
 除了at外，我还编译了一些使用的工具。详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
-### 介绍一下dropbear  
+### 简单介绍一下dropbear  
 #### ➤安装过程：
 编译好的[dropbearmulti](./usr/sbin/dropbearmulti)连同[sshon](./usr/sbin/sshon)和[sshoff](./usr/sbin/sshoff)推送到/usr/sbin，[index.html](./etc_ro/web/index.html)和[customfuncs.js](./etc_ro/web/js/customfuncs.js)推送到/etc_ro/web和/etc_ro/web/js，执行：  
 ```
