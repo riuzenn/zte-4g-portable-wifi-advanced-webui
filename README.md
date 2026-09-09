@@ -29,7 +29,7 @@ mount -o remount,ro /
 以后自定义开机命令都在/opt/mybin/mods.sh里添加。  
 
 ◉使用修改过二进制数据的adbd，adb push后的文件默认0755权限：  
-下载修改版的[adbd](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/adbd)  
+下载修改版的[adbd](./bin/adbd)  
 ```
 adb shell mount -o remount,rw /
 #备份原版adbd
@@ -61,9 +61,9 @@ adb shell ls -l /etc/rc
 我倾向于/opt/mybin和/opt/myconf，但是busybox硬编码了PATH=/sbin:/usr/sbin:/bin:/usr/bin，又不想每次以全路径调用可执行文件。所以我决定接下来将可执行文件放/usr/sbin，因为4个路径里这里文件最少。sh脚本和配置文件放/opt/myconf。  
 ## § 利用原生CGI在web后台执行shell命令
 ### ➤下载:  
-[shell](/etc_ro/cgi-bin/shell)  
-[index.html](/etc_ro/web/index.html)  
-[customfuncs.js](/etc_ro/web/js/customfuncs.js)  
+[shell](./etc_ro/cgi-bin/shell)  
+[index.html](./etc_ro/web/index.html)  
+[customfuncs.js](./etc_ro/web/js/customfuncs.js)  
 ### ➤adb执行： 
 ```
 adb shell mount -o remount,rw /  
@@ -80,7 +80,7 @@ adb shell mount -o remount,ro /
 ◉反编译/bin/goahead可知f30a pro是支持cgi-bin的，硬编码了路径为/etc_ro/cgi-bin，只识别来自`http://192.168.0.1/cgi-bin/upload/`的命令请求。  
 ◉浏览器post了一个请求后，goahead将body的内容复制到`/var/cgi*（*表示随机的一串字符）`，并将这个文件的路径赋值给$UPLOAD_FILENAME。我们要做的就是从$UPLOAD_FILENAME读取命令然后执行（eval）。  
 ◉/var路径挂载到硬盘不是运行内存，所以`/var/cgi*`重启还在，好在goahead会自动删除。少数情况如执行reboot后，goahead来不及删除，需要我们在/etc/rc开机脚本里添加`rm -f /var/cgi*`。  
-◉如图修改/bin/goahead的十六进制值将/var改为/tmp（tmp挂载到运行内存），就没有`/var/cgi*`文件残留的问题，因为重启后内存就会重置，/etc/rc里也不用加代码。我已经改好，下载推送设置权限即可[goahead](/bin/goahead)。  
+◉如图修改/bin/goahead的十六进制值将/var改为/tmp（tmp挂载到运行内存），就没有`/var/cgi*`文件残留的问题，因为重启后内存就会重置，/etc/rc里也不用加代码。我已经改好，下载推送设置权限即可[goahead](./bin/goahead)。  
 <div align="center"><img src="./images/路径var改为tmp.jpg"></div>
 
 ### ➤已知bug:  
@@ -104,7 +104,7 @@ adb shell mount -o remount,ro /
 编译：`make`  
 编译失败重置：`make clean`  
 ### ➤安装:  
-下载[at](.usr/sbin/at)  
+下载[at](./usr/sbin/at)  
 ```
 adb shell mount -o remount,rw /  
 adb push at文件在你电脑上的路径  /usr/sbin/at  
@@ -159,7 +159,7 @@ AT+MAC=
 
 ## § 其他功能
 ### ◉自动APN设为IPv4v6  
-下载[auto_apn.db](/etc_ro/config/auto_apn/auto_apn.db)推送到/etc_ro/config/auto_apn/auto_apn.db  
+下载[auto_apn.db](./etc_ro/config/auto_apn/auto_apn.db)推送到/etc_ro/config/auto_apn/auto_apn.db  
 f30a pro的这个数据库文件默认为IP，我把数据库里国内运营商的APN都设为IPv4v6，想用IPv4使用手动APN。  
 <div align="center"><img src="./images/apn.jpg"></div>  
 
@@ -167,57 +167,65 @@ f30a pro的这个数据库文件默认为IP，我把数据库里国内运营商�
 在/etc/rc里添加如下代码，sleep后面的数值是暂停的秒数：  
 (sleep 10;echo 0 > /sys/class/leds/modem_w_led/brightness) &  
 ### ◉更严格的防火墙规则  
+下载[ipv4v6_firewall.sh](./opt/myconf/ipv4v6_firewall.sh)  
 在/etc/rc里添加如下代码：  
-/sbin/ipv4v6_firewall.sh  
-adb push[ipv4v6_firewall.sh](/sbin/ipv4v6_firewall.sh)文件到/sbin/ipv4v6_firewall.sh，chmod 755这个文件  
+/opt/myconf/ipv4v6_firewall.sh  
+```
+adb shell mount -o remount,rw /
+adb shell mkdir -p /opt/myconf
+adb push ipv4v6_firewall.sh在电脑的路径 /opt/myconf/ipv4v6_firewall.sh
+adb shell chmod 755 /opt/myconf/ipv4v6_firewall.sh
+adb shell mount -o remount,ro / 
+```
 ### ◉修改nv默认设置（推送完记得chmod 755，不然恢复出厂后会砖）  
-[default_parameter_sys](/etc_ro/default/default_parameter_sys)文件中  
+[default_parameter_sys](./etc_ro/default/default_parameter_sys)文件中  
 cdrom_state=0和usb_devices_debug=diag,adb,serial（删掉mass_storage），adb开启状态不会加载CDROM设备（设备管理器和我的电脑不会显示cd设备）  
-[default_parameter_user](/etc_ro/default/default_parameter_user)文件中  
+[default_parameter_user](./etc_ro/default/default_parameter_user)文件中  
 need_support_sms=yes，f30a pro开启短信功能  
 admin_Password=，设置默认密码，sha256加密  
 privacy_read_flag=1，关闭重置后的隐私协议弹窗  
 dm_update_mode=0，默认关闭自动检测新版本  
 HideSSID=1，默认隐藏wifi名  
 wifi_11n_cap=0，wifi默认频宽设为20MHz  
-### ◉f30a pro自动计算切卡密码，下载推送到/etc_ro/web/tmpl/adm/unclock_sim.html  
-[unclock_sim.html](/etc_ro/web/tmpl/adm/unclock_sim.html)  
+### ◉自动计算填入切卡密码  
+下载[unclock_sim.html](./etc_ro/web/tmpl/adm/unclock_sim.html)，推送到/etc_ro/web/tmpl/adm/unclock_sim.html  
 中兴工程师取文件名时写错英语单词了，正确文件名应该拼写为unlock_sim.html。如果要为其他IMEI计算切卡密码也可以手动输入然后点计算。  
 <div align="center"><img src="./images/自动计算切卡密码.jpg"></div>  
 
 ### ◉测试内核是否支持硬件浮点  
-下载[fpu_test.c](./fpu_test.c)，按如下命令编译  
+下载[fpu_test.c](./源码/fpu_test.c)，按如下命令编译  
 ```
 $HOME/usr/bin/arm-buildroot-linux-uclibcgnueabi-gcc \
     -Os \
-    -march=armv7-a -mtune=cortex-a53 \
+    -march=cortex-a53 -mtune=cortex-a53 \
     -mfloat-abi=softfp \
     -mfpu=vfp \
     fpu_test.c \
     -o fpu_vfp
 ```
 发现一执行到VFP指令集就退出，报错Illegal instruction，换成-mfloat-abi=soft能正常输出结果，说明内核不支持硬件浮点，但是库文件里可以搜到硬件浮点指令，这一点很割裂。  
-### ◉修改连接到随身wifi设备的默认dns  
-(adb shell)nv set dhcpDns="223.5.5.5 223.6.6.6"  
-(adb shell)nv set DNS_proxy=disable  
-nv save  
-### ◉修改linux系统dns为阿里dns  
-下载[resolv.conf](/etc_ro/resolv.conf)推送/etc_ro/resolv.conf  
+### ◉修改下发DNS和随身wifi自身DNS为阿里DNS  
+```
+adb shell nv set dhcpDns="223.5.5.5 223.6.6.6"  
+adb shell nv set DNS_proxy=disable  
+adb shell nv save
+```
+下载[resolv.conf](./opt/myconf/resolv.conf)推送到/opt/myconf/resolv.conf  
 在rc里添加  
 mount --bind /etc_ro/resolv.conf /etc/resolv.conf  
 killall dnsmasq  
 ### ◉内核优化参数  
-下载[sysctl.conf](/etc/sysctl.conf)  ，推送到/etc/sysctl.conf  
+下载[sysctl.conf](./opt/myconf/sysctl.conf)推送到/opt/myconf/sysctl.conf  
 rc中添加  
 sysctl -qp /etc/sysctl.conf  
 主要是内核级地禁用了ipv6，并激进地杀掉结束的或长时间不响应的链接来减少内存占用。  
 ### ◉修改后台网页标题、修改后台网页图标为蓝字ZTE、透明底的网页标签图标  
 修改/etc_ro/web/js/config/ufi/mf93d/config.js里的WEBUI_TITLE:"4G Mobile Hotspot"，修改引号里的内容为自定义字符串。  
-下载[favicon.ico](/etc_ro/web/favicon.ico)，推送到/etc_ro/web/favicon.ico。  
+下载[favicon.ico](./etc_ro/web/favicon.ico)，推送到/etc_ro/web/favicon.ico。  
 <div align="center"><img src="./images/更改后台网页标题.png"></div>  
 
 ### ◉显示所有接入设备的名称和物理地址  
-下载[home.html](/etc_ro/web/tmpl/home.html)，推送到/etc_ro/web/tmpl/home.html  
+下载[home.html](./etc_ro/web/tmpl/home.html)，推送到/etc_ro/web/tmpl/home.html  
 点查看就能看到。  
 ip neigh show结果中REACHABLE是处于连接状态的设备。  
 dumpleases -f /etc_rw/udhcpd.leases包括所有连接过的设备，但是当前不一定在线。  
@@ -249,49 +257,17 @@ http://192.168.0.1/goform/goform_set_cmd_process?isTest=false&goformId=LOGIN&pas
 备注：  
 LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成的sha256值，且会为每个未登录的 IP 分配一个临时的 LD，如果前一个 LD 还没有被“消耗”（即还没有进行过一次失败或成功的 LOGIN POST），后端程序为了节省计算资源，会返回同一个LD值。  
 原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
-## 编译的其他应用  
-除了at外，我还编译了以下应用。所有应用的二进制文件都用[sstrip](https://github.com/BR903/ELFkickers)处理过，缩小了体积。  
-编译sstrip：  
+## § 编译的其他应用  
+除了at外，我还编译了一些使用的工具。详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
+介绍一下dropbear  
+#### ➤安装过程：
+编译好的[dropbearmulti](./usr/sbin/dropbearmulti)连同[sshon](./usr/sbin/sshon)和[sshoff](./usr/sbin/sshoff)推送到/usr/sbin，[index.html](./etc_ro/web/index.html)和[customfuncs.js](./etc_ro/web/js/customfuncs.js)推送到/etc_ro/web和/etc_ro/web/js，执行：  
 ```
-cd ~
-git clone https://github.com/BR903/ELFkickers.git
-cd ELFkickers/sstrip
-make > ~/1.txt 2>&1
-# 超级精简一个二进制可执行文件
-~/ELFkickers/sstrip/sstrip 目标文件
-```
-为了缩小体积，我编译的应用都没启用生成位置无关可执行文件（#gcc4.9不支持-no-pie参数）、完整重定位只读、栈溢出保护。dropbear可能暴露在公网，可如下添加参数开启保护，开启与否有约十位数KB的大小差别。 
-```
-export CFLAGS="-fPIE -fstack-protector-strong"  
-export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now ./stack_chk_fix.o"  
-cat > stack_chk_fix.c << 'EOF'  
-/* c库不提供这个符号。弱符号定义，满足链接器的符号检查，运行时由动态链接器提供真实值 */  
-void *__stack_chk_guard __attribute__((weak, visibility("hidden")));  
-EOF  
-${CROSS_COMPILE}gcc -c stack_chk_fix.c -o stack_chk_fix.o ${CFLAGS}  
-```
-### ◉dropbear及其附带的scp、dropbearkey  
-#### 编译命令已写入[Makefile-dropbear](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-dropbear)。以下是几个注意点：  
-➤如需使用密码登录ssh，dropbear会用到/lib/libcrypt.so.0库的crypt()函数，[testcrypt.c](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/testcrypt.c)检测结果显示自带的libcrypt库只支持DES和MD5算法，如调用不支持的算法会回退到DES算法，取原盐值的前两位如$6作为新盐值。最后得出和/etc/shadow(默认SHA512算法)里记录的不一样的密码哈希值，从而一直验证失败。  
-<div align="center"><img src="./images/testcrypt结果.jpg"></div>  
-
-解决方式有把全功能的libcrypt静态编译进dropbear，  
-要么改随身wifi的/etc/shadow里的密码算法为MD5，格式：  
-`账户名:$1$盐值$MD5值:17751:0:99999:7:::`  
-要么改随身wifi的/etc/passwd里的密码为空，配合dropbear的`-B Allow blank password logins`参数空密码登录。格式：  
-`账户名:x(去掉这个x):0:0:root:/:/bin/sh`  
-要么禁用密码登录`-s Disable password logins`，改用密钥登录。  
-➤还是libcrypt库的问题，`export LIBS="-Wl,--no-as-needed ${ZTE_LIB}/libcrypt.so.0"`不能少，不然编译出的文件的依赖库里没有它，不能验证密码。  
-➤如需压缩功能，编译dropbear可能会用到[libz.so.1.2.11库](https://zlib.net/fossils/zlib-1.2.11.tar.gz)的两个头文件，解压出zconf.h和zlib.h放到buildroot/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include/，不知道为啥buildroot不自带。  
-➤第一次连接ssh会提示服务主机的公钥指纹不在已知列表，输入yes。之后输入账户明文密码按回车，输入的密码不会同步显示到屏幕，也不会有光标闪烁，第一次接触这个机制时我还以为程序卡住了。  
-#### 参考安装过程：
-编译好的[dropbearmulti](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/dropbearmulti)连同[sshon](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshon)和[sshoff](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/sbin/sshoff)推送到/usr/sbin，更新过的[index.html](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/etc_ro/web/index.html)和[customfuncs.js](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/etc_ro/web/js/customfuncs.js)推送到/etc_ro/web和/etc_ro/web/js，执行：  
-```  
+adb shell
 mount -o remount,rw /
 chmod 755 /usr/sbin/dropbearmulti
 chmod 755 /usr/sbin/sshon
 chmod 755 /usr/sbin/sshoff
-ln -s /usr/sbin/dropbearmulti /usr/sbin/scp
 ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbear
 ln -s /usr/sbin/dropbearmulti /usr/sbin/dropbearkey
 #生成dropbear服务器端密钥
@@ -300,44 +276,7 @@ dropbearkey -t ed25519 -f /etc/dropbear/dropbear_ed25519_host_key
 #查看生成的dropbear服务器公钥
 dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
 ```
-#### 如需密钥登录，执行：  
-windows电脑cmd里执行：  
-```
-#生成windows用户端密钥，不设密码的话一直回车
-ssh-keygen -t ed25519
-```
-随身wifi的终端里执行：  
-```
-#把windows用户端公钥放进dropbear可以识别的目录~/.ssh
-#f30ap的HOME路径就是根目录
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-#在windows电脑C:\Users\你的用户名\.ssh路径找到公钥文件id_ed25519.pub，用文本编辑器打开，换行符换成LF，另存为authorized_keys，推送到/.ssh
-chmod 600 ~/.ssh/authorized_keys
-#之后直接通过密钥认证，不需要输入账户密码
-```
-#### 启动和连接dropbear的ssh的命令  
+#### ➤启动和连接dropbear  
 我写了sshon和sshoff，直接输入它们的文件名就可以开启和关闭。windows的cmd里输入ssh admin@192.168.0.1即可连接。  
-f30ap的默认账户名是admin，如需修改要同步改/etc里的passwd和shadow。另外以管理员身份打开文本编辑器，在`C:\Windows\System32\drivers\etc\hosts`里加入`192.168.0.1 自定义字符`就可以以域名连接，如`ssh admin@f30`。  
+若密码错误或想以密钥登录参考https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
 <div align="center"><img src="./images/包含ssh的index.jpg"></div>  
-
-#### scp用法  
-scp和下面的sftp-server都依赖dropbear提供的ssh环境，使用前二者前要先启用dropbear。  
-<div align="center"><img src="./images/scp.png"></div>  
-
-### ◉sftp-server  
-#### 编译命令已写入[Makefile-sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-sftp-server)。编译好的[sftp-server](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/usr/libexec/sftp-server)推送到/usr/libexec路径，chmod 755。  
-<div align="center"><img src="./images/sftp.png"></div>  
-
-### ◉neatvi  
-#### 编译命令已写入[Makefile-neatvi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/Makefile-neatvi)。编译好的[vi](https://github.com/riuzenn/zte-4g-portable-wifi-advanced-webui/blob/main/bin/vi)推送到/bin路径，chmod 755。有几个注意点：  
-➤如下改源码里的term.c里的term_read()函数，不然不识别windows的回车（也可以不改，只用ctrl+j当回车）。  
-```
-#添加
-    if (c == '\r')
-        c = '\n'; 
-```
-<div align="center"><img src="./images/修改term_read()函数.png"></div>  
-
-➤编译命令里`export CFLAGS="-D__stdin=stdin"`不能少，f30ap的libc库只有stdin符号。  
-vi对我来说是个新奇玩意，还在探索。  
