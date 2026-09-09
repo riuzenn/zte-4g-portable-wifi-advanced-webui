@@ -97,7 +97,7 @@ adb shell mount -o remount,ro /
 <div><img src="./images/at工具示例.jpg"  style="width: 600px; height: auto;"></div>
 
 ### ➤编译:  
-我编译了适配官方3.4.110内核和uClibc 0.9.33.2库的Buildroot交叉编译器（详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries），用[Makefile](./编译命令/at/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了大部分可用编译优化命令，可以尝试移植到其他二进制文件的编译命令里。  
+我编译了适配官方3.4.110内核和uClibc 0.9.33.2库的Buildroot交叉编译器（详情见 https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries ），用[Makefile](./编译命令/at/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了大部分可用编译优化命令，可以尝试移植到其他二进制文件的编译命令里。  
 #### 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
 写好Makefile里的绝对路径后上传Makefile、at.c到`~/at_build`    
