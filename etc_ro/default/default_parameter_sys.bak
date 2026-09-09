@@ -1,5 +1,5 @@
 
-######SOFTAPר�� START###################################
+######SOFTAP专用 START###################################
 check_roam=yes
 gsm_signalbar0_low=0
 gsm_signalbar0_high=0
@@ -141,227 +141,227 @@ syslog_level=4
 
 skb_debug=
 seclog_switch=1
-################SOFTAPר�� END#####################################
+################SOFTAP专用 END#####################################
 
-######USB�˿�����#######
+######USB端口配置#######
 
-##########usb/rj45���Ȱβ����·��##############
-#rj45��ʼ״̬·��
+##########usb/rj45等热拔插相关路径##############
+#rj45初始状态路径
 rj45_plugstate_path=/sys/kernel/eth_debug/eth_state
-#usb������·��
+#usb网口名路径
 usb_name_path=/sys/dwc_usb/usbconfig/netname
-#usb������״̬·��
+#usb各网口状态路径
 usb_plugstate_path=/sys/dwc_usb/usbconfig/
 ################################################
 
-#�����Ƿ��й���
+#配置是否有光盘
 cdrom_state=1
 
-#cdrom�ڶ��׶�ö�٣�0Ϊ����Ҫö�٣�1Ϊ��Ҫö������Ҫ���ؽ��ʣ�2Ϊ����Ҫ���ؽ���#
+#cdrom第二阶段枚举：0为不需要枚举，1为需要枚举且需要挂载介质，2为不需要挂载介质#
 need_support_cdrom_step2=0
 
-#����Windows����������
+#配置Windows下网卡类型
 select_type=select_rndis
 
 ####
-#�����з�ģʽusb�豸�˿����
+#配置研发模式usb设备端口组合
 usb_devices_debug=diag,adb,serial,mass_storage
 
-#�����û�ģʽusb�豸�˿����
+#配置用户模式usb设备端口组合
 usb_devices_user=
 
-#��������ģʽusb�豸�˿����
+#配置生产模式usb设备端口组合
 usb_devices_factory=serial,diag
 
-#����AMTģʽusb�豸�˿����
+#配置AMT模式usb设备端口组合
 usb_devices_amt=serial,diag
 
-#�����з�ģʽacm���ڸ���
+#配置研发模式acm串口个数
 usb_acm_num_debug=0
 
-#�����з�ģʽserial���ڸ���
+#配置研发模式serial串口个数
 usb_serial_num_debug=2
 
-#�����û�ģʽacm���ڸ���
+#配置用户模式acm串口个数
 usb_acm_num_user=0
 
-#�����û�ģʽserial���ڸ���
+#配置用户模式serial串口个数
 usb_serial_num_user=0
 
-#��������ģʽacm���ڸ���
+#配置生产模式acm串口个数
 usb_acm_num_factory=0
 
-#��������ģʽserial���ڸ���
+#配置生产模式serial串口个数
 usb_serial_num_factory=1
 
-#����AMTģʽacm���ڸ���
+#配置AMT模式acm串口个数
 usb_acm_num_amt=0
 
-#����AMTģʽserial���ڸ���
+#配置AMT模式serial串口个数
 usb_serial_num_amt=2
 
 #wangzhen
-#����debugģʽmass_storage��lun��ģʽ
+#配置debug模式mass_storage的lun的模式
 usb_lun_type_debug=CDROM
 
-#����userģʽmass_storage��lun��ģʽ
+#配置user模式mass_storage的lun的模式
 usb_lun_type_user=
 
-#����cdromģʽmass_storage��lun��ģʽ
+#配置cdrom模式mass_storage的lun的模式
 usb_lun_type_cdrom=CDROM
 ###
 
-#�����з�ģʽ����ΪNDISʱ�豸��PID
+#配置研发模式网口为NDIS时设备的PID
 PID_TSP_NDIS=0581
 ###
 
-#�����з�ģʽ����ΪRNDISʱ�豸��PID
+#配置研发模式网口为RNDIS时设备的PID
 PID_TSP_RNDIS=0581
 
-#�����з�ģʽ����ΪECMʱ�豸��PID
+#配置研发模式网口为ECM时设备的PID
 PID_TSP_ECM=0581
 
-#�����з�ģʽ�쳣ʱ�豸��PID
+#配置研发模式异常时设备的PID
 PID_TEST=ff00
 
-#������ͼģʽʱ�豸��PID
+#配置眼图模式时设备的PID
 PID_YT=0580
 
-#�����з�ģʽ����CDROM��PID
+#配置研发模式光盘CDROM的PID
 PID_TSP_CDROM=0548
 
 #####
 
-#�����û�ģʽģʽ����CDROM��PID
+#配置用户模式模式光盘CDROM的PID
 PID_USER_CDROM=1225
 
 #####
 #######
-#�����û�ģʽ����ΪRNDISʱ�豸��PID
+#配置用户模式网口为RNDIS时设备的PID
 PID_USER_RNDIS=1557
 
-#�����û�ģʽ����ΪECMʱ�豸��PID
+#配置用户模式网口为ECM时设备的PID
 PID_USER_ECM=1557
 
-#�����û�ģʽ����ΪNDISʱ�豸��PID
+#配置用户模式网口为NDIS时设备的PID
 PID_USER_NDIS=1557
 
-#�����û�ģʽû������ʱ�豸��PID
+#配置用户模式没有网口时设备的PID
 PID_USER_NOVNIC=0580
 ######
 
-#��������trapʱ�豸��PID
+#配置死机trap时设备的PID
 PID_TRAP=0197
 
-#��������ģʽʱ�豸��PID
+#配置生产模式时设备的PID
 PID_FACTORY=0534
 
-#����AMTģʽʱ�豸��PID
+#配置AMT模式时设备的PID
 PID_AMT=0201
 
-#���ùػ����ʱ�豸��PID
+#配置关机充电时设备的PID
 PID_FASTPOWEROFF=2004
 
-#�����豸��VID
+#配置设备的VID
 VID_TSP=19D2
 
-#�����豸��iSerial�ַ���
+#配置设备的iSerial字符串
 SERIAL_TSP=1234567890ABCDEF
 
-#�����з�ģʽ�豸��ReleaseID
+#配置研发模式设备的ReleaseID
 RELEASEID_TSP=0100
 
-#�����û�ģʽ�豸��ReleaseID
+#配置用户模式设备的ReleaseID
 RELEASEID_USER=0101
 
-#�����豸��manufacturer�ַ���
+#配置设备的manufacturer字符串
 MANUFACTURER_TSP=DEMO,Incorporated
 
-#�����豸��product�ַ���
+#配置设备的product字符串
 PRODUCT_TSP=DEMO Mobile Boardband
 
-#�����豸��config�ַ���
+#配置设备的config字符串
 CONFIG_TSP=DEMO Configuration
 
-#cdrom lun��vendor�ַ���
+#cdrom lun的vendor字符串
 VENDOR_MS_CDROM=DEMO
 
-#cdrom lun��product�ַ���
+#cdrom lun的product字符串
 PRODUCT_MS_CDROM=USB SCSI CD-ROM
 
-#cdrom lun��release�ַ���
+#cdrom lun的release字符串
 RELEASE_MS_CDROM=2.31
 
-#cdrom lun��inquiry�ַ���
+#cdrom lun的inquiry字符串
 INQUIRY_MS_CDROM=DEMO USB SCSI CD-ROM 2.31
 
 
-#CDROM����·��
+#CDROM介质路径
 usb_cdrom_lun_path=/mnt/resource/ufi_cdrom.iso
 
-#mmc lun��vendor�ַ���
+#mmc lun的vendor字符串
 VENDOR_MS_MMC=DEMO
 
-#mmc lun��product�ַ���
+#mmc lun的product字符串
 PRODUCT_MS_MMC=MMC Storage
 
-#mmc lun��release�ַ���
+#mmc lun的release字符串
 RELEASE_MS_MMC=2.31
 
-#SD����·��
+#SD介质路径
 usb_tcard_lun_path=/dev/mmcblk0
 
-#mmc lun��inquiry�ַ���
+#mmc lun的inquiry字符串
 INQUIRY_MS_MMC=DEMO MMC Storage 2.31
 
-#����ECM��������
+#配置ECM网卡个数
 ECM_NUM=1
 
-#����RNDIS������������
+#配置RNDIS网卡最大组包数
 RNDIS_PKT_NUM=10
 
 
-###����������Ӧ����###
+###波特率自适应开关###
 self_adaption_port=
-###ĳЩ�˿ڲ���Ҫ��Ӧ���ϱ��˿�׼������Ϣ###
+###某些端口不需要向应用上报端口准备好消息###
 notify_forbiden_ports=
 
-######USB�˿�����END#######
+######USB端口配置END#######
 
-######CP��NV������Ϣ#######
-#�ڲ������汾��
+######CP侧NV配置信息#######
+#内部软件版本号
 zversion=K318V1.0.0B03
-#�ⲿ�����汾��
+#外部软件版本号
 zcgmr=DEMO_V1.0.0B03
-#Ӳ���汾��
+#硬件版本号
 zhver=V0.1
-#�ڲ�����
+#内部机型
 zcgmm=K318
-#�ⲿ����
+#外部机型
 zcgmw=K318
-#������Ϣ
+#厂商信息
 zcgmi=DEMO
-#SSID��
+#SSID号
 zssid=0
-#WifiKey��ֵ
+#WifiKey的值
 zwifikey=0
-#��������������������ģ��ʹ��
+#锁网最大解锁次数，锁网模块使用
 zunlocktimes=3
-#�汾ģʽ���ͣ������汾/�Ҳ�汾
+#版本模式类型，正常版本/挂侧版本
 zversionmode=0
-#���ܶ��Ź��ܿ���
+#智能短信功能开关
 zisms=0
-#DM���ܿ���,0:�رգ�1�ƶ���2��ͨ��3����
+#DM功能开关,0:关闭，1移动，2联通，3电信
 zdmreg=0
-#��ͨDM ע�Ὺ���ȴ�ʱ��, 1~60 ��Ч����λ���ӣ�������ֵ: ��Чֵ
+#联通DM 注册开机等待时间, 1~60 有效，单位分钟，其他数值: 无效值
 zdmregtime=0
-#�Զ�������ʽ����������
+#自动搜网方式网络接入次序
 auto_acqorder=
-#����log ��ȡ
+#工具log 存取
 zcat_mode=
-#�����ͼƬ�ֱ�����ʾ����
+#照相机图片分辨率显示控制
 zcamera_interprolation=1
-######CP��NV������ϢEND#######
+######CP侧NV配置信息END#######
 
 #for volte
 MTNET_TEST=0
