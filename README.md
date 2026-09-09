@@ -89,11 +89,12 @@ adb shell mount -o remount,ro /
 ◉如果替换了我修改的goahead，千万不要`cat /tmp/cgi*`，内存应该会撑爆。  
 ### ➤备注：  
 ◉受限于实现原理，每次fork出的shell进程执行过一次命令就会销毁，想一次执行多个命令建议用“;”分割,，比如说`ls /;ls /etc`  
+◉不过值得注意的安全隐患是我没加校验，网络攻击者可以很轻易地执行shell命令，建议apn里不要启用ipv4v6。  
 ◉customfuncs.js封装了getAD();、evalcmd();等js函数。getAD();用于post某些goahead原生命令需要AD参数的情况；evalcmd();工作原理就是上面提到的，可以用于自定义链接，如`<a href="javascript:void(0);" onclick="confirm('即将执行XX命令'); evalcmd('这里写shell命令如reboot');">我是重启</a>`。  
-◉index.html下面这一栏“开/关”是开/关adb，会重启；“退出”是退出登录；"重启"字面意思（值得一提的是goahead原生提供了REBOOT_DEVICE接口，但是需要处于登录状态，所以重启我调用的是evalcmd('reboot');。  
+◉index.html下面这一栏“退出”是退出登录；"重启"字面意思（值得一提的是goahead原生提供了REBOOT_DEVICE接口，但是需要处于登录状态，所以重启我调用的是evalcmd('reboot');。  
 ## § 中兴随身wifi全功能后台的最后一块拼图--at工具
 我编译了一个可执行文件，可以调用这个工具在命令行执行at命令。工具参考了官方zte_mifi、libatutils.so和atweb的反编译代码，在这里向包括mWIFI_icu、棒子版煤油等在内的前辈表示感谢。  
-<div align="center"><img src="./images/at工具示例.jpg"></div>  
+<div><img src="./images/at工具示例.jpg"  style="width: 600px; height: auto;"></div>
 
 ### ➤编译:  
 我编译了适配官方3.4.110内核和uClibc 0.9.33.2库的Buildroot交叉编译器（详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries），用[Makefile](./编译命令/at/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了大部分可用编译优化命令，可以尝试移植到其他二进制文件的编译命令里。  
@@ -111,33 +112,34 @@ adb shell chmod 755 /usr/sbin/at
 adb shell mount -o remount,ro /  
 ```
 ### ➤原理：  
-官方封装了一套和at串口通信的方法：goahead接受前端url，zte_mifi把守大门（阻塞了几个疑似modem的串口），向底层提交申请然后排队执行。我写的这个c程序就是调用重写后的官方的send_req_and_wait函数，发送at命令，接收返回值。和已有的atwed的区别在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能比编译后的c程序好，因为js在访问后台的电脑和手机执行，c程序在性能孱弱的随身wifi运行，占用总共约32MB的运行内存的一部分。它就是个at端口信息的搬运工，通过cgi和后台的通信依赖已有的goahead的80端口，不需要后台。  
+官方封装了一套和at串口通信的方法：goahead接受前端url，zte_mifi把守大门（阻塞了几个疑似modem的串口），向底层提交申请然后排队执行。我写的这个c程序就是调用重写后的官方send_req_and_wait函数，发送at命令，接收返回值。和已有的atwed的区别在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能比编译后的c程序好，因为js由访问后台的电脑和手机执行，而c程序在性能孱弱的随身wifi运行，占用总共约32MB的运行内存的一部分。  
 ### ➤为什么要重复造轮子？  
-用十六进制查看atweb就能发现它里面封装了收集包括imei、iccid等在内的信息然后和一串加密字符串拼接成url检测是否付费的函数，再加上atweb有很高权限，所以我才花时间把这个小东西写出来，并且附上源码[at.c](/at.c)，感兴趣可以自己编译。一切代码都是明文，我可以保证我提交的代码没有后台。不过值得注意的安全隐患是我没加校验，网络攻击者可以很轻易地执行shell命令，建议apn里不要启用ipv4v6。  
-### ➤已知bug：  
-输出包含过多底层日志，这是因为过程涉及复杂函数调用（编译的时候处理依赖库会很头疼），每个都会拉点屎。可以在源码里屏蔽了。我本着够用就行的原则没管。  
-<div align="center"><img src="./images/底层日志.jpg"></div>  
+用十六进制查看atweb就能发现它里面封装了收集包括imei、iccid等在内的信息然后和一串加密字符串拼接成url检测是否付费的函数，再加上atweb有很高权限，所以我才花时间把这个小东西写出来，并且附上源码[at.c](./源码/at/at.c)，感兴趣可以自己编译。一切代码都是明文，我可以保证我提交的代码没有后台。  
+### ➤已知bug（已修复）：  
+输出包含过多底层日志，这是因为过程涉及复杂函数调用，每个都会拉点屎。可以在源码里屏蔽了。我本着够用就行的原则没管。  
+<div><img src="./images/底层日志.jpg"  style="width: 600px; height: auto;"></div>  
+
+更新！！！我重写了libatutils库里的几个函数，彻底不打印无关日志。受cvghh@酷安启发，用第二个参数控制输出格式，为1时打印`_返回字符串_`方便正则匹配。  
+<div><img src="./images/at工具示例2.jpg" style="width: 350px; height: auto;"></div>  
 
 ### ➤小设计：  
 成功输出_at串口返回值_  
+非查询类at命令成功执行输出_OK_  
 失败输出_ERROR_  
 用正则表达式`/^_(我是要匹配的内容)_$/m`能轻松匹配。  
 ### ➤基于at工具实现的功能:  
 ◉首先需要下载推送以下文件，如有定制化需求自行适配。  
 /etc_ro/cgi-bin/shell：通过post请求执行shell命令，一切的基础  
-/etc/rc：一定确保push完后它有执行权限，不然设备开机不能初始化会变砖！！！开机脚本，可选。没有它运行久了/var路径可能会有垃圾（替换了goahead就没有这个问题）  
-/bin/goahead：可选，解决了原来路径/var/cgi*文件残留的问题  
-/sbin/at：今天的主角，命令行执行at命令用  
+/usr/sbin/at：主角，命令行执行at命令用  
 /etc_ro/web/index.html：后台主界面，我在上面加了很多蓝色功能键  
 /etc_ro/web/js/customfuncs.js：我写的大部分js函数都在里面  
 /etc_ro/web/tmpl/bandlock.html：插入主界面的锁频面板  
-/etc_ro/web/tmpl/status/device_info.html：设备信息页面添加当前频段和签约速率，我没有加定时刷新的代码，频段变化后要手动刷新页面  
-◉开 关这两个蓝色链接功能是开关adb，原理是在后台访问本文开头提到的两个链接  
-◉锁频面板：at+zlteband=逗号分割的9组数字实现  
+/etc_ro/web/tmpl/status/device_info.html：设备信息页面添加当前频段和签约速率，我没有加定时刷新的代码，信息变化后要手动刷新页面  
+◉锁频面板：at+zlteband=逗号分割的9组数字  
 <div align="center"><img src="./images/锁频关.jpg"></div>  
 <div align="center"><img src="./images/锁频开.jpg"></div>  
 
-◉设备信息页面添加当前频段和签约速率：AT+ZBAND?和AT+CGEQOSRDP=1实现  
+◉设备信息页面添加当前频段和签约速率：AT+ZBAND?和AT+CGEQOSRDP=1  
 <div align="center"><img src="./images/信息页面.jpg"></div>  
 
 改串和锁小区等功能我用不到所以没在网页上加按钮。既然有了at工具可以自己在左下角的输入框执行AT命令，加at 前缀即可。  
@@ -155,9 +157,9 @@ AT+MAC=
 值得一提的是官方goahead留了锁频接口，但是没给网页前端入口。我把实现方法写入了customfuncs.js，感兴趣的可以试试。这个接口好在goahead已经编译相关代码，我们只需要写好前端js和按钮就好。坏处是要登录，调用过程繁琐。  
 <div align="center"><img src="./images/官方锁频接口.jpg"></div>  
 
-## 其他功能
-### ◉自动APN设为IPv4v6,下载推送到/etc_ro/config/auto_apn/auto_apn.db  
-[auto_apn.db](/etc_ro/config/auto_apn/auto_apn.db)  
+## § 其他功能
+### ◉自动APN设为IPv4v6  
+下载[auto_apn.db](/etc_ro/config/auto_apn/auto_apn.db)推送到/etc_ro/config/auto_apn/auto_apn.db  
 f30a pro的这个数据库文件默认为IP，我把数据库里国内运营商的APN都设为IPv4v6，想用IPv4使用手动APN。  
 <div align="center"><img src="./images/apn.jpg"></div>  
 
