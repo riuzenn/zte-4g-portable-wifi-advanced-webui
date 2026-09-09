@@ -1,0 +1,134 @@
+cd ~
+wget https://busybox.net/downloads/busybox-1.36.1.tar.bz2
+mkdir -p ~/busybox_build
+tar -xjf busybox-1.36.1.tar.bz2 -C ~/busybox_build --strip-components=1
+cd ~/busybox_build
+
+make distclean
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}gcc-ar"
+export RANLIB="${CROSS_COMPILE}gcc-ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -fno-pie -fno-stack-protector -falign-functions=2 -falign-loops=2 -falign-jumps=2"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t -Wl,-Map,aaa.map"
+
+export LIBS=""
+export ARCH=arm
+
+make ARCH=arm CROSS_COMPILE="${CROSS_COMPILE}" CC="${CC}" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" defconfig
+
+# 编译dmesg
+./make_single_applets.sh DMESG > ~/1.txt 2>&1
+mv busybox_DMESG dmesg
+
+ls -l dmesg
+file dmesg
+readelf -d dmesg | grep NEEDED
+readelf -h dmesg | grep Type
+readelf -l dmesg | grep GNU_RELRO
+readelf -d dmesg | grep BIND_NOW
+readelf -s dmesg | grep stack_chk
+readelf -r less | grep stack_chk
+readelf -l dmesg | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata dmesg
+~/ELFkickers/sstrip/sstrip dmesg
+ls -l dmesg
+
+# dmesg换成less就是编译less的命令啦
+sed -i 's/^CONFIG_FEATURE_LESS_MAXLINES=.*/CONFIG_FEATURE_LESS_MAXLINES=1000/' .config
+./make_single_applets.sh LESS > ~/1.txt 2>&1
+mv busybox_LESS less
+
+ls -l less
+file less
+readelf -d less | grep NEEDED
+readelf -h less | grep Type
+readelf -l less | grep GNU_RELRO
+readelf -d less | grep BIND_NOW
+readelf -s less | grep stack_chk
+readelf -r less | grep stack_chk
+readelf -l less | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata less
+~/ELFkickers/sstrip/sstrip less
+ls -l less
+
+# dmesg换成hexdump就是编译hexdump的命令啦
+./make_single_applets.sh HEXDUMP > ~/1.txt 2>&1
+mv busybox_HEXDUMP hexdump
+
+ls -l hexdump
+file hexdump
+readelf -d hexdump | grep NEEDED
+readelf -h hexdump | grep Type
+readelf -l hexdump | grep GNU_RELRO
+readelf -d hexdump | grep BIND_NOW
+readelf -s hexdump | grep stack_chk
+readelf -r hexdump | grep stack_chk
+readelf -l hexdump | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata hexdump
+~/ELFkickers/sstrip/sstrip hexdump
+ls -l hexdump
+
+# nslookup
+./make_single_applets.sh NSLOOKUP > ~/1.txt 2>&1
+mv busybox_NSLOOKUP nslookup
+
+ls -l nslookup
+file nslookup
+readelf -d nslookup | grep NEEDED
+readelf -h nslookup | grep Type
+readelf -l nslookup | grep GNU_RELRO
+readelf -d nslookup | grep BIND_NOW
+readelf -s nslookup | grep stack_chk
+readelf -r nslookup | grep stack_chk
+readelf -l nslookup | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata nslookup
+~/ELFkickers/sstrip/sstrip nslookup
+ls -l nslookup
+
+# strings
+./make_single_applets.sh STRINGS > ~/1.txt 2>&1
+mv busybox_STRINGS strings
+
+ls -l strings
+file strings
+readelf -d strings | grep NEEDED
+readelf -h strings | grep Type
+readelf -l strings | grep GNU_RELRO
+readelf -d strings | grep BIND_NOW
+readelf -s strings | grep stack_chk
+readelf -r strings | grep stack_chk
+readelf -l strings | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata strings
+~/ELFkickers/sstrip/sstrip strings
+ls -l strings
+
+# microcom
+./make_single_applets.sh MICROCOM > ~/1.txt 2>&1
+mv busybox_MICROCOM microcom
+
+ls -l microcom
+file microcom
+readelf -d microcom | grep NEEDED
+readelf -h microcom | grep Type
+readelf -l microcom | grep GNU_RELRO
+readelf -d microcom | grep BIND_NOW
+readelf -s microcom | grep stack_chk
+readelf -r microcom | grep stack_chk
+readelf -l microcom | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata microcom
+~/ELFkickers/sstrip/sstrip microcom
+ls -l microcom

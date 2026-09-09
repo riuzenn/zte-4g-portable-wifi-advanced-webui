@@ -1,0 +1,187 @@
+cd ~
+wget https://www.uclibc.org/downloads/uClibc-0.9.33.2.tar.xz
+
+
+tar -xJf uClibc-0.9.33.2.tar.xz
+mv ./uClibc-0.9.33.2 ./uClibc_build
+cd ~/uClibc_build
+
+#make distclean
+make menuconfig
+如下配置
+➤Target Architecture：arm
+
+➤Target Architecture Features and options
+◉Build for EABI：✓
+◉Build using Thumb mode：✓
+◉Use BX in function return：✓
+◉Target Processor Endianness：Little Endian
+◉Target CPU has a memory management unit (MMU)：✓
+◉Do you want to utilize the MMU?：✓
+◉Enable floating point number support：✓
+◉Target CPU has a floating point unit (FPU)：不✓
+◉Enable full C99 math library support：✓
+◉Enable XSI math extensions to the ISO C standard (bessel)：不✓
+◉Enable C99 Floating-point environment：不✓
+◉Linux kernel header location：buildroot/package/uclibc/uClibc-0.9.33.config里写的是/usr/src/linux/include
+
+➤General Library Settings
+◉Generate only Position Independent Code (PIC)：✓
+◉Enable shared libraries：✓
+◉Only load shared libraries which can share their text segment：✓
+◉Native 'ldd' support：✓
+◉Enable library loader cache (ld.so.conf)：不✓
+◉Enable library loader LD_PRELOAD environment：✓
+◉Enable library loader preload file (ld.so.preload)：不✓
+◉Dynamic linker stand-alone mode support：不✓
+◉Dynamic linker prelink support：不✓
+◉Link ldconfig statically：不✓ 
+◉Enable ELF RUNPATH tag support：不✓
+◉Add ldso path to lib search path：✓
+◉Add LD_LIBRARY_PATH to lib search path：✓
+◉Disable automatic unloading of dynamically loaded shared objects：不✓ 
+◉Support global constructors and destructors：✓ 
+◉Enable GNU hash style support：不✓
+◉Thread support：Native POSIX Threading (NPTL)
+◉Thread-Local Storage：✓
+◉Build pthreads debugging support：不✓
+◉Syslog support：✓
+◉Large File Support：✓
+◉Malloc Implementation：malloc-standard
+◉Malloc returns live pointer for malloc(0)：✓
+◉Dynamic atexit() Support：✓
+◉Old (visible) atexit Support：不✓ 
+◉Enable SuSv3 LEGACY functions：✓
+◉Enable SuSv3 LEGACY macros：不✓
+◉Enable SuSv4 LEGACY or obsolescent functions：✓
+◉Hide structures and constants for unsupported features：✓
+◉Provide stubs for unavailable functionality：不✓
+◉Shadow Password Support：✓
+◉Support for program_invocation_name：不✓
+◉Support for pseudo-terminals：✓
+◉Assume that /dev/pts is a devpts or devfs file system：✓
+◉Support only Unix 98 PTYs：✓
+◉Support getpt() (glibc-compat)：✓
+◉Provide libutil library and functions：✓
+◉Support 'struct tm' timezone extension fields：✓
+◉Enable caching of the last valid timezone 'TZ' string：✓
+◉Enable '/etc/TZ' file support to set a default timezone (uClibc-specific)：✓
+◉Repeatedly read the '/etc/TZ' file：不✓
+◉Path to the 'TZ' file for setting the global timezone：/etc_rw/TZ，文件和字符串实际存在
+◉Use /etc/localtime as a fallback：✓
+
+
+➤Advanced Library Settings
+◉Buffer size for getpwnam() and friends：256
+◉Buffer size for getgrnam() and friends：256
+◉Linux kernel module functions (2.6)：✓
+◉Linux kernel module functions (<2.6)：不✓
+◉Linux specific functions：✓
+◉Support GNU extensions for error-reporting：✓
+◉BSD specific functions：✓
+◉BSD err functions：✓
+◉BSD obsolete signal functions：不✓
+◉SYSV obsolete signal functions：不✓
+◉ntp_*() aliases：不✓
+◉Enable SVr4 deprecated functions：✓
+◉Realtime-related family of SUSv functions：✓
+◉Advanced realtime-related family of SUSv functions：✓
+◉epoll：✓
+◉Extended Attributes：✓
+◉Profiling support：不✓
+◉libcrypt support：✓
+◉libcrypt SHA256 support：不✓
+◉libcrypt SHA512 support：不✓
+
+
+➤Networking Support
+◉Socket support：✓
+◉IP version 4 support：✓
+◉IP version 6 support：✓
+◉Remote Procedure Call (RPC) support：✓
+◉Full RPC support：✓
+◉Reentrant RPC support：✓
+◉Use netlink to query interfaces：不✓
+◉Support res_close() (bsd-compat)：不✓
+◉Use compatible but bloated _res：✓
+◉Use extra compatible but extra bloated _res：不✓
+◉DNS resolver functions：✓
+◉Provide libresolv stub：✓
+◉Provide libnsl stub：✓
+
+➤String and Stdio Support
+◉Use faster (but larger) generic string functions：✓
+◉Use arch-specific assembly string functions (where available)：✓
+◉Use Table Versions Of 'ctype.h' Functions.：✓
+◉Support Signed Characters In 'ctype.h' Functions.：✓ 
+◉ctype argument checking：Detect and handle appropriately
+◉Wide Character Support：✓
+◉Locale Support：不✓
+◉Support hexadecimal float notation：✓
+◉Support glibc's register_printf_function() (glibc-compat)：✓
+◉Maximum number of positional args. Either 0 or >= 9.：10
+◉Support glibc's 'a' flag for scanf string conversions (not implemented)：不✓
+◉Stdio buffer size：4096
+◉Stdio builtin buffer size (uClibc-specific)：None 
+◉Attempt to shutdown stdio subsystem when abort() is called.：不✓ 
+◉Provide a macro version of getc()：不✓
+◉Provide a macro version of putc()：不✓
+◉Support auto-r/w transition：✓
+◉Support an fopen() 'F' flag for large file mode (uClibc-specific)：不✓
+◉Support an fopen() 'x' flag for exclusive mode (glibc-compat)：✓
+◉Support an fopen() 'e' flag for close-on-exec mode (glibc-compat)：不✓
+◉Support fmemopen(), open_memstream(), and fopencookie() (glibc-compat)：✓
+◉Support the '%m' specifier in printf format strings (glibc-compat)：✓ 
+◉Include the errno message text in the library：✓
+◉Support sys_errlist[] (obsolete-compat)：不✓
+◉Include the signum message text in the library：✓
+◉Support sys_siglist[] (bsd-compat)：不✓
+◉Support gnu getopt：✓
+◉Use futexes for multithreaded I/O locking：✓
+◉Support glibc getsubopt：✓
+
+➤Big and Tall
+◉Regular Expression Support：✓
+◉Use the older (stable) regular expression code：✓
+◉fnmatch Support：✓
+◉Use the older (stable) fnmatch code：不✓
+◉Support the wordexp() interface：不✓
+◉Support the nftw() interface：✓
+◉Support the ftw() interface (SUSv4-obsolete)：✓
+◉Support the fts() interface (bsd-compat)：不✓
+◉Support the glob() interface：✓
+◉Support gnu glob() interface：✓
+◉utmpx based support for tracking login/logouts to/from the system：✓
+
+➤Library Installation Options
+◉uClibc runtime library directory：填写/，参考buildroot
+◉uClibc development environment directory：填写/usr/，参考buildroot
+◉Library path component：lib
+◉Hardwire absolute paths into linker scripts：✓
+
+➤Security options
+◉Build utilities as ET_DYN/PIE executables：✓
+◉Include the arc4random() function：不✓
+◉Support for GCC stack smashing protector：✓
+◉Support for gcc-3.x propolice smashing stack protector：不✓
+◉Use simple guard values without accessing /dev/urandom：不✓
+◉Propolice protection blocking signal：abort
+◉Build uClibc with -fstack-protector：不✓
+◉Build uClibc with linker option -z RELRO：不✓
+◉Build uClibc with linker option -z NOW：✓
+◉Build uClibc with noexecstack marking：✓
+
+➤Development/debugging options
+◉Cross-compiling toolchain prefix：空
+◉Extra CFLAGS：空
+◉Enable debugging symbols：不✓
+◉Strip libraries and executables：✓
+◉Build with run-time assertion testing：不✓
+◉Build the shared library loader with debugging support：不✓
+◉Build the shared library loader with early debugging support：不✓
+◉Build malloc with debugging support：不✓
+◉Add support for application self-debugging：不✓
+◉Compiler Warnings：-Wall
+◉Enable extra annoying warnings：不✓
+◉Compile all sources at once into an object：不✓
+◉Manuel's hidden warnings：不✓

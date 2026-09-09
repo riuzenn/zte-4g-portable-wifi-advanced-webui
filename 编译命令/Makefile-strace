@@ -1,0 +1,59 @@
+cd ~
+wget https://strace.io/files/4.10/strace-4.10.tar.xz
+tar -xJf strace-4.10.tar.xz
+mv strace-4.10 strace_build
+cd ~/strace_build
+
+make distclean
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}gcc-ar"
+export RANLIB="${CROSS_COMPILE}gcc-ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -fno-pie -fno-stack-protector -flto=$(nproc) -falign-functions=2 -falign-loops=2 -falign-jumps=2"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t -Wl,-Map,aaa.map -flto=$(nproc)"
+
+export LIBS=""
+
+./configure \
+    --host=arm-buildroot-linux-uclibcgnueabi \
+    --with-libunwind=no \
+    --disable-dependency-tracking
+
+# 裁剪sysctl表和V4L2表还有冷门解码器
+sed -i '/^#define HAVE_DECL_CTL_/s/ 1$/ 0/' config.h
+sed -i '/^#define HAVE_DECL_KERN_/s/ 1$/ 0/' config.h
+sed -i '/^#define HAVE_DECL_NET_/s/ 1$/ 0/' config.h
+sed -i '/^#define HAVE_DECL_VM_/s/ 1$/ 0/' config.h
+sed -i '/^#define HAVE_DECL_V4L2_/s/ 1$/ 0/' config.h
+for m in \
+    HAVE_LINUX_HIDDEV_H \
+    HAVE_LINUX_MMTIMER_H \
+    HAVE_LINUX_BSG_H \
+    HAVE_SCSI_SG_H \
+    HAVE_MQUEUE_H \
+; do
+    sed -i "s@^#define $m 1@/* #undef $m */@" config.h
+done
+
+make -j$(nproc) > ~/1.txt 2>&1
+
+file strace
+ls -l strace
+readelf -d strace | grep NEEDED
+readelf -h strace | grep Type
+readelf -l strace | grep GNU_RELRO
+readelf -d strace | grep BIND_NOW
+readelf -s strace | grep stack_chk
+readelf -r strace | grep stack_chk
+readelf -l strace | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata strace
+~/ELFkickers/sstrip/sstrip strace
+ls -l strace

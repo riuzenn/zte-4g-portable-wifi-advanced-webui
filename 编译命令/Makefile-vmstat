@@ -1,0 +1,43 @@
+cd ~
+wget https://busybox.net/downloads/busybox-1.38.0.tar.bz2
+mkdir -p ~/vmstat_build
+tar -xjf busybox-1.38.0.tar.bz2 -C ~/vmstat_build --strip-components=1
+cd ~/vmstat_build
+
+make distclean
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}gcc-ar"
+export RANLIB="${CROSS_COMPILE}gcc-ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -fno-pie -fno-stack-protector -falign-functions=2 -falign-loops=2 -falign-jumps=2"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t -Wl,-Map,aaa.map"
+
+export LIBS=""
+export ARCH=arm
+
+make ARCH=arm CROSS_COMPILE="${CROSS_COMPILE}" CC="${CC}" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" defconfig
+
+# vmstat
+./make_single_applets.sh VMSTAT > ~/1.txt 2>&1
+mv busybox_VMSTAT vmstat
+
+ls -l vmstat
+file vmstat
+readelf -d vmstat | grep NEEDED
+readelf -h vmstat | grep Type
+readelf -l vmstat | grep GNU_RELRO
+readelf -d vmstat | grep BIND_NOW
+readelf -s vmstat | grep stack_chk
+readelf -r vmstat | grep stack_chk
+readelf -l vmstat | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata vmstat
+~/ELFkickers/sstrip/sstrip vmstat
+ls -l vmstat

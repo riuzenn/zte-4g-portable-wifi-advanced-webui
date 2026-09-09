@@ -1,0 +1,49 @@
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -fno-pie -fno-stack-protector -falign-functions=2 -falign-loops=2 -falign-jumps=2"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t"
+
+export LIBS=""
+#h2t
+${CC} ${CFLAGS} h2t.c -o h2t ${LDFLAGS} ${LIBS}
+
+ls -l h2t
+file h2t
+readelf -h h2t
+readelf -A h2t
+readelf -d h2t | grep NEEDED
+readelf -h h2t | grep Type
+readelf -l h2t | grep GNU_RELRO
+readelf -d h2t | grep BIND_NOW
+readelf -s h2t | grep stack_chk
+readelf -r h2t | grep stack_chk
+readelf -l h2t | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata h2t
+~/ELFkickers/sstrip/sstrip h2t
+ls -l h2t
+#j2t
+${CC} ${CFLAGS} j2t.c -o j2t ${LDFLAGS} ${LIBS}
+
+ls -l j2t
+file j2t
+readelf -h j2t
+readelf -A j2t
+readelf -d j2t | grep NEEDED
+readelf -h j2t | grep Type
+readelf -l j2t | grep GNU_RELRO
+readelf -d j2t | grep BIND_NOW
+readelf -s j2t | grep stack_chk
+readelf -r j2t | grep stack_chk
+readelf -l j2t | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata j2t
+~/ELFkickers/sstrip/sstrip j2t
+ls -l j2t

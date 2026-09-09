@@ -1,0 +1,61 @@
+cd ~
+wget https://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.bz2
+mkdir -p ~/binutils_src/binutils_build
+tar -xjf binutils-2.24.tar.bz2 -C ~/binutils_src --strip-components=1
+cd ~/binutils_src/binutils_build
+
+#替换裁剪后的readelf.c到binutils_src/binutils
+make distclean
+rm -rf *
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}gcc-ar"
+export RANLIB="${CROSS_COMPILE}gcc-ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -fno-pie -fno-stack-protector -flto=$(nproc) -falign-functions=2 -falign-loops=2 -falign-jumps=2"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t -Wl,-Map,aaa.map -flto=$(nproc)"
+
+export LIBS=""
+
+../configure \
+--host=arm-buildroot-linux-uclibcgnueabi \
+--disable-install-libiberty \
+--disable-multilib \
+--disable-nls \
+--disable-werror \
+--disable-gdb \
+--disable-gprof \
+--disable-gprofng \
+--disable-gold \
+--disable-ld \
+--disable-libquadmath \
+--disable-libstdcxx \
+--disable-libbacktrace \
+--disable-plugins \
+--disable-gas \
+--disable-shared
+
+make -j$(nproc) all-binutils
+
+cd binutils
+
+ls -l readelf
+file readelf
+readelf -h readelf
+readelf -A readelf
+readelf -d readelf | grep NEEDED
+readelf -h readelf | grep Type
+readelf -l readelf | grep GNU_RELRO
+readelf -d readelf | grep BIND_NOW
+readelf -s readelf | grep stack_chk
+readelf -r readelf | grep stack_chk
+readelf -l readelf | grep GNU_STACK
+
+~/ELFkickers/sstrip/sstrip readelf
+ls -l readelf

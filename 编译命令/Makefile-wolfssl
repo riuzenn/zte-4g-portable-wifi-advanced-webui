@@ -1,0 +1,102 @@
+cd ~
+# 没找到静态的下载链接，可以自己去www.wolfssl.com/download下载
+unzip wolfssl-5.9.2.zip
+mv wolfssl-5.9.2 wolfssl_build
+cd ~/wolfssl_build
+
+make distclean
+rm -rf ~/ztelib/bin ~/ztelib/include ~/ztelib/lib ~/ztelib/share
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}gcc-ar"
+export RANLIB="${CROSS_COMPILE}gcc-ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections --sysroot=${SYSROOT} -fno-pie -fstack-protector-strong -flto=$(nproc) -falign-functions=2 -falign-loops=2 -falign-jumps=2 -DMICRO_SESSION_CACHE -DNO_WOLFSSL_SERVER -DWOLFSSL_NO_ECC_SIGN"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t -Wl,-Map,aaa.map -flto=$(nproc)"
+
+export LIBS=""
+
+V=""
+V="${V} --enable-static --disable-shared --disable-cmake-install"
+# ---------- TLS 版本：只保留 1.2 + 1.3 ----------  
+V="${V} --enable-tlsv12 --enable-tls13 --disable-oldtls --disable-tlsv10 --disable-sslv3"
+V="${V} --enable-sni --enable-alpn"      
+# ---------- 关闭 UDP ----------
+V="${V} --disable-dtls --disable-dtls13 --disable-quic --disable-ech --disable-earlydata"
+# ---------- 纯 C 构建，禁用汇编优化 ----------
+V="${V} --disable-asm --disable-armasm --disable-sp-asm"
+# ---------- 数学后端：SP 只留 RSA 2048 + ECC P-256，其他回落通用数学库 ----------
+V="${V} --enable-sp=smallrsa2048,small256"
+V="${V} --with-max-rsa-bits=4096"
+V="${V} --with-eccminsz=256"
+# ---------- 对称算法：只留 AES-CBC + AES-GCM + chacha + poly1305 ----------
+V="${V} --enable-aescbc --enable-aesgcm --disable-aesecb"
+V="${V} --disable-aesccm --disable-aesctr --disable-aesofb --disable-aescfb"
+V="${V} --disable-aesxts --disable-aescts --disable-aessiv --disable-aeseax"
+V="${V} --enable-chacha --enable-poly1305"
+# ---------- 哈希：只留 SHA 族（SHA1/256/384/512） ----------
+V="${V} --enable-sha --enable-sha256 --enable-sha384 --enable-sha512 --disable-sha3"
+V="${V} --disable-md2 --disable-md4 --disable-md5 --disable-ripemd"
+V="${V} --disable-blake2b --disable-blake2s"
+# SHA-1：想极限省可加 --disable-sha，但老证书握手会失败，建议保留
+# ---------- 国密 / 杂项密码 ----------
+V="${V} --disable-sm2 --disable-sm3 --disable-ascon"
+V="${V} --disable-sm4-ecb --disable-sm4-cbc --disable-sm4-ctr --disable-sm4-gcm --disable-sm4-ccm"
+V="${V} --disable-siphash --disable-cmac --disable-camellia --disable-des3"
+V="${V} --disable-arc4 --disable-nullcipher --disable-compkey"
+V="${V} --disable-hpke --disable-x963kdf --disable-srtp-kdf"
+# ---------- 非对称：只留 RSA + ECC + curve25519 ----------
+V="${V} --disable-dh --disable-dsa --enable-curve25519 --disable-ed25519"
+V="${V} --disable-curve448 --disable-ed448 --disable-ecccustcurves --disable-brainpool"
+V="${V} --disable-eccsi --disable-sakke --disable-fpecc --disable-eccencrypt"
+V="${V} --disable-psk --disable-anon"
+# ---------- 撤销检查 / 会话 ----------
+V="${V} --disable-ocsp --disable-ocspstapling --disable-ocspstapling2"
+V="${V} --disable-crl --disable-crl-monitor --disable-session-ticket"
+# ---------- 证书/密钥管理 ----------
+V="${V} --disable-oaep --disable-asn-print --disable-oldnames"
+V="${V} --disable-pkcs8 --disable-pwdbased --disable-sessioncerts"
+V="${V} --disable-pkcs12 --enable-altcertchains --enable-rsapub --disable-harden"
+V="${V} --disable-keygen --disable-certgen --disable-certreq"
+V="${V} --disable-scep --disable-pkcs7 --disable-pkcs11 --disable-enckeys"
+# ---------- 运行时资源 ----------
+V="${V} --enable-lowresource --enable-smallstack --enable-singlethreaded --disable-rwlock"
+# ---------- 文件系统：必须保留（curl 按路径加载 CA bundle） ----------
+V="${V} --enable-filesystem --disable-sys-ca-certs"
+# ---------- 调试/插桩；建议联调期errorstrings先别关 ----------
+V="${V} --disable-memory --disable-trackmemory --disable-memorylog --disable-stacklog"
+V="${V} --disable-staticmemory --disable-base16"
+V="${V} --disable-asynccrypt --disable-asyncthreads"
+V="${V} --disable-cryptocb --disable-pkcallbacks --disable-iotsafe"
+V="${V} --disable-errorstrings"
+# ---------- 默认即 no 的集成项，显式防手滑 ----------
+V="${V} --disable-fips --disable-selftest --disable-wolfprovider --disable-engine"
+V="${V} --disable-wolfclu --disable-wolftpm --disable-wolfssh --disable-wolfsentry"
+V="${V} --disable-openssh --disable-openvpn --disable-nginx --disable-haproxy"
+V="${V} --disable-stunnel --disable-curl --disable-opensslextra --disable-opensslall"
+V="${V} --disable-opensslcoexist"
+# ---------- 不编译测试/示例 ----------
+V="${V} --disable-examples --disable-crypttests --disable-benchmark --disable-crypttests-libs"
+
+./configure --host=arm-buildroot-linux-uclibcgnueabi --prefix=${ZTE_LIB} ${V}
+
+make V=1 -j$(nproc) > ~/1.txt 2>&1
+make install
+
+ls -l ${ZTE_LIB}/lib/libwolfssl.a
+file ${ZTE_LIB}/lib/libwolfssl.a
+readelf -h ${ZTE_LIB}/lib/libwolfssl.a
+readelf -A ${ZTE_LIB}/lib/libwolfssl.a
+readelf -d ${ZTE_LIB}/lib/libwolfssl.a | grep NEEDED
+readelf -h ${ZTE_LIB}/lib/libwolfssl.a | grep Type
+readelf -l ${ZTE_LIB}/lib/libwolfssl.a | grep GNU_RELRO
+readelf -d ${ZTE_LIB}/lib/libwolfssl.a | grep BIND_NOW
+readelf -s ${ZTE_LIB}/lib/libwolfssl.a | grep stack_chk
+readelf -r ${ZTE_LIB}/lib/libwolfssl.a | grep stack_chk
+readelf -l ${ZTE_LIB}/lib/libwolfssl.a | grep GNU_STACK

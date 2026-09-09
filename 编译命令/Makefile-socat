@@ -1,0 +1,76 @@
+cd ~
+wget http://www.dest-unreach.org/socat/download/socat-1.7.4.4.tar.gz
+tar xzf socat-1.7.4.4.tar.gz
+mv socat-1.7.4.4 socat_build
+cd ~/socat_build
+
+sed -i 's/#if HAVE_NETDB_H && (_WITH_IP4 || _WITH_IP6)/#if HAVE_NETDB_H \&\& (_WITH_IP4 || _WITH_IP6 || _WITH_SOCKET)/' sysincludes.h
+
+make distclean
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}gcc-ar"
+export RANLIB="${CROSS_COMPILE}gcc-ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -fno-pie -fno-stack-protector -flto=$(nproc) -falign-functions=2 -falign-loops=2 -falign-jumps=2 -DNGROUPS=64"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t -Wl,-Map,aaa.map -flto=$(nproc)"
+
+export LIBS=""
+
+./configure \
+  --host=arm-buildroot-linux-uclibcgnueabi \
+  sc_cv_sys_crdly_shift=9 \
+  sc_cv_sys_tabdly_shift=11 \
+  sc_cv_sys_csize_shift=4 \
+  --disable-openssl \
+  --disable-fips \
+  --disable-readline \
+  --disable-libwrap \
+  --disable-ip4 \
+  --disable-ip6 \
+  --disable-rawip \
+  --disable-interface \
+  --disable-tcp \
+  --disable-udp \
+  --disable-sctp \
+  --disable-vsock \
+  --disable-listen \
+  --disable-socks4 \
+  --disable-socks4a \
+  --disable-proxy \
+  --disable-unix \
+  --disable-abstract-unixsocket \
+  --disable-tun \
+  --disable-fs \
+  --disable-sycls \
+  --disable-filan \
+  --disable-retry \
+  --enable-msglevel=3
+
+make V=1 socat -j$(nproc) \
+XIOSRCS='xioinitialize.c xiohelp.c xioparam.c xiodiag.c xioopen.c xioopts.c xiosignal.c xiosigchld.c xioread.c xiowrite.c xiolayer.c xioshutdown.c xioclose.c xioexit.c xio-process.c xio-fd.c xio-fdnum.c xio-stdio.c xio-pipe.c xio-gopen.c xio-creat.c xio-file.c xio-named.c xio-socket.c xio-progcall.c xio-exec.c xio-system.c xio-termios.c xio-pty.c xio-streams.c xio-ascii.c xiolockfile.c' \
+> ~/1.txt 2>&1
+
+${CROSS_COMPILE}size -A socat
+${CROSS_COMPILE}size -A socat | grep -E '\.(text|rodata|bss)\b'
+${CROSS_COMPILE}nm -S --size-sort socat
+
+file socat
+ls -l socat
+readelf -d socat | grep NEEDED
+readelf -h socat | grep Type
+readelf -l socat | grep GNU_RELRO
+readelf -d socat | grep BIND_NOW
+readelf -s socat | grep stack_chk
+readelf -r socat | grep stack_chk
+readelf -l socat | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata socat
+~/ELFkickers/sstrip/sstrip ~/openssh_build/socat
+ls -l socat

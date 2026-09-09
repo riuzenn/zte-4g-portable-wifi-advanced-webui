@@ -1,0 +1,43 @@
+cd ~
+git clone https://github.com/afify/sfm.git ./sfm_build
+cd ~/sfm_build
+
+#覆盖修改过的config.h和sfm.c到sfm_build
+make clean
+export TOOLCHAIN=${HOME}/usr
+export CROSS_COMPILE=${TOOLCHAIN}/bin/arm-buildroot-linux-uclibcgnueabi-
+export SYSROOT=${TOOLCHAIN}/arm-buildroot-linux-uclibcgnueabi/sysroot
+export ZTE_LIB=${HOME}/ztelib
+
+export CC="${CROSS_COMPILE}gcc"
+export AR="${CROSS_COMPILE}gcc-ar"
+export RANLIB="${CROSS_COMPILE}gcc-ranlib"
+export STRIP="${CROSS_COMPILE}strip"
+
+export CFLAGS="-Wextra -Os -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=soft -mthumb -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-ident -fomit-frame-pointer -ffunction-sections -fdata-sections -fvisibility=hidden --sysroot=${SYSROOT} -fno-pie -fno-stack-protector -std=c99 -DVERSION='\"0.5\"' -flto=$(nproc) -falign-functions=2 -falign-loops=2 -falign-jumps=2"
+
+export LDFLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -L${ZTE_LIB} -Wl,-rpath-link=${ZTE_LIB} -Wl,-O2 -Wl,--gc-sections -Wl,-dynamic-linker,/lib/ld-uClibc.so.0 -Wl,-z,max-page-size=4096 -Wl,--no-undefined -Wl,--no-allow-shlib-undefined -Wl,-z,norelro -Wl,-z,lazy -Wl,-t -Wl,-Map,aaa.map -pthread -flto=$(nproc)"
+
+export LIBS=""
+
+
+make sfm CC="${CC}" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" -j$(nproc) > ~/1.txt 2>&1
+
+ls -l sfm
+file sfm
+readelf -d sfm | grep NEEDED
+readelf -h sfm | grep Type
+readelf -l sfm | grep GNU_RELRO
+readelf -d sfm | grep BIND_NOW
+readelf -s sfm | grep stack_chk
+readelf -r sfm | grep stack_chk
+readelf -l sfm | grep GNU_STACK
+
+${STRIP} --strip-all -R .note -R .comment -R .gnu_debuglink -R .gnu_debugdata sfm
+~/ELFkickers/sstrip/sstrip ~/sfm_build/sfm
+ls -l sfm
+
+# cofig.h里绑定enter为打开光标所在条目，原有的新建文件夹ctrl+m会和enter冲突，把新建文件夹改为ctrl+n。绑定c为chmod。
+# sfm.c里添加chmod的实现函数chmod_entry及其全局变量定义。用#ifdef和#endif包住log_to_file函数，编译的时候不启用ENABLE_LOGGING宏，禁止往/tmp/sfm.log写日志。如果需要这个函数，CFLAGS里加入-DENABLE_LOGGING
+# sfm.c的get_term_size函数里手动设置终端窗口为30行，100列，随身wifi的linux系统不提供这两个变量，不手动设置，sfm会报错。
+# sfm.c的move_cursor函数里添加display_entry_details();，实时更新状态栏
