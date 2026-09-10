@@ -259,20 +259,20 @@ LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成
 原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
 ### ◉减少打印日志行为  
 #### ➤修改  
-/etc_ro/default/default_parameter_sys中：  
+1. /etc_ro/default/default_parameter_sys中：  
 dnsmasqfileSize=1024改为0  
 errnofileSize=1024改为0  
 hotplugfileSize=1024改为0  
 mynetlinkfileSize=1024改为0  
 print_level=2改4  
 syslog_level=本来就是4  
-/etc_ro/default/default_parameter_user中：  
+2. /etc_ro/default/default_parameter_user中：  
 comm_logsize=16384改小点如1024  
-/bin/hostapd的90768偏移地址的03改为05  
-/sbin/zte_mifi  
+3. /bin/hostapd的90768偏移地址的03改为05  
+4. /sbin/zte_mifi  
 80E98偏移地址的-dddd改为-qqqq  
 85754偏移地址的-d改为-t（影响hostapd的启动命令）  
-86036偏移地址开始  
+86036偏移地址开始：  
 logger_syslog=这里有个空格8改为0换行，换行的十六进制编码是0A  
 logger_syslog_level=2改为5  
 logger_stdout=8改为0  
