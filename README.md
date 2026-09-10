@@ -212,7 +212,7 @@ adb shell nv save
 ```
 下载[resolv.conf](./opt/myconf/resolv.conf)推送到/opt/myconf/resolv.conf  
 在rc里添加  
-mount --bind /etc_ro/resolv.conf /etc/resolv.conf  
+mount --bind /opt/myconf/resolv.conf /etc/resolv.conf  
 killall dnsmasq  
 ### ◉内核优化参数  
 下载[sysctl.conf](./opt/myconf/sysctl.conf)推送到/opt/myconf/sysctl.conf  
