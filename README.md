@@ -257,6 +257,36 @@ http://192.168.0.1/goform/goform_set_cmd_process?isTest=false&goformId=LOGIN&pas
 备注：  
 LD不是常量，反编译goahead发现LD是其根据时间型号等信息生成的sha256值，且会为每个未登录的 IP 分配一个临时的 LD，如果前一个 LD 还没有被“消耗”（即还没有进行过一次失败或成功的 LOGIN POST），后端程序为了节省计算资源，会返回同一个LD值。  
 原版逻辑里第二个链接是通过post方式提交，实测直接访问链接或者说get方式也行。  
+### ◉减少打印日志行为  
+#### ➤修改  
+/etc_ro/default/default_parameter_sys中：  
+dnsmasqfileSize=1024改为0  
+errnofileSize=1024改为0  
+hotplugfileSize=1024改为0  
+mynetlinkfileSize=1024改为0  
+print_level=2改4  
+syslog_level=本来就是4  
+/etc_ro/default/default_parameter_user中：  
+comm_logsize=16384改小点如1024  
+/bin/hostapd的90768偏移地址的03改为05  
+/sbin/zte_mifi  
+80E98偏移地址的-dddd改为-qqqq  
+85754偏移地址的-d改为-t（影响hostapd的启动命令）  
+86036偏移地址开始  
+logger_syslog=这里有个空格8改为0换行，换行的十六进制编码是0A  
+logger_syslog_level=2改为5  
+logger_stdout=8改为0  
+logger_stdout_level=2改为5  
+#### ➤原理  
+反编译libsoftap.so，从file_write函数可知：  
+若`*fileSize`为0直接不打印，若为空则将comm_logsize的值赋给它们。  
+反编译libsoftap.so，从loglevel_init、slog、log_sig_hdl函数可知：  
+内部消息级别：1=debug、2=notice、3=error。  
+print_level和syslog_level二者有效值1-4，其余值会被重置为4，越高日志越少，4等于全关。  
+反编译hostapd可知：  
+logger_syslog和logger_stdout是模块掩码，改成0则全部模块的日志都不打印。1=IEEE 802.11, 2=IEEE 802.1X, 4=RADIUS, 8=WPA, 0x10=DRIVER, 0x40=MLME。  
+logger_syslog_level和logger_stdout_level是级别阈值，消息级别超过阈值才输出。  
+还有日志不受上面四个变量管，直接和hostapd的90768偏移地址的值比较，消息级别超过这个值才打印。  
 ## § 编译的其他应用  
 除了at外，我还编译了一些实用的工具。详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
 ### 简单介绍一下dropbear  
