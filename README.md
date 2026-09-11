@@ -284,9 +284,9 @@ logger_stdout_level=2改为5
 内部消息级别：1=debug、2=notice、3=error。  
 print_level和syslog_level二者有效值1-4，其余值会被重置为4，越高日志越少，4等于全关。  
 反编译hostapd可知：  
-logger_syslog和logger_stdout是模块掩码，改成0则全部模块的日志都不打印。1=IEEE 802.11, 2=IEEE 802.1X, 4=RADIUS, 8=WPA, 0x10=DRIVER, 0x40=MLME。  
-logger_syslog_level和logger_stdout_level是级别阈值，消息级别超过阈值才输出。  
-还有日志不受上面四个变量管，直接和hostapd的90768偏移地址的值比较，消息级别超过这个值才打印。  
+logger_syslog和logger_stdout是模块掩码，改成0则全部模块的日志都不打印。1=IEEE 802.11, 2=IEEE 802.1X, 4=RADIUS, 8=WPA, 0x10=DRIVER, 0x40=MLME，0x7F（127）及以上 / -1所有。  
+logger_syslog_level和logger_stdout_level是级别阈值，消息级别超过阈值才输出，5全关。  
+还有日志不受上面四个变量管，直接和hostapd的90768偏移地址的值比较，消息级别超过这个值才打印，5是error档。  
 ## § 编译的其他应用  
 除了at外，我还编译了一些实用的工具。详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
 ### 简单介绍一下dropbear  
