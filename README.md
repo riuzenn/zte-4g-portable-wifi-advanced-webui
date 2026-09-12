@@ -320,7 +320,17 @@ websh原理和goahead自带cgi一样，都是一次命令fork一个sh进程
 <div align="center"><img src="./images/websh.jpg"></div>  
 
 wssh缩写自websocket shell，是真正的交互式shell，是不是有cloud shell那味了  
-安装：[wssh](./usr/sbin/wssh)→/usr/sbin，[wssh.html](./etc_ro/web/wssh.html)→/etc_ro/web，chmod 755  
+安装：
+[wssh](./usr/sbin/wssh)→/usr/sbin  
+[wssh.html](./etc_ro/web/wssh.html)→/etc_ro/web  
+[xterm.min.css](./etc_ro/web/css/xterm.min.css)  
+[xterm.min.js](./etc_ro/web/js/xterm.min.js)  
+[xterm-addon-fit.min.js](./etc_ro/web/js/xterm-addon-fit.min.js)  
+也可以去以下网址下载  
+https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js  
+https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js  
+https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.min.js  
+chmod 755  
 启动：服务器端wssh &，客户端访问http://192.169.0.1:2333 (/wssh.html可不写)  
 关闭：服务器端killall wssh  
 <div align="center"><img src="./images/wssh.jpg"></div>  
