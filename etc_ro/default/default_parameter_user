@@ -325,7 +325,6 @@ sntp_time_set_mode=auto
 sntp_timezone=CST-8
 sntp_timezone_index=0
 assert_errno=
-comm_logsize=16384
 cr_inner_version=V1.0.0B08
 modem_inner_version=BD_ZXSTF30APROV1.0.0B01
 cr_version=V1.0.0B01
@@ -513,6 +512,7 @@ reportFreqInS=1000
 xlat_enable=0
 mqtt_syslog_level=0
 
+comm_logsize=1024
 pageTitle=Riuzenn's Portable Wifi
 wifi_force_40m=0
 Channel=13

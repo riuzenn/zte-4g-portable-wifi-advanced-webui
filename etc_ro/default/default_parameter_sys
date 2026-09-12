@@ -53,7 +53,7 @@ need_cops_number_format=yes
 need_display_searching_status=yes
 need_restart_when_sim_insert=no
 need_support_pb=no
-need_support_sms=yes
+need_support_sms=no
 network_need_gsm=yes
 network_need_tds=yes
 product_model=MF910W
@@ -77,8 +77,8 @@ OS=TOS
 urlMobile=
 DNS_proxy=
 dnsmasqfile=/var/log/dnsmasq.log
-dnsmasqfileSize=1024
-lan_domain_Enabled=1
+dnsmasqfileSize=0
+lan_domain_Enabled=0
 auto_connect_when_limited=no
 is_traffic_aline_on=no
 is_traffic_alining=no
@@ -130,17 +130,17 @@ wifiwan_mode=dhcp
 idle_time="600"
 product_type=1
 errnofile=/usr/netlog/errno.log
-errnofileSize=1024
+errnofileSize=0
 hotplugfile=/usr/netlog/hotplug.log
-hotplugfileSize=1024
+hotplugfileSize=0
 mynetlinkfile=/usr/netlog/mynetlink.log
-mynetlinkfileSize=1024
+mynetlinkfileSize=0
 telnetd_enable=n
 print_level=4
 syslog_level=4
 
 skb_debug=
-seclog_switch=1
+seclog_switch=0
 ################SOFTAP专用 END#####################################
 
 ######USB端口配置#######
