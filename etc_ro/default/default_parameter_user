@@ -525,7 +525,6 @@ admin_Password=8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918
 MAX_Access_num=4
 privacy_read_flag=1
 dm_update_mode=0
-fota_need_user_confirm_update=1
 DtimPeriod=3
 sntp_default_ip=ntp.aliyun.com;time1.cloud.tencent.com;ntp.ntsc.ac.cn;cn.ntp.org.cn;pool.ntp.org
 sntp_server0=ntp.aliyun.com
