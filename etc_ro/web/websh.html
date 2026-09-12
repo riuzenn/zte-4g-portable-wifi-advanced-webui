@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>websh</title>
+</head>
+<style>
+  button {background-color: #6b6b6b;border: 0px;padding: 5px;font-size: 16px;color: #c6c6c6;}
+  #cmdInput {background-color: #181a1b;border: 0px;width: 300px;padding: 4px;font-size: 20px;color: #b3aca2;}
+  #cmdInput:focus {outline: none;}
+  #resultBox {white-space: pre-wrap;font-size: 20px;color: #a39b8f;}
+</style>
+<body bgcolor='#181a1b'>
+  <form onsubmit="websh(); return false;" style='display: inline-block;'>
+    <input type="text" id="cmdInput" placeholder="输入Shell命令">
+    <button type="submit">发送</button>
+  </form>
+  <button type="button" onclick="clearbox();">清空</button>
+  <pre id="resultBox"></pre>
+<script>
+const resultBox = document.getElementById('resultBox');
+const cmdContainer = document.getElementById('cmdInput');
+const appendTxt = (txt) => {resultBox.textContent += txt + '\n';};
+const clearbox = () => {resultBox.textContent = '';};
+const websh = async () => {
+  const finalCmd = cmdContainer.value.trim();
+  if (!finalCmd) return appendTxt("请输入命令!");
+  appendTxt(finalCmd);
+  try {
+    const res = await fetch('/', {
+      method: 'POST',
+      body: finalCmd,
+      headers: {'Content-Type': 'text/plain'}
+    });
+    if (!res.ok) {
+      appendTxt('HTTP ' + res.status + ' ' + res.statusText);return null;
+    }
+    const text = await res.text();
+    appendTxt(text);return text;
+    } catch (e) {
+      appendTxt('请求失败: ' + e);return null;}
+};
+</script>
+</body>
+</html>
