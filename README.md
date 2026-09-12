@@ -316,9 +316,11 @@ dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
 websh原理和goahead自带cgi一样，都是一次命令fork一个sh进程
 安装：[websh](./usr/sbin/websh)→/usr/sbin，[websh.html](./etc_ro/web/websh.html)→/etc_ro/web，chmod 755  
 启动：服务器端websh &，客户端访问http://192.169.0.1:2333 (/websh.html可不写)  
+关闭：服务器端killall websh 
 <div align="center"><img src="./images/websh.jpg"></div>  
 
 wssh缩写自websocket shell，是真正的交互式shell，是不是有cloud shell那味了  
 安装：[wssh](./usr/sbin/wssh)→/usr/sbin，[wssh.html](./etc_ro/web/wssh.html)→/etc_ro/web，chmod 755  
 启动：服务器端wssh &，客户端访问http://192.169.0.1:2333 (/wssh.html可不写)  
+关闭：服务器端killall wssh  
 <div align="center"><img src="./images/wssh.jpg"></div>  
