@@ -83,6 +83,10 @@
             <a href="javascript:void(0);" onclick="evalcmd('sshon',true);" trans="on"></a>
             <a href="javascript:void(0);" onclick="evalcmd('sshoff',true);" trans="off"></a>
             <span trans="vertical_bar"></span>
+            <a href="http://192.168.0.1:2333" target="_blank" rel="noopener noreferrer">wssh</a>
+            <a href="javascript:void(0);" onclick="evalcmd('wssh &');showinbox('已开启wssh');" trans="on"></a>
+            <a href="javascript:void(0);" onclick="evalcmd('killall wssh');showinbox('已关闭wssh');" trans="off"></a>
+            <span trans="vertical_bar"></span>
             <a href="javascript:void(0);" id="band-btn" onclick="showband();" trans="network_band_selection"></a>
             <span trans="vertical_bar"></span>
             <a href="javascript:void(0);" onclick="document.getElementById('logoutlink').click();" trans="logout"></a>
