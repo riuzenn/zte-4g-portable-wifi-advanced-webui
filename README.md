@@ -312,7 +312,7 @@ dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
 <div align="center"><img src="./images/包含ssh的index.jpg"></div>  
 
 ### ◉websh和wssh
-二者服务于在网页浏览器里执行shell命令而生。  
+二者服务于在网页浏览器里执行shell命令的需求。  
 websh原理和goahead自带cgi一样，都是一次命令fork一个sh进程
 安装：[websh](./usr/sbin/websh)→/usr/sbin，[websh.html](./etc_ro/web/websh.html)→/etc_ro/web，chmod 755  
 启动：服务器端websh &，客户端访问http://192.169.0.1:2333/websh.html  
