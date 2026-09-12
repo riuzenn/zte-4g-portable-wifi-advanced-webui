@@ -311,7 +311,7 @@ dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
 若密码错误或想以密钥登录参考https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
 <div align="center"><img src="./images/包含ssh的index.jpg"></div>  
 
-### ◉websh和wssh
+### ◉websh和wssh  
 二者服务于在网页浏览器里执行shell命令的需求。  
 websh原理和goahead自带cgi一样，都是一次命令fork一个sh进程
 安装：[websh](./usr/sbin/websh)→/usr/sbin，[websh.html](./etc_ro/web/websh.html)→/etc_ro/web，chmod 755  
