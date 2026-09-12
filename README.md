@@ -97,7 +97,7 @@ adb shell mount -o remount,ro /
 <div><img src="./images/at工具示例.jpg"  style="width: 600px; height: auto;"></div>
 
 ### ➤编译:  
-我编译了适配官方3.4.110内核和uClibc 0.9.33.2库的Buildroot交叉编译器（详情见 https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries ），用[Makefile](./编译命令/at/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了大部分可用编译优化命令，可以尝试移植到其他二进制文件的编译命令里。  
+我编译了适配官方3.4.110内核和uClibc 0.9.33.2库的Buildroot交叉编译器（详情见 https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries ），用[Makefile](https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries/blob/main/编译命令/at/Makefile)编译at工具，文件里的具体路径根据实际情况自行修改。值得一提的是，我在Makefile里加入了大部分可用编译优化命令，可以尝试移植到其他二进制文件的编译命令里。  
 编译at  
 创建并转到文件夹：`mkdir -p ~/at_build;cd ~/at_build`  
 写好Makefile里的绝对路径后上传Makefile、at.c到`~/at_build`    
@@ -114,7 +114,7 @@ adb shell mount -o remount,ro /
 ### ➤原理：  
 官方封装了一套和at串口通信的方法：goahead接受前端url，zte_mifi把守大门（阻塞了几个疑似modem的串口），向底层提交申请然后排队执行。我写的这个c程序就是调用重写后的官方send_req_and_wait函数，发送at命令，接收返回值。和已有的atwed的区别在于atweb开了个端口持续监听，需要后台运行，并且把大多数逻辑写进了编译后的文件，是一个小型的服务器。我这个工具只在命令行调用的时候运行，全功能后台主要靠js实现，性能可能比编译后的c程序好，因为js由访问后台的电脑和手机执行，而c程序在性能孱弱的随身wifi运行，占用总共约32MB的运行内存的一部分。  
 ### ➤为什么要重复造轮子？  
-用十六进制查看atweb就能发现它里面封装了收集包括imei、iccid等在内的信息然后和一串加密字符串拼接成url检测是否付费的函数，再加上atweb有很高权限，所以我才花时间把这个小东西写出来，并且附上源码[at.c](./源码/at/at.c)，感兴趣可以自己编译。一切代码都是明文，我可以保证我提交的代码没有后台。  
+用十六进制查看atweb就能发现它里面封装了收集包括imei、iccid等在内的信息然后和一串加密字符串拼接成url检测是否付费的函数，再加上atweb有很高权限，所以我才花时间把这个小东西写出来，并且附上源码[at.c](https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries/blob/main/源码/at/at.c)，感兴趣可以自己编译。一切代码都是明文，我可以保证我提交的代码没有后台。  
 ### ➤已知bug（已修复）：  
 输出包含过多底层日志，这是因为过程涉及复杂函数调用，每个都会拉点屎。可以在源码里屏蔽了。我本着够用就行的原则没管。  
 <div><img src="./images/底层日志.jpg"  style="width: 600px; height: auto;"></div>  
