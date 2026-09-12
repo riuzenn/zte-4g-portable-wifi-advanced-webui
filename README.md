@@ -289,7 +289,7 @@ logger_syslog_level和logger_stdout_level是级别阈值，消息级别超过阈
 还有日志不受上面四个变量管，直接和hostapd的90768偏移地址的值比较，消息级别超过这个值才打印，5是error档。  
 ## § 编译的其他应用  
 除了at外，我还编译了一些实用的工具。详情见https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
-### 简单介绍一下dropbear  
+### ◉简单介绍一下dropbear  
 #### ➤安装过程：
 编译好的[dropbearmulti](./usr/sbin/dropbearmulti)连同[sshon](./usr/sbin/sshon)和[sshoff](./usr/sbin/sshoff)推送到/usr/sbin，[index.html](./etc_ro/web/index.html)和[customfuncs.js](./etc_ro/web/js/customfuncs.js)推送到/etc_ro/web和/etc_ro/web/js，执行：  
 ```
@@ -310,3 +310,15 @@ dropbearkey -y -f /etc/dropbear/dropbear_ed25519_host_key
 我写了sshon和sshoff，直接输入它们的文件名就可以开启和关闭。windows的cmd里输入ssh admin@192.168.0.1即可连接。  
 若密码错误或想以密钥登录参考https://github.com/riuzenn/zte-4g-portable-wifi-gcc-and-dynamically-linked-binaries  
 <div align="center"><img src="./images/包含ssh的index.jpg"></div>  
+
+### ◉websh和wssh
+二者服务于在网页浏览器里执行shell命令而生。  
+websh原理和goahead自带cgi一样，都是一次命令fork一个sh进程
+安装：[websh](./usr/sbin/websh)→/usr/sbin，[websh.html](./etc_ro/web/websh.html)→/etc_ro/web，chmod 755
+启动：服务器端websh &，客户端访问http://192.169.0.1:2333/websh.html  
+<div align="center"><img src="./images/websh.jpg"></div>  
+
+wssh缩写自websocket shell，是真正的交互式shell，是不是有cloud shell那味了  
+安装：[wssh](./usr/sbin/wssh)→/usr/sbin，[wssh.html](./etc_ro/web/wssh.html)→/etc_ro/web，chmod 755
+启动：服务器端wssh &，客户端访问http://192.169.0.1:2333  
+<div align="center"><img src="./images/wssh.jpg"></div>  
