@@ -323,9 +323,9 @@ wssh缩写自websocket shell，是真正的交互式shell，是不是有cloud sh
 安装：  
 [wssh](./usr/sbin/wssh)→/usr/sbin  
 [wssh.html](./etc_ro/web/wssh.html)→/etc_ro/web  
-[xterm.min.css](./etc_ro/web/css/xterm.min.css)  
-[xterm.min.js](./etc_ro/web/js/xterm.min.js)  
-[xterm-addon-fit.min.js](./etc_ro/web/js/xterm-addon-fit.min.js)  
+[xterm.min.css](./etc_ro/web/css/xterm.min.css)→/etc_ro/web/css  
+[xterm.min.js](./etc_ro/web/js/xterm.min.js)→/etc_ro/web/js  
+[xterm-addon-fit.min.js](./etc_ro/web/js/xterm-addon-fit.min.js)→/etc_ro/web/js  
 也可以去以下网址下载  
 https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css  
 https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js  
