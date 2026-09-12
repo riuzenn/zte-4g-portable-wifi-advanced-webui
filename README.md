@@ -319,7 +319,7 @@ websh原理和goahead自带cgi一样，都是一次命令fork一个sh进程。
 关闭：服务器端killall websh 
 <div align="center"><img src="./images/websh.jpg"></div>  
 
-wssh缩写自websocket shell，是真正的交互式shell，是不是有cloud shell那味了？  
+wssh缩写自websocket shell，是真正的实时交互式shell，是不是有cloud shell那味了？  
 安装：  
 [wssh](./usr/sbin/wssh)→/usr/sbin  
 [wssh.html](./etc_ro/web/wssh.html)→/etc_ro/web  
