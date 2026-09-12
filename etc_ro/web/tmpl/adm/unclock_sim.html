@@ -32,13 +32,13 @@
 </div>
 <script>
 	function zteUnlockPassword(imei) {
-			return "" +
-						 (imei[5] * 7 % 10) +
-						 (imei[4] * 6 % 10) +
-						 (imei[3] * 5 % 10) +
-						 (imei[2] * 4 % 10) +
-						 (imei[1] * 3 % 10) +
-						 (imei[0] * 2 % 10);
+    return "" +
+      (imei[5] * 7 % 10) +
+      (imei[4] * 6 % 10) +
+      (imei[3] * 5 % 10) +
+      (imei[2] * 4 % 10) +
+      (imei[1] * 3 % 10) +
+      (imei[0] * 2 % 10);
 	}
 	const imeiInput = document.getElementById('zte-imei');
 	const resultDiv = document.getElementById('zte-result');
