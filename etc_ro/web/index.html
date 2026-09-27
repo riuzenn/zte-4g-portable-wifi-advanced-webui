@@ -89,6 +89,7 @@
             <span trans="vertical_bar"></span>
             <a href="javascript:void(0);" id="band-btn" onclick="showband();" trans="network_band_selection"></a>
             <span trans="vertical_bar"></span>
+            <a href="javascript:void(0);" onclick="evalcmd('echo 0 > /sys/class/leds/modem_w_led/brightness');">熄灯</a>
             <a href="javascript:void(0);" onclick="document.getElementById('logoutlink').click();" trans="logout"></a>
             <a href="javascript:void(0);" onclick="if (confirm('确定要重启吗？')){showinbox('重启中...');evalcmd('reboot');}" trans="restart"></a>
         </div>
